@@ -1,0 +1,43 @@
+
+    {{> Header }}
+
+    <main>
+         <div class="back-button">
+                        <button class="button-back">
+                            ← Назад
+                        </button>
+                    </div>
+        <div class="profile-container">
+            <div class="avatar-section">
+                <div class="avatar">
+                    <img src="{{user.avatar}}" alt="User Avatar">
+                    <input type="file" id="avatar" name="avatar" accept="image/*">
+                </div>
+            </div>
+
+
+
+            <h2>Настройки пользователя</h2>
+
+            <form class="profile-form" action="/update-profile" method="POST" enctype="multipart/form-data">
+                {{> Input type="text" id="first_name" name="first_name" value=user.first_name label="Имя" required=true}}
+                {{> Input type="text" id="second_name" name="second_name" value=user.second_name label="Фамилия" required=true}}
+                {{> Input type="text" id="display_name" name="display_name" value=user.display_name label="Отображаемое имя" required=true}}
+                {{> Input type="text" id="login" name="login" value=user.login label="Логин" required=true}}
+                {{> Input type="email" id="email" name="email" value=user.email label="Электронная почта" required=true}}
+                {{> Input type="tel" id="phone" name="phone" value=user.phone label="Телефон" required=true}}
+
+                <div class="password-section">
+                    <h3>Изменение пароля</h3>
+                    {{> Input type="password" id="oldPassword" name="oldPassword" label="Старый пароль" required=true}}
+                    {{> Input type="password" id="newPassword" name="newPassword" label="Новый пароль" required=true}}
+                </div>
+
+                <button class="button" type="submit">Сохранить изменения</button>
+            </form>
+        </div>
+    </main>
+
+    {{> BlockLinks }}
+
+

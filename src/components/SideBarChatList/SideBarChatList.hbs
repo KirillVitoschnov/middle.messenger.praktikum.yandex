@@ -1,0 +1,10 @@
+<div class="chat-list">
+    {{#each chats}}
+        {{> SideBarChatListItem
+            name=this.name
+            lastMessage=this.lastMessage
+            lastMessageTime=this.lastMessageTime
+            unreadCount=this.unreadCount
+        }}
+    {{/each}}
+</div>
