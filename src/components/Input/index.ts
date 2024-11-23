@@ -1,1 +1,1 @@
-export { default as input } from './input.hbs?raw';
+export { default as Input } from './input';

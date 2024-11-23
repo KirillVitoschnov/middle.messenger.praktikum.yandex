@@ -11,19 +11,35 @@ export default class App {
 
   constructor() {
     this.state = {
-      currentPage: 'error-server',
+      currentPage: 'authorization',
     };
     this.appElement = document.getElementById('app') as HTMLElement;
   }
 
   render(): void {
     let template:
-        | Page.ErrorClient
-        | Page.ErrorServer
-        | undefined;
+      | Page.Authorization
+      | Page.Registration
+      | Page.ProfileInfo
+      | Page.ProfileEditPassword
+      | Page.ErrorClient
+      | Page.ErrorServer
+      | undefined;
     this.appElement.innerHTML = '';
 
     switch (this.state.currentPage) {
+      case 'authorization':
+        template = new Page.Authorization({ currentPage: this.state.currentPage });
+        break;
+      case 'registration':
+        template = new Page.Registration({ currentPage: this.state.currentPage });
+        break;
+      case 'profile':
+        template = new Page.ProfileInfo({ currentPage: this.state.currentPage });
+        break;
+      case 'profile-edit-password':
+        template = new Page.ProfileEditPassword({ currentPage: this.state.currentPage });
+        break;
       case 'error-client':
         template = new Page.ErrorClient({ currentPage: this.state.currentPage });
         break;
@@ -39,7 +55,7 @@ export default class App {
     }
 
     this.attachEventListeners();
-    this.manageTheme(); // Вызов метода для управления темой
+    this.manageTheme();
   }
 
   attachEventListeners(): void {
@@ -59,7 +75,7 @@ export default class App {
 
   manageTheme(): void {
     const toggleButton = document.getElementById('theme-toggle');
-    if (!toggleButton) return; // Проверка на наличие кнопки
+    if (!toggleButton) return;
 
     const body = document.body;
     const savedTheme = localStorage.getItem('theme');

@@ -5,8 +5,7 @@ import template from '../template.hbs?raw';
 
 export default class ErrorClient extends Service.Block {
   constructor(props: TProps) {
-    const header = new Component.Header({
-    });
+    const header = new Component.Header({});
 
     const link = new Component.Link({
       text: 'Назад к чатам',

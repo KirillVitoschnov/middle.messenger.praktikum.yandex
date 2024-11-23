@@ -1,6 +1,7 @@
-export { Authorization } from './authorization';
-export { Registration } from './registration';
-export { Profile } from './profile';
+export { Authorization } from './login';
+export { Registration } from './login';
+export { ProfileInfo } from './profile';
+export { ProfileEditPassword } from './profile';
 export { ErrorServer } from './error';
 export { ErrorClient } from './error';
 export { Chats } from './chats';

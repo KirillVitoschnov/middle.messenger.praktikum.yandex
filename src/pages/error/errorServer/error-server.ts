@@ -5,8 +5,7 @@ import template from '../template.hbs?raw';
 
 export default class ErrorServer extends Service.Block {
   constructor(props: TProps) {
-    const header = new Component.Header({
-    });
+    const header = new Component.Header({});
 
     const link = new Component.Link({
       text: 'Назад к чатам',
@@ -22,7 +21,7 @@ export default class ErrorServer extends Service.Block {
       ...props,
       Header: header,
       title: '500',
-      info: 'Мы уже фиксим',
+      info: 'Ошибка на стороне сервера',
       link: link,
       blockLinks: new Component.BlockLinks({}),
     });
