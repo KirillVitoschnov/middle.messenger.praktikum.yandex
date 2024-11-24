@@ -11,7 +11,7 @@ export default class App {
 
   constructor() {
     this.state = {
-      currentPage: 'chat-current',
+      currentPage: 'authorization',
     };
     this.appElement = document.getElementById('app') as HTMLElement;
   }
