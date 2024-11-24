@@ -1,1 +1,1 @@
-export { default as SideBar } from './sidebar.hbs?raw';
+export { default as SideBar } from './sideBar';

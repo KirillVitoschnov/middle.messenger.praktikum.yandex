@@ -11,20 +11,22 @@ export default class App {
 
   constructor() {
     this.state = {
-      currentPage: 'authorization',
+      currentPage: 'chat-preview',
     };
     this.appElement = document.getElementById('app') as HTMLElement;
   }
 
   render(): void {
     let template:
-      | Page.Authorization
-      | Page.Registration
-      | Page.ProfileInfo
-      | Page.ProfileEditPassword
-      | Page.ErrorClient
-      | Page.ErrorServer
-      | undefined;
+        | Page.Authorization
+        | Page.Registration
+        | Page.ProfileInfo
+        | Page.ProfileEditPassword
+        | Page.ErrorClient
+        | Page.ErrorServer
+        | Page.ChatPreview
+        | Page.ChatCurrent
+        | undefined;
     this.appElement.innerHTML = '';
 
     switch (this.state.currentPage) {
@@ -45,6 +47,12 @@ export default class App {
         break;
       case 'error-server':
         template = new Page.ErrorServer({ currentPage: this.state.currentPage });
+        break;
+      case 'chat-preview':
+        template = new Page.ChatPreview({ currentPage: this.state.currentPage });
+        break;
+      case 'chat-current':
+        template = new Page.ChatCurrent({ currentPage: this.state.currentPage });
         break;
       default:
         template = undefined;

@@ -1,1 +1,1 @@
-export { default as Messages } from './Messages.hbs?raw';
+export { default as Messages } from './Messages';

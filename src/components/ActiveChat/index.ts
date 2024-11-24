@@ -1,1 +1,1 @@
-export { default as ActiveChat } from './activeChat.hbs?raw';
+export { default as ActiveChat } from './activeChat';

@@ -1,1 +1,2 @@
-export { default as Chat } from './chat.hbs?raw';
+export { ChatPreview } from './chatPreview';
+export { ChatCurrent } from './chatCurrent';

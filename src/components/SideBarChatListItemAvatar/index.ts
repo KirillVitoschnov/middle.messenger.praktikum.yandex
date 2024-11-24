@@ -1,1 +1,1 @@
-export { default as SideBarChatListItemAvatar } from './SideBarChatListItemAvatar.hbs?raw';
+export { default as SideBarChatListItemAvatar } from './SideBarChatListItemAvatar';
