@@ -161,9 +161,40 @@ export default class ChatCurrent extends Service.Block {
               })
           ),
         }),
+
+
+
         MessageInput: new Component.MessageInput({
-          messagePlaceholder:'Введите ваше сообщение..',
-          sendButton:'Отправить'
+          input: new Component.Input({
+            placeholder: 'Введите ваше сообщение...',
+            events: {
+              input: (event: Event) => {
+                const inputElement = event.target as HTMLInputElement;
+                if (inputElement.value.length > 50) {
+                  inputElement.style.border = '2px solid red';
+                } else {
+                  inputElement.style.border = '1px solid #ccc';
+                }
+              },
+            },
+          }),
+          button: new Component.Button({
+            text: 'Отправить',
+            type:'submit',
+            events: {
+              click: () => {
+                console.log('Сообщение отправлено!');
+              },
+            },
+          }),
+          events: {
+            submit: (event: Event) => {
+              Service.validateForm(event);
+              if (Service.validateForm(event)) {
+                console.log(Service.getDataForm(event));
+              }
+            },
+          },
         }),
       }),
       blockLinks: new Component.BlockLinks({}),
