@@ -50,8 +50,8 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   transition:
-          background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-          color 0.4s ease-in-out;
+    background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.4s ease-in-out;
 }
 .sidebar {
   width: 25%;
@@ -161,7 +161,7 @@ body {
         color: var(--color-text);
       }
 
-      .chat-info-message{
+      .chat-info-message {
         display: flex;
         flex-direction: column;
         margin: auto 0;
@@ -293,7 +293,6 @@ body {
           box-shadow 0.3s ease,
           transform 0.3s ease;
 
-
   &:hover {
     background: #4752c4;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
@@ -374,7 +373,6 @@ body {
           background-color 0.3s ease,
           box-shadow 0.3s ease;
 
-
   &:focus {
     outline: none;
     border-color: var(--color-accent);
@@ -393,7 +391,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+          background 0.3s ease,
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 
   svg {
@@ -423,16 +424,19 @@ body {
   }
 
   .message.system {
-    background: linear-gradient(135deg, #3B3A4F, #4B4C64);
+    background: linear-gradient(135deg, #3b3a4f, #4b4c64);
     border-left: 5px solid var(--color-accent-dark);
     align-self: flex-start;
     padding: 15px 25px;
     border-radius: 12px;
     font-weight: 500;
-    color: #D0D0E1;
+    color: #d0d0e1;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     max-width: 70%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+            background 0.3s ease,
+            transform 0.3s ease;
+
 
     &:hover {
       transform: translateY(-5px);
@@ -452,7 +456,9 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-5px);
@@ -505,7 +511,9 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-5px);
@@ -608,7 +616,6 @@ form {
   pointer-events: none;
 }
 
-
 .form-bottom-actions {
   a {
     text-align: center;
@@ -624,7 +631,7 @@ form {
       color: #4752c4;
     }
   }
-  button{
+  button {
     width: 100%;
     padding: 14px 0;
     border-radius: 6px;
@@ -684,7 +691,7 @@ form {
 .d-flex {
   display: flex;
 }
-.flex-column{
+.flex-column {
   flex-direction: column;
 }
 .h-100 {
@@ -766,7 +773,10 @@ form {
   font-size: 14px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -781,7 +791,7 @@ form {
   margin: 8px 0;
 }
 
-.profile-link{
+.profile-link {
   text-align: center;
   color: var(--color-accent);
   text-decoration: none;
