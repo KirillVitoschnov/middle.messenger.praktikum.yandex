@@ -50,7 +50,9 @@ body {
   height: 100vh;
   background: var(--color-bg);
   color: var(--color-text);
-  transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s ease-in-out;
+  transition:
+          background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+          color 0.4s ease-in-out;
 }
 
 .sidebar {
@@ -60,8 +62,6 @@ body {
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--color-border);
-
-
 
   .sidebar-header {
     display: flex;
@@ -114,10 +114,6 @@ body {
     }
   }
 
-
-
-
-
   .chat-list {
     flex-grow: 1;
     overflow-y: auto;
@@ -166,6 +162,7 @@ body {
         font-size: 14px;
         color: var(--color-text);
       }
+
       .chat-info-message{
         display: flex;
         flex-direction: column;
@@ -265,7 +262,7 @@ body {
     transition: background-color 0.3s;
 
     &:hover {
-      background-color: #4752C4;
+      background-color: #4752c4;
     }
   }
 }
@@ -293,10 +290,14 @@ body {
   border: none;
   color: #fff;
   cursor: pointer;
-  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  transition:
+          background 0.3s ease,
+          box-shadow 0.3s ease,
+          transform 0.3s ease;
+
 
   &:hover {
-    background: #4752C4;
+    background: #4752c4;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
   }
@@ -370,7 +371,11 @@ body {
   background: transparent;
   color: var(--color-text);
   font-size: 16px;
-  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+          border-color 0.3s ease,
+          background-color 0.3s ease,
+          box-shadow 0.3s ease;
+
 
   &:focus {
     outline: none;
@@ -401,7 +406,7 @@ body {
   }
 
   &:hover {
-    background: #4752C4;
+    background: #4752c4;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
   }
@@ -618,7 +623,7 @@ form {
 
     &:hover {
       text-decoration: underline;
-      color: #4752C4;
+      color: #4752c4;
     }
   }
   button{
@@ -768,7 +773,7 @@ form {
 }
 
 .button-back:hover {
-  background: #4752C4;
+  background: #4752c4;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
 }
