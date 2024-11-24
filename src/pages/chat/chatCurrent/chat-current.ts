@@ -131,7 +131,8 @@ export default class ChatCurrent extends Service.Block {
       SideBar: new Component.SideBar({
         SideBarHeader: new Component.SideBarHeader({}),
         SideBarChatList: new Component.SideBarChatList({
-          SideBarChatListItem: chats.map((chat) =>
+          SideBarChatListItem: chats.map(
+            (chat) =>
               new Component.SideBarChatListItem({
                 SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
                   src: chat.avatar,
@@ -141,28 +142,27 @@ export default class ChatCurrent extends Service.Block {
                   lastMessage: chat.lastMessage,
                   lastMessageTime: chat.lastMessageTime,
                   SideBarChatListItemBadge:
-                      chat.unreadCount > 0
-                          ? new Component.SideBarChatListItemBadge({
-                            count: chat.unreadCount,
-                          })
-                          : null,
+                    chat.unreadCount > 0
+                      ? new Component.SideBarChatListItemBadge({
+                          count: chat.unreadCount,
+                        })
+                      : null,
                 }),
-              })
+              }),
           ),
         }),
       }),
       ActiveChat: new Component.ActiveChat({
         ChatHeader: new Component.ChatHeader({ chatHeader: 'Чат с Алисой' }),
         Messages: new Component.Messages({
-          Message: messages.map((message) =>
+          Message: messages.map(
+            (message) =>
               new Component.Message({
                 type: message.type,
                 text: message.text,
-              })
+              }),
           ),
         }),
-
-
 
         MessageInput: new Component.MessageInput({
           input: new Component.Input({
@@ -180,7 +180,7 @@ export default class ChatCurrent extends Service.Block {
           }),
           button: new Component.Button({
             text: 'Отправить',
-            type:'submit',
+            type: 'submit',
             events: {
               click: () => {
                 console.log('Сообщение отправлено!');

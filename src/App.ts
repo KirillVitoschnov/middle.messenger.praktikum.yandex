@@ -18,15 +18,15 @@ export default class App {
 
   render(): void {
     let template:
-        | Page.Authorization
-        | Page.Registration
-        | Page.ProfileInfo
-        | Page.ProfileEditPassword
-        | Page.ErrorClient
-        | Page.ErrorServer
-        | Page.ChatPreview
-        | Page.ChatCurrent
-        | undefined;
+      | Page.Authorization
+      | Page.Registration
+      | Page.ProfileInfo
+      | Page.ProfileEditPassword
+      | Page.ErrorClient
+      | Page.ErrorServer
+      | Page.ChatPreview
+      | Page.ChatCurrent
+      | undefined;
     this.appElement.innerHTML = '';
 
     switch (this.state.currentPage) {
