@@ -1,7 +1,9 @@
 import * as Component from '../../../components';
 import * as Service from '../../../services';
-import { TProps } from '../../../types';
+import { TProps, UserType } from '../../../types';
 import template from '../template.hbs?raw';
+import { getDataForm } from '../../../utils';
+import { authController } from '../../../controllers';
 
 export default class Registration extends Service.Block {
   constructor(props: TProps) {
@@ -16,7 +18,7 @@ export default class Registration extends Service.Block {
             'data-valid-email': true,
           },
           events: {
-            blur: (event: FocusEvent) => {
+            blur: (event) => {
               Service.validate(event.target as HTMLInputElement);
             },
           },
@@ -102,14 +104,14 @@ export default class Registration extends Service.Block {
             'data-valid-password': true,
           },
           events: {
-            blur: (event: FocusEvent) => {
+            blur: (event) => {
               Service.validate(event.target as HTMLInputElement);
             },
           },
         }),
       },
       {
-        label: 'Повторите пароль',
+        label: 'Пароль (ещё раз)',
         input: new Component.Input({
           type: 'password',
           name: 'password',
@@ -120,14 +122,13 @@ export default class Registration extends Service.Block {
             'data-valid-password': true,
           },
           events: {
-            blur: (event: FocusEvent) => {
+            blur: (event) => {
               Service.validate(event.target as HTMLInputElement);
             },
           },
         }),
       },
     ];
-
     const inputBlocks = fieldsProps.map((field) => {
       return new Component.InputBlock(field);
     });
@@ -135,11 +136,6 @@ export default class Registration extends Service.Block {
     const button = new Component.Button({
       text: 'Зарегистрироваться',
       attr: { withInternalID: true },
-      events: {
-        click: () => {
-          console.log('button event Зарегистрироваться');
-        },
-      },
     });
 
     const link = new Component.Link({
@@ -147,7 +143,7 @@ export default class Registration extends Service.Block {
       href: '/',
       events: {
         click: () => {
-          console.log('link event Войти');
+          Service.router.go(Service.routes.login);
         },
       },
     });
@@ -158,9 +154,11 @@ export default class Registration extends Service.Block {
       link,
       events: {
         submit: (event: Event) => {
+          event.preventDefault();
           Service.validateForm(event);
           if (Service.validateForm(event)) {
-            Service.getDataForm(event);
+            const data = getDataForm(event);
+            authController.signUp(data as UserType);
           }
         },
       },
@@ -177,7 +175,7 @@ export default class Registration extends Service.Block {
     });
   }
 
-  render() {
+  override render() {
     return this.compile(template, { ...this.props });
   }
 }

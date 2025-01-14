@@ -1,5 +1,4 @@
-export function getDataForm(event: Event): void {
-  event.preventDefault();
+export function getDataForm(event: Event) {
   const form = event.target as HTMLFormElement;
   const elements = form.querySelectorAll('input, select, checkbox, textarea');
   const data: { [key: string]: string } = {};
@@ -12,5 +11,6 @@ export function getDataForm(event: Event): void {
       data[element.name] = element.value;
     }
   });
-  console.log(data);
+
+  return data;
 }

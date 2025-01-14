@@ -1,10 +1,12 @@
+import { getDataForm } from '../../../utils';
 import * as Component from '../../../components';
 import * as Service from '../../../services';
-import { TProps } from '../../../types';
+import { TProps, UserLoginType } from '../../../types';
 import template from '../template.hbs?raw';
+import { authController } from '../../../controllers';
 
 export default class Authorization extends Service.Block {
-  constructor(props: TProps) {
+  constructor(props?: TProps) {
     const fieldsProps = [
       {
         label: 'Логин',
@@ -36,14 +38,13 @@ export default class Authorization extends Service.Block {
             'data-valid-password': true,
           },
           events: {
-            blur: (event: FocusEvent) => {
+            blur: (event) => {
               Service.validate(event.target as HTMLInputElement);
             },
           },
         }),
       },
     ];
-
     const inputBlocks = fieldsProps.map((field) => {
       return new Component.InputBlock(field);
     });
@@ -56,10 +57,10 @@ export default class Authorization extends Service.Block {
 
     const link = new Component.Link({
       text: 'Нет аккаунта?',
-      href: '/',
+      href: '/sign-up',
       events: {
         click: () => {
-          console.log('link event');
+          Service.router.go(Service.routes.signUp);
         },
       },
     });
@@ -70,26 +71,26 @@ export default class Authorization extends Service.Block {
       link,
       events: {
         submit: (event: Event) => {
+          event.preventDefault();
           Service.validateForm(event);
           if (Service.validateForm(event)) {
-            Service.getDataForm(event);
+            const data = getDataForm(event);
+            authController.login(data as UserLoginType);
           }
         },
       },
     });
-
     const Header = new Component.Header({});
-
     super({
-      ...props,
-      title: 'Вход',
-      Header,
+      title: 'Авторизация',
       form,
+      errorMessage: props.errorMessage,
+      Header,
       blockLinks: new Component.BlockLinks({}),
     });
   }
 
-  render() {
+  override render() {
     return this.compile(template, { ...this.props });
   }
 }

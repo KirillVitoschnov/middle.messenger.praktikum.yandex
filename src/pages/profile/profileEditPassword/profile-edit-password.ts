@@ -2,6 +2,8 @@ import * as Component from '../../../components';
 import * as Service from '../../../services';
 import { TProps } from '../../../types';
 import template from '../template.hbs?raw';
+import {userController} from '../../../controllers';
+import { getDataForm } from '../../../utils';
 
 export default class ProfileEditPassword extends Service.Block {
   constructor(props: TProps) {
@@ -67,11 +69,6 @@ export default class ProfileEditPassword extends Service.Block {
     const saveButton = new Component.Button({
       text: 'Сохранить изменения',
       attr: { withInternalID: true },
-      events: {
-        click: () => {
-          console.log('Сохранить изменения');
-        },
-      },
     });
 
     const backButton = new Component.Button({
@@ -79,6 +76,7 @@ export default class ProfileEditPassword extends Service.Block {
       className: 'button-back',
       events: {
         click: () => {
+          Service.router.go('/settings');
           console.log('Кнопка Назад нажата');
         },
       },
@@ -95,13 +93,33 @@ export default class ProfileEditPassword extends Service.Block {
       },
     });
 
+    // Форма со всеми полями
     const form = new Component.Form({
       inputBlocks,
       button: saveButton,
       events: {
-        submit: (event: Event) => {
+        submit: async (event: Event) => {
+          event.preventDefault();
           if (Service.validateForm(event)) {
-            console.log(Service.getDataForm(event));
+            const formData = getDataForm(event) as {
+              oldPassword: string;
+              newPassword: string;
+              confirmPassword: string;
+            };
+            if (formData.newPassword !== formData.confirmPassword) {
+              alert('Новый пароль и подтверждение не совпадают!');
+              return;
+            }
+
+            try {
+              await userController.changePassword({
+                oldPassword: formData.oldPassword,
+                newPassword: formData.newPassword,
+              });
+            } catch (error) {
+              console.error('Ошибка при изменении пароля:', error);
+              alert('Не удалось изменить пароль. Попробуйте ещё раз.');
+            }
           }
         },
       },
