@@ -172,6 +172,7 @@ export default class Registration extends Service.Block {
       Header,
       form,
       blockLinks: new Component.BlockLinks({}),
+      errorMessage:props.errorMessage,
     });
   }
 

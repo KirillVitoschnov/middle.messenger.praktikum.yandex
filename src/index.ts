@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   function mapUserToProps(state) {
     let { ...tmpUser } = state.user;
-    const errorMessage = state.errorMessage || null; // Добавляем errorMessage из состояния
+    const errorMessage = state.errorMessage || null;
 
     console.log('tmp', state);
     return {

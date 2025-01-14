@@ -85,7 +85,7 @@ export default class Authorization extends Service.Block {
     super({
       title: 'Авторизация',
       form,
-      errorMessage:JSON.stringify(props),
+      errorMessage:props.errorMessage,
       Header,
       blockLinks: new Component.BlockLinks({}),
     });

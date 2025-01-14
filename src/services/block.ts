@@ -146,6 +146,9 @@ export default abstract class Block<
   }
 
   private _componentDidUpdate(oldProps: PropsType, newProps: PropsType): void {
+    if (!oldProps && !newProps){
+      return;
+    }
     const response = this.componentDidUpdate(oldProps, newProps);
     console.log('response', response);
     if (!response) {
