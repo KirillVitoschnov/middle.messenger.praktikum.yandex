@@ -152,28 +152,17 @@ export default abstract class Block<
       return;
     }
 
-    // this._render();
+    this._render();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   componentDidUpdate(oldProps: PropsType, newProps: PropsType) {
     console.log('o', oldProps, 'n', newProps);
+    console.log(!isEqual(oldProps, newProps))
     return !isEqual(oldProps, newProps);
   }
 
-  // componentDidUpdate(newProps, oldProps) {
-  //   console.log('ffffffffffffff', newProps, oldProps);
-  //   if (!isEqual(newProps.user, oldProps.user)) {
-  //     this.setProps({
-  //       middleContainer: newProps.user((field) => {
-  //         return new Component.TextProfile({
-  //           label: 'field.label',
-  //           text: props?.user[field.text],
-  //         });
-  //       }),
-  //     });
-  //   }
-  // }
+
 
   public setProps = (nextProps: Node) => {
     console.log('nextProps: ', nextProps, 'this.props', this.props);

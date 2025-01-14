@@ -1,4 +1,4 @@
-import {PasswordChangeType, UserType} from '../types';
+import {UserType} from '../types';
 import { authAPI } from '../api';
 import { router } from '../services';
 import { store } from '../store';
@@ -38,6 +38,7 @@ export class AuthController {
             )
             .catch((error) => {
                 store.setState('errorMessage', JSON.parse(error.response).reason);
+                console.log(store)
                 router.go('/');
             });
     }
@@ -58,6 +59,19 @@ export class AuthController {
             });
     }
 
+    logout() {
+        return authAPI
+            .logoutAPI()
+            .then(() => {
+                setTimeout(() => {
+                    store.setState('user', null);
+                    router.go('/');
+                }, 100);
+            })
+            .catch((error) => {
+                console.log('Logout error', error);
+            });
+    }
 
 }
 

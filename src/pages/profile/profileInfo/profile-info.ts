@@ -4,19 +4,16 @@ import { TProps } from '../../../types';
 import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { getDataForm } from '../../../utils';
-import { userController } from '../../../controllers';
+import { userController , authController } from '../../../controllers';
 
 export default class ProfileInfo extends Service.Block {
   constructor(props: TProps = {}) {
-    // Берём из стейта (store) текущие данные пользователя
     const state = store.getState();
     const user = state.user || {};
 
     const header = new Component.Header({});
 
     const avatarBlock = new Component.AvatarBlock({
-      // Если нужно, можно брать аватар пользователя из user.avatar
-      // Здесь для примера оставлен статический url
       avatar:
           'https://sun9-10.userapi.com/impg/c857220/v857220791/1a63d2/s84IGNUrCIA.jpg?size=604x604&quality=96&sign=a34d795389b61c25532a3e630586b393&type=album',
       events: {
@@ -26,7 +23,6 @@ export default class ProfileInfo extends Service.Block {
       },
     });
 
-    // Формируем поля формы на основе данных из user
     const fieldsProps = [
       {
         label: 'Электронная почта',
@@ -151,7 +147,7 @@ export default class ProfileInfo extends Service.Block {
       className: 'profile-link',
       events: {
         click: () => {
-          Service.router.go('/');
+          authController.logout()
         },
       },
     });

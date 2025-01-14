@@ -32,6 +32,15 @@ export class AuthAPI extends Service.BaseAPI {
       data: JSON.stringify(data),
     });
   }
+
+  logoutAPI() {
+    return chatAPIInstance.post('/logout', {
+      isCredentials: true,
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
+  }
 }
 
 export const authAPI = new AuthAPI();

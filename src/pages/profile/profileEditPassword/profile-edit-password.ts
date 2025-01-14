@@ -2,7 +2,7 @@ import * as Component from '../../../components';
 import * as Service from '../../../services';
 import { TProps } from '../../../types';
 import template from '../template.hbs?raw';
-import {userController} from '../../../controllers';
+import {authController, userController} from '../../../controllers';
 import { getDataForm } from '../../../utils';
 
 export default class ProfileEditPassword extends Service.Block {
@@ -88,12 +88,12 @@ export default class ProfileEditPassword extends Service.Block {
       className: 'profile-link',
       events: {
         click: () => {
+          authController.logout()
           console.log('link event Выйти');
         },
       },
     });
 
-    // Форма со всеми полями
     const form = new Component.Form({
       inputBlocks,
       button: saveButton,

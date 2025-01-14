@@ -81,10 +81,11 @@ export default class Authorization extends Service.Block {
       },
     });
     const Header = new Component.Header({});
+    console.log(props)
     super({
       title: 'Авторизация',
       form,
-      errorMessage: props.errorMessage,
+      errorMessage:JSON.stringify(props),
       Header,
       blockLinks: new Component.BlockLinks({}),
     });

@@ -30,9 +30,13 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   function mapUserToProps(state) {
     let { ...tmpUser } = state.user;
+    const errorMessage = state.errorMessage || null; // Добавляем errorMessage из состояния
 
     console.log('tmp', state);
-    return { user: tmpUser };
+    return {
+      user: tmpUser,
+      errorMessage,
+    };
   }
 
   router
@@ -54,7 +58,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (
         pathWindow === '/messenger' ||
         pathWindow === '/settings' ||
-        pathWindow === '/settings/edit' ||
         pathWindow === '/settings/edit-password'
     ) {
       router.go(routes.login);
@@ -66,7 +69,5 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   router.start();
-
-  // Вызов управления темой
   manageTheme();
 });
