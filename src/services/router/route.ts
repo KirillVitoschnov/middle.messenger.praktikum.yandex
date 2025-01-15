@@ -1,6 +1,7 @@
 import { RouteProps } from '../../types';
 import { getEqual } from '../../utils';
 import Block, { PropsType } from '../block';
+import {store} from "../../store";
 
 export class Route {
   private _pathname: string;
@@ -25,6 +26,7 @@ export class Route {
   leave() {
     if (this._block) {
       this._block.hide();
+      store.setState('errorMessage','')
     }
   }
 
