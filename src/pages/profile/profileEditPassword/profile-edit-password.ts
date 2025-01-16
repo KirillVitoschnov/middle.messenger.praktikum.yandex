@@ -134,6 +134,7 @@ export default class ProfileEditPassword extends Service.Block {
       link,
       blockLinks: null,
       backButton,
+      errorMessage:props.errorMessage,
     });
   }
 

@@ -194,6 +194,7 @@ export default class ProfileInfo extends Service.Block {
       link,
       blockLinks: new Component.BlockLinks({}),
       backButton,
+      errorMessage:props.errorMessage,
     });
   }
 

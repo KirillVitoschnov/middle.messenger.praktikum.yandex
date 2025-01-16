@@ -50,7 +50,7 @@ export class AuthController {
                 authAPI.getUserAPI().then((data) => {
                     store.setState('user', JSON.parse(data));
                     console.log('data');
-                    router.go('/');
+                    router.go('/messenger');
                 }),
             )
             .catch((error) => {

@@ -102,7 +102,9 @@ export default class ChatPreview extends Service.Block {
     super({
       ...props,
       SideBar: new Component.SideBar({
-        SideBarHeader: new Component.SideBarHeader({}),
+        SideBarHeader: new Component.SideBarHeader({
+          sidebarHeaderProfile:new Component.SideBarHeaderProfile({})
+        }),
         SideBarChatList: new Component.SideBarChatList({
           SideBarChatListItem: chats.map(
             (chat) =>

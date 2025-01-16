@@ -14,6 +14,7 @@ export { Messages } from './Messages';
 export { Message } from './Message';
 export { MessageInput } from './MessageInput';
 export { SideBarHeader } from './SideBarHeader';
+export { SideBarHeaderProfile } from './SideBarHeaderProfile';
 export { SideBarChatList } from './SideBarChatList';
 export { SideBarChatListItem } from './SideBarChatListItem';
 export { SideBarChatListItemAvatar } from './SideBarChatListItemAvatar';
