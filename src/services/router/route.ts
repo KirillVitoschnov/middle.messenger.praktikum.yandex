@@ -42,7 +42,7 @@ export class Route {
     const matches = pathname.match(regExp);
 
     if (!matches) {
-      return {};
+      return null;
     }
 
     return paramNames.reduce<Record<string, string>>((params, paramName, index) => {
@@ -62,13 +62,11 @@ export class Route {
   render() {
     const params = this.getParams(window.location.pathname);
 
-    if (!this._block) {
+    if (!this._block || params) {
       this._block = new this._blockClass({ ...params });
       this._renderDom(this._props.rootQuery, this._block);
       return;
     }
-
-    this._block.setProps({ ...params });
     this._block.show();
   }
 }
