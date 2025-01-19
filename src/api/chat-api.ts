@@ -68,6 +68,16 @@ export class ChatAPI extends Service.BaseAPI {
             },
         });
     }
+
+    // Получение токена
+    getChatTokenAPI(chatId: number) {
+        return chatAPIInstance.post(`/token/${chatId}`, {
+            isCredentials: true,
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+    }
 }
 
 export const chatAPI = new ChatAPI();

@@ -72,14 +72,32 @@ export class ChatController {
 
     // Получить сообщения чата по ID
     public getChatMessages(chatId: number) {
-        return chatAPI
-            .getChatMessagesAPI(chatId)
-            .then((data) => {
-                store.setState(`messages_${chatId}`, JSON.parse(data));
-                return JSON.parse(data);
+        return this.getChatToken(chatId)
+            .then((token) => {
+                return chatAPI
+                    .getChatMessagesAPI(chatId, token)
+                    .then((data) => {
+                        store.setState(`messages_${chatId}`, JSON.parse(data));
+                        return JSON.parse(data);
+                    });
             })
             .catch((error) => {
                 console.error('Ошибка при получении сообщений чата:', error);
+                store.setState('errorMessage', JSON.parse(error.response).reason);
+            });
+    }
+
+    // Получить токен для чата
+    public getChatToken(chatId: number) {
+        return chatAPI
+            .getChatTokenAPI(chatId)
+            .then((data) => {
+                const token = JSON.parse(data).token;
+                store.setState(`token_${chatId}`, token);
+                return token;
+            })
+            .catch((error) => {
+                console.error('Ошибка при получении токена для чата:', error);
                 store.setState('errorMessage', JSON.parse(error.response).reason);
             });
     }
