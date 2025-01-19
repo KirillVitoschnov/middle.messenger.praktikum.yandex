@@ -32,6 +32,7 @@ export type UserLoginType = {
 export type StoreType = {
   errorMessage: '';
   user: UserType | {};
+  chats:[]
 };
 
 /* general */

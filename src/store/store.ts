@@ -8,6 +8,7 @@ import EventBus from '../services/eventBus';
 
 export class Store extends EventBus<any> {
   private state: StoreType = {
+    chats:[],
     errorMessage: '',
     user: {
       id: null,

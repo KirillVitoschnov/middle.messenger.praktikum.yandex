@@ -1,7 +1,7 @@
 import './styles/style.pcss';
 import * as Page from './pages';
 import { connect, router, routes } from './services';
-import { authController } from './controllers';
+import {authController, chatController} from './controllers';
 
 function manageTheme() {
   const toggleButton = document.getElementById('theme-toggle');
@@ -27,6 +27,9 @@ function manageTheme() {
 window.addEventListener('DOMContentLoaded', async () => {
   let isAuth = await authController.getUserAuth().then((isResponse) => isResponse);
   await authController.getUserData();
+  if (isAuth){
+    await chatController.getChats()
+  }
 
   function mapUserToProps(state) {
     let { ...tmpUser } = state.user;
