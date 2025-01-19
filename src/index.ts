@@ -1,7 +1,7 @@
 import './styles/style.pcss';
 import * as Page from './pages';
 import { connect, router, routes } from './services';
-import {authController, chatController} from './controllers';
+import { authController, chatController } from './controllers';
 
 function manageTheme() {
   const toggleButton = document.getElementById('theme-toggle');
@@ -27,8 +27,8 @@ function manageTheme() {
 window.addEventListener('DOMContentLoaded', async () => {
   let isAuth = await authController.getUserAuth().then((isResponse) => isResponse);
   await authController.getUserData();
-  if (isAuth){
-    await chatController.getChats()
+  if (isAuth) {
+    await chatController.getChats();
   }
 
   function mapUserToProps(state) {
@@ -48,6 +48,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       .use(routes.settings, connect(Page.ProfileInfo, mapUserToProps))
       .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword, mapUserToProps))
       .use(routes.chat, connect(Page.ChatPreview, mapUserToProps))
+      .use(routes.chatCurrent, connect(Page.ChatCurrent, mapUserToProps))
       .use(routes.notFoundPage, connect(Page.ChatPreview, mapUserToProps));
 
   let pathWindow = window.location.pathname;
@@ -61,13 +62,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (
         pathWindow === '/messenger' ||
         pathWindow === '/settings' ||
-        pathWindow === '/settings/edit-password'
+        pathWindow === '/settings/edit-password' ||
+        pathWindow.startsWith('/messenger/')
     ) {
       router.go(routes.login);
     }
   }
 
-  if (!Object.values(routes).includes(pathWindow)) {
+  if (!Object.values(routes).some((route) => pathWindow.match(new RegExp(`^${route.replace(/:([a-zA-Z]+)/g, '[^/]+')}$`)))) {
     router.go(routes.notFoundPage);
   }
 

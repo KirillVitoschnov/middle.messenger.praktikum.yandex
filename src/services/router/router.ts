@@ -1,5 +1,5 @@
-import { Route } from '.';
 import Block, { PropsType } from '../block';
+import { Route } from './route';
 
 class Router {
   static __instance: Router;
@@ -65,11 +65,7 @@ class Router {
   }
 
   getRoute(pathname: string): Route | undefined {
-    const route = this.routes.find((route) => route.match(pathname));
-    if (!route) {
-      return this.routes.find((route) => route.match('*'));
-    }
-    return route;
+    return this.routes.find((route) => route.match(pathname));
   }
 }
 

@@ -9,6 +9,7 @@ const METHODS = {
 
 export default class HttpClient {
   private _baseUrl = '';
+  private _webSocket: WebSocket | null = null;
 
   constructor(baseUrl: string) {
     this._baseUrl = baseUrl;
@@ -36,11 +37,11 @@ export default class HttpClient {
     const fullUrl = this._createUrl(url);
 
     return this.request(
-      options?.data ? `${fullUrl}${this.queryStringify(options.data)}` : fullUrl,
-      {
-        ...options,
-        method: METHODS.GET,
-      },
+        options?.data ? `${fullUrl}${this.queryStringify(options.data)}` : fullUrl,
+        {
+          ...options,
+          method: METHODS.GET,
+        },
     );
   };
 
@@ -107,4 +108,44 @@ export default class HttpClient {
       }
     });
   };
+
+  // WebSocket методы
+
+  // Создание WebSocket соединения
+  connectWebSocket(path: string, protocols?: string | string[]) {
+    const fullUrl = this._createUrl(path).replace(/^http/, 'ws'); // Преобразование http в ws
+    this._webSocket = new WebSocket(fullUrl, protocols);
+
+    this._webSocket.onopen = () => {
+      console.log('WebSocket соединение установлено');
+    };
+
+    this._webSocket.onmessage = (event) => {
+      console.log('Получено сообщение:', event.data);
+    };
+
+    this._webSocket.onerror = (error) => {
+      console.error('Ошибка WebSocket:', error);
+    };
+
+    this._webSocket.onclose = (event) => {
+      console.log('WebSocket соединение закрыто', event);
+    };
+  }
+
+  // Отправка сообщения через WebSocket
+  sendWebSocketMessage(data: string | ArrayBuffer | Blob | ArrayBufferView) {
+    if (!this._webSocket || this._webSocket.readyState !== WebSocket.OPEN) {
+      throw new Error('WebSocket соединение не установлено');
+    }
+    this._webSocket.send(data);
+  }
+
+  // Закрытие WebSocket соединения
+  closeWebSocket(code?: number, reason?: string) {
+    if (this._webSocket) {
+      this._webSocket.close(code, reason);
+      this._webSocket = null;
+    }
+  }
 }

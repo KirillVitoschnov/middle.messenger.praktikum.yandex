@@ -1,7 +1,6 @@
-import { RouteProps } from '../../types';
-import { getEqual } from '../../utils';
 import Block, { PropsType } from '../block';
-import {store} from "../../store";
+import { RouteProps } from '../../types';
+import { store } from '../../store';
 
 export class Route {
   private _pathname: string;
@@ -26,28 +25,50 @@ export class Route {
   leave() {
     if (this._block) {
       this._block.hide();
-      store.setState('errorMessage','')
+      store.setState('errorMessage', '');
     }
   }
 
   match(pathname: string): boolean {
-    return getEqual(pathname, this._pathname);
+    const routePattern = this._pathname.replace(/:([a-zA-Z]+)/g, '([^/]+)');
+    const regExp = new RegExp(`^${routePattern}$`);
+    return regExp.test(pathname);
   }
 
-  _renderDom(query: string, block: Block) {
+  getParams(pathname: string): Record<string, string> {
+    const paramNames = [...this._pathname.matchAll(/:([a-zA-Z]+)/g)].map((match) => match[1]);
+    const routePattern = this._pathname.replace(/:([a-zA-Z]+)/g, '([^/]+)');
+    const regExp = new RegExp(`^${routePattern}$`);
+    const matches = pathname.match(regExp);
+
+    if (!matches) {
+      return {};
+    }
+
+    return paramNames.reduce<Record<string, string>>((params, paramName, index) => {
+      params[paramName] = matches[index + 1];
+      return params;
+    }, {});
+  }
+
+  private _renderDom(query: string, block: Block) {
     const root = document.querySelector(query);
     if (root) {
+      root.innerHTML = ''; // Очищаем предыдущий контент
       root.append(block.getContent()!);
     }
   }
 
   render() {
+    const params = this.getParams(window.location.pathname);
+
     if (!this._block) {
-      this._block = new this._blockClass();
+      this._block = new this._blockClass({ ...params });
       this._renderDom(this._props.rootQuery, this._block);
       return;
     }
 
+    this._block.setProps({ ...params });
     this._block.show();
   }
 }

@@ -126,6 +126,7 @@ const messages = [
 
 export default class ChatCurrent extends Service.Block {
   constructor(props: TProps) {
+    console.log(props)
     super({
       ...props,
       SideBar: new Component.SideBar({

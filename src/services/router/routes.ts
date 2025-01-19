@@ -5,5 +5,6 @@ export const routes = {
   settingsEdit: '/settings/edit',
   settingsEditPassword: '/settings/edit-password',
   chat: '/messenger',
+  chatCurrent: '/messenger/:id',
   notFoundPage: '/404',
 };
