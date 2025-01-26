@@ -264,18 +264,18 @@ export default abstract class Block<
     const self = this;
     const proxyProps = new Proxy(props, {
       get(target: Props, prop: string) {
-        // if (prop.startsWith('_')) {
-        //   throw new Error('Нет прав');
-        // }
+        if (prop.startsWith('_')) {
+          throw new Error('Нет прав');
+        }
 
         const value = target[prop];
         return typeof value === 'function' ? value.bind(target) : value;
       },
 
       set(target: PropsTypeOrEmptyObject, prop: string, value) {
-        // if (prop.startsWith('_') || !value) {
-        //   throw new Error('Нет прав');
-        // }
+        if (prop.startsWith('_') || !value) {
+          throw new Error('Нет прав');
+        }
 
         const oldProps = { ...target };
         target[prop] = value;
