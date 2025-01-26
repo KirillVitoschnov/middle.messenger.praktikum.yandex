@@ -55,6 +55,18 @@ export default class ChatCurrent extends Service.Block {
             });
           }),
         }),
+        SideBarNewChat: new Component.Button({
+          text: 'Новый чат',
+          type: 'button',
+          events: {
+            click: () => {
+              const title = window.prompt('Введите название нового чата');
+              if (title) {
+                chatController.createChat(title);
+              }
+            },
+          },
+        }),
       }),
 
       ActiveChat: new Component.ActiveChat({
