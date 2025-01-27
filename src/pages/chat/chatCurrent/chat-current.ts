@@ -5,7 +5,7 @@ import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { DateFormatter } from '../../../utils/dateFormatter';
 import { chatController } from '../../../controllers';
-import { getDataForm } from '../../../utils';
+import {getDataForm, render} from '../../../utils';
 
 export default class ChatCurrent extends Service.Block {
   private socket: WebSocket | null = null;
@@ -258,14 +258,14 @@ export default class ChatCurrent extends Service.Block {
     const messagesComponent = activeChat.children.Messages as Component.Messages;
     if (messagesComponent) {
       messagesComponent.setProps({
-        Message: updatedMessages.map((message: any) => {
+        Message: JSON.parse(JSON.stringify(updatedMessages.map((message: any) => {
           const currentUserId = store.getState().user?.id || 3127;
           return new Component.Message({
             type: message.user_id === currentUserId ? 'sent' : 'received',
             text: message.content,
             time: DateFormatter.formatDateTime(message.time),
           });
-        }),
+        }))),
       });
     }
   }
