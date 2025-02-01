@@ -1,3 +1,5 @@
+// components/ChatCurrent.ts
+
 import * as Service from '../../../services';
 import * as Component from '../../../components';
 import { TProps } from '../../../types';
@@ -5,10 +7,9 @@ import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { DateFormatter } from '../../../utils/dateFormatter';
 import { chatController } from '../../../controllers';
-import {getDataForm, render} from '../../../utils';
+import { getDataForm } from '../../../utils';
 
 export default class ChatCurrent extends Service.Block {
-  private socket: WebSocket | null = null;
   private chatId: number;
 
   constructor(props: TProps) {
@@ -18,7 +19,7 @@ export default class ChatCurrent extends Service.Block {
 
     super({
       ...props,
-
+      errorMessage:JSON.stringify(props),
       SideBar: new Component.SideBar({
         SideBarHeader: new Component.SideBarHeader({
           sidebarHeaderProfile: new Component.SideBarHeaderProfile({
@@ -126,28 +127,17 @@ export default class ChatCurrent extends Service.Block {
                   return;
                 }
 
-                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                  // Отправляем сообщение только в WebSocket,
-                  // не добавляем его дублирующе в стор
-                  this.socket.send(
-                      JSON.stringify({
-                        content: messageText,
-                        type: 'message',
-                      })
-                  );
-                  console.log('Сообщение отправлено в WebSocket:', messageText);
+                // Отправка сообщения через контроллер
+                chatController.sendMessage(this.chatId, messageText);
 
-                  // Очищаем поле ввода
-                  const inputEl = (
-                      (this.children.ActiveChat as Component.ActiveChat)
-                          .children.MessageInput as Component.MessageInput
-                  ).children.input.element as HTMLInputElement;
+                // Очищаем поле ввода
+                const inputEl = (
+                    (this.children.ActiveChat as Component.ActiveChat)
+                        .children.MessageInput as Component.MessageInput
+                ).children.input.element as HTMLInputElement;
 
-                  if (inputEl) {
-                    inputEl.value = '';
-                  }
-                } else {
-                  console.log('WebSocket соединение не установлено или уже закрыто.');
+                if (inputEl) {
+                  inputEl.value = '';
                 }
               }
             },
@@ -160,84 +150,13 @@ export default class ChatCurrent extends Service.Block {
 
     this.chatId = props.id;
 
-    // Обновляем сообщения при изменении стора
+    // Подписываемся на обновления стора для обновления сообщений
     store.on('updated', () => {
       this.updateMessages();
     });
 
-    this.startChat(this.chatId);
-  }
-
-  async startChat(chatId: number) {
-    try {
-      const token = await chatController.getChatToken(chatId);
-      const userId = store.getState().user?.id || 3127;
-      const socketUrl = `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`;
-
-      const createSocket = () => {
-        const socket = new WebSocket(socketUrl);
-        this.socket = socket;
-
-        socket.addEventListener('open', () => {
-          console.log(`WS-соединение установлено (чат ${chatId}). Запрашиваем старые сообщения...`);
-          socket.send(
-              JSON.stringify({
-                content: '0',
-                type: 'get old',
-              })
-          );
-        });
-
-        socket.addEventListener('message', (event: MessageEvent) => {
-          try {
-            const data = JSON.parse(event.data);
-
-            // Если пришёл массив — это «старые» сообщения
-            if (Array.isArray(data)) {
-              // Разворачиваем массив, чтобы последние сообщения шли внизу
-              const reversed = data.reverse();
-              store.setState('messages', {
-                ...store.getState().messages,
-                [chatId]: reversed,
-              });
-            }
-            // Если пришло новое сообщение или файл
-            else if (data.type === 'message' || data.type === 'file') {
-              const currentMessages = store.getState().messages?.[chatId] || [];
-              const newMessages = [...currentMessages, data];
-
-              store.setState('messages', {
-                ...store.getState().messages,
-                [chatId]: newMessages,
-              });
-            }
-            // Ping/pong или другое — по желанию можно обработать
-          } catch (error) {
-            console.error('Ошибка обработки входящего сообщения:', error);
-          }
-        });
-
-        socket.addEventListener('close', (closeEvent: CloseEvent) => {
-          if (closeEvent.wasClean) {
-            console.log('WS соединение закрыто чисто');
-          } else {
-            console.log('WS обрыв. Попытка переподключиться через 3 сек...');
-            setTimeout(createSocket, 3000);
-          }
-          console.log(`Код: ${closeEvent.code} | Причина: ${closeEvent.reason}`);
-        });
-
-        socket.addEventListener('error', (errorEvent: Event) => {
-          console.error('Ошибка в WebSocket:', errorEvent);
-        });
-
-        return socket;
-      };
-
-      createSocket();
-    } catch (error) {
-      console.error('Ошибка при инициализации чата:', error);
-    }
+    // Инициируем подключение к чату через контроллер
+    chatController.connectToChat(this.chatId);
   }
 
   updateMessages() {
@@ -258,14 +177,18 @@ export default class ChatCurrent extends Service.Block {
     const messagesComponent = activeChat.children.Messages as Component.Messages;
     if (messagesComponent) {
       messagesComponent.setProps({
-        Message: JSON.parse(JSON.stringify(updatedMessages.map((message: any) => {
-          const currentUserId = store.getState().user?.id || 3127;
-          return new Component.Message({
-            type: message.user_id === currentUserId ? 'sent' : 'received',
-            text: message.content,
-            time: DateFormatter.formatDateTime(message.time),
-          });
-        }))),
+        Message: JSON.parse(
+            JSON.stringify(
+                updatedMessages.map((message: any) => {
+                  const currentUserId = store.getState().user?.id || 3127;
+                  return new Component.Message({
+                    type: message.user_id === currentUserId ? 'sent' : 'received',
+                    text: message.content,
+                    time: DateFormatter.formatDateTime(message.time),
+                  });
+                })
+            )
+        ),
       });
     }
   }
