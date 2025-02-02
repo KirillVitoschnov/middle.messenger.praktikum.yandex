@@ -1,5 +1,3 @@
-// components/ChatCurrent.ts
-
 import * as Service from '../../../services';
 import * as Component from '../../../components';
 import { TProps } from '../../../types';
@@ -9,17 +7,17 @@ import { DateFormatter } from '../../../utils/dateFormatter';
 import { chatController } from '../../../controllers';
 import { getDataForm } from '../../../utils';
 
-export default class ChatCurrent extends Service.Block {
+export default class ChatCurrent extends Service.Block<TProps> {
   private chatId: number;
 
   constructor(props: TProps) {
     const state = store.getState();
     const chats = state.chats || [];
-    const currentChat = chats.find((chatItem) => chatItem.id == props.id) || null;
+    const currentChat = chats.find((chatItem) => chatItem.id === props.id) || null;
 
     super({
       ...props,
-      errorMessage:JSON.stringify(props),
+      errorMessage: JSON.stringify(props),
       SideBar: new Component.SideBar({
         SideBarHeader: new Component.SideBarHeader({
           sidebarHeaderProfile: new Component.SideBarHeaderProfile({
@@ -31,7 +29,7 @@ export default class ChatCurrent extends Service.Block {
           }),
         }),
         SideBarChatList: new Component.SideBarChatList({
-          SideBarChatListItem: chats.map((chat) => {
+          SideBarChatListItem: chats.map((chat: any) => {
             return new Component.SideBarChatListItem({
               SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
                 src: chat.avatar || 'default-avatar.png',
@@ -48,7 +46,6 @@ export default class ChatCurrent extends Service.Block {
                         : null,
                 events: {
                   click: () => {
-                    // Переходим в другой чат
                     Service.router.go(`/messenger/${chat.id}`);
                   },
                 },
@@ -69,7 +66,6 @@ export default class ChatCurrent extends Service.Block {
           },
         }),
       }),
-
       ActiveChat: new Component.ActiveChat({
         ChatHeader: new Component.ChatHeader({
           chatHeader: (() => {
@@ -121,21 +117,15 @@ export default class ChatCurrent extends Service.Block {
               if (Service.validateForm(event)) {
                 const formData = getDataForm(event);
                 const messageText = formData.message || '';
-
                 if (!messageText) {
                   console.log('Пустое сообщение — не отправляем');
                   return;
                 }
-
-                // Отправка сообщения через контроллер
                 chatController.sendMessage(this.chatId, messageText);
-
                 // Очищаем поле ввода
-                const inputEl = (
-                    (this.children.ActiveChat as Component.ActiveChat)
-                        .children.MessageInput as Component.MessageInput
-                ).children.input.element as HTMLInputElement;
-
+                const activeChat = this.children.ActiveChat as Component.ActiveChat;
+                const messageInput = activeChat.children.MessageInput as Component.MessageInput;
+                const inputEl = messageInput.children.input.element as HTMLInputElement;
                 if (inputEl) {
                   inputEl.value = '';
                 }
@@ -144,56 +134,84 @@ export default class ChatCurrent extends Service.Block {
           },
         }),
       }),
-
-      blockLinks: new Component.BlockLinks({}),
     });
 
     this.chatId = props.id;
-
-    // Подписываемся на обновления стора для обновления сообщений
-    store.on('updated', () => {
-      this.updateMessages();
-    });
-
-    // Инициируем подключение к чату через контроллер
     chatController.connectToChat(this.chatId);
   }
 
-  updateMessages() {
-    const updatedMessages = store.getState().messages?.[this.chatId] || [];
-    const activeChat = this.children.ActiveChat as Component.ActiveChat;
+  /**
+   * Метод render возвращает DocumentFragment.
+   * В шаблоне для вставки дочерних компонентов следует использовать тройные фигурные скобки,
+   * например: {{{SideBar}}} и {{{ActiveChat}}}.
+   */
+  public render(): DocumentFragment {
+    const state = store.getState();
+    const chats = state.chats || [];
+    const currentChat = chats.find((chatItem) => chatItem.id === this.props.id) || null;
 
-    if (!activeChat) {
-      return;
-    }
-
-    const chatHeader = activeChat.children.ChatHeader as Component.ChatHeader;
-    if (chatHeader) {
-      chatHeader.setProps({
-        chatHeader: updatedMessages.length > 0 ? 'Чат ЛОЛ' : `Чат с ${this.chatId}`,
-      });
-    }
-
-    const messagesComponent = activeChat.children.Messages as Component.Messages;
-    if (messagesComponent) {
-      messagesComponent.setProps({
-        Message: JSON.parse(
-            JSON.stringify(
-                updatedMessages.map((message: any) => {
-                  const currentUserId = store.getState().user?.id || 3127;
-                  return new Component.Message({
-                    type: message.user_id === currentUserId ? 'sent' : 'received',
-                    text: message.content,
-                    time: DateFormatter.formatDateTime(message.time),
-                  });
-                })
-            )
+    // Обновляем список чатов в боковой панели (SideBar)
+    const sideBarInstance = this.children.SideBar as any;
+    if (sideBarInstance) {
+      const updatedSideBarChatList = new Component.SideBarChatList({
+        SideBarChatListItem: chats.map((chat: any) =>
+            new Component.SideBarChatListItem({
+              SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
+                src: chat.avatar || 'default-avatar.png',
+              }),
+              SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
+                name: chat.title,
+                lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
+                lastMessageTime: chat.last_message
+                    ? DateFormatter.formatDateTime(chat.last_message.time)
+                    : '',
+                SideBarChatListItemBadge:
+                    chat.unread_count > 0
+                        ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                        : null,
+                events: {
+                  click: () => {
+                    Service.router.go(`/messenger/${chat.id}`);
+                  },
+                },
+              }),
+            })
         ),
       });
+      sideBarInstance.setProps({
+        SideBarChatList: updatedSideBarChatList,
+      });
     }
-  }
 
-  public render() {
+    // Обновляем активный чат
+    const activeChatInstance = this.children.ActiveChat as any;
+    if (activeChatInstance) {
+      const updatedChatHeader = new Component.ChatHeader({
+        chatHeader: (() => {
+          const messagesByChat = state.messages?.[this.props.id] || [];
+          return messagesByChat.length > 0
+              ? 'Чат ЛОЛ'
+              : `Чат с ${currentChat?.title || 'Неизвестный'}`;
+        })(),
+      });
+      const updatedMessages = new Component.Messages({
+        Message: (() => {
+          const messagesByChat = state.messages?.[this.props.id] || [];
+          return messagesByChat.map((message: any) =>
+              new Component.Message({
+                type: message.user_id === state.user?.id ? 'sent' : 'received',
+                text: message.content,
+                time: DateFormatter.formatDateTime(message.time),
+              })
+          );
+        })(),
+      });
+      activeChatInstance.setProps({
+        ChatHeader: updatedChatHeader,
+        Messages: updatedMessages,
+      });
+    }
+
     return this.compile(template, {
       ...this.props,
     });

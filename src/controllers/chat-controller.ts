@@ -129,7 +129,6 @@ export class ChatController {
                 socket.addEventListener('message', (event: MessageEvent) => {
                     try {
                         const data = JSON.parse(event.data);
-                        store.setState('errorMessage', 134);
                         // Если пришёл массив – это «старые» сообщения
                         if (Array.isArray(data)) {
                             // Разворачиваем массив, чтобы последние сообщения шли внизу
@@ -138,6 +137,8 @@ export class ChatController {
                                 ...store.getState().messages,
                                 [chatId]: reversed,
                             });
+                            store.setState('errorMessage', JSON.stringify(reversed));
+
                         }
                         // Если пришло новое сообщение или файл
                         else if (data.type === 'message' || data.type === 'file') {
@@ -147,7 +148,10 @@ export class ChatController {
                                 ...store.getState().messages,
                                 [chatId]: newMessages,
                             });
+                            store.setState('errorMessage', JSON.stringify(newMessages));
+
                         }
+
                         // Дополнительная обработка (например, ping/pong) при необходимости
                     } catch (error) {
                         console.error('Ошибка обработки входящего сообщения:', error);
