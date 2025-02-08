@@ -5,7 +5,7 @@ import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { DateFormatter } from '../../../utils/dateFormatter';
 import { chatController } from '../../../controllers';
-import { getDataForm } from '../../../utils';
+import { getDataForm, isEqual } from '../../../utils';
 
 export default class ChatCurrent extends Service.Block<TProps> {
   private chatId: number;
@@ -13,11 +13,10 @@ export default class ChatCurrent extends Service.Block<TProps> {
   constructor(props: TProps) {
     const state = store.getState();
     const chats = state.chats || [];
-    const currentChat = chats.find((chatItem) => chatItem.id === props.id) || null;
+    const currentChat = chats.find((chatItem: any) => chatItem.id === props.id) || null;
 
     super({
       ...props,
-      errorMessage: JSON.stringify(props),
       SideBar: new Component.SideBar({
         SideBarHeader: new Component.SideBarHeader({
           sidebarHeaderProfile: new Component.SideBarHeaderProfile({
@@ -122,7 +121,6 @@ export default class ChatCurrent extends Service.Block<TProps> {
                   return;
                 }
                 chatController.sendMessage(this.chatId, messageText);
-                // Очищаем поле ввода
                 const activeChat = this.children.ActiveChat as Component.ActiveChat;
                 const messageInput = activeChat.children.MessageInput as Component.MessageInput;
                 const inputEl = messageInput.children.input.element as HTMLInputElement;
@@ -140,15 +138,12 @@ export default class ChatCurrent extends Service.Block<TProps> {
     chatController.connectToChat(this.chatId);
   }
 
-  /**
-   * Метод render возвращает DocumentFragment.
-   * В шаблоне для вставки дочерних компонентов следует использовать тройные фигурные скобки,
-   * например: {{{SideBar}}} и {{{ActiveChat}}}.
-   */
-  public render(): DocumentFragment {
+  override componentDidUpdate(oldProps: TProps, newProps: TProps): boolean {
+    if (isEqual(oldProps, newProps)) return false;
     const state = store.getState();
     const chats = state.chats || [];
-    const currentChat = chats.find((chatItem) => chatItem.id === this.props.id) || null;
+    const currentChat = chats.find((chatItem: any) => chatItem.id === this.props.id) || null;
+    console.log(`currentChat: ${JSON.stringify(currentChat)}`);
 
     // Обновляем список чатов в боковой панели (SideBar)
     const sideBarInstance = this.children.SideBar as any;
@@ -165,16 +160,16 @@ export default class ChatCurrent extends Service.Block<TProps> {
                 lastMessageTime: chat.last_message
                     ? DateFormatter.formatDateTime(chat.last_message.time)
                     : '',
-                SideBarChatListItemBadge:
-                    chat.unread_count > 0
-                        ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                        : null,
-                events: {
-                  click: () => {
-                    Service.router.go(`/messenger/${chat.id}`);
-                  },
-                },
               }),
+              SideBarChatListItemBadge:
+                  chat.unread_count > 0
+                      ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                      : null,
+              events: {
+                click: () => {
+                  Service.router.go(`/messenger/${chat.id}`);
+                },
+              },
             })
         ),
       });
@@ -194,9 +189,10 @@ export default class ChatCurrent extends Service.Block<TProps> {
               : `Чат с ${currentChat?.title || 'Неизвестный'}`;
         })(),
       });
+
       const updatedMessages = new Component.Messages({
         Message: (() => {
-          const messagesByChat = state.messages?.[this.props.id] || [];
+          const messagesByChat = state.messages?.[this.chatId] || [];
           return messagesByChat.map((message: any) =>
               new Component.Message({
                 type: message.user_id === state.user?.id ? 'sent' : 'received',
@@ -206,12 +202,20 @@ export default class ChatCurrent extends Service.Block<TProps> {
           );
         })(),
       });
-      activeChatInstance.setProps({
+
+      const existingMessageInput = activeChatInstance.children.MessageInput;
+
+      activeChatInstance.setChildren({
         ChatHeader: updatedChatHeader,
         Messages: updatedMessages,
+        MessageInput: existingMessageInput,
       });
     }
 
+    return true;
+  }
+
+  public render(): DocumentFragment {
     return this.compile(template, {
       ...this.props,
     });

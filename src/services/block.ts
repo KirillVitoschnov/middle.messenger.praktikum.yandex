@@ -291,6 +291,15 @@ export default abstract class Block<
 
     return proxyProps;
   }
+  public setChildren = (propssses: Props & Children & Lists) => {
+
+    const { children, lists } = this._getChildrenAndList(propssses!);
+    this.children = children;
+    this.lists = lists;
+
+    Object.assign(this.props, propssses);
+    this.eventBus().emit(Block.EVENTS.FLOW_CDU);
+  };
 
   public show(): void {
     const content = this.getContent();

@@ -1,5 +1,3 @@
-// src/store/index.ts (примерное название файла)
-
 export enum StoreEvents {
   Updated = 'updated',
 }
@@ -7,6 +5,7 @@ export enum StoreEvents {
 import { set } from '../utils';
 import { StoreType } from '../types';
 import EventBus from '../services/eventBus';
+import {deepClone} from "../utils/deepClone";
 
 export class Store extends EventBus<any> {
   private state: StoreType = {
@@ -25,13 +24,12 @@ export class Store extends EventBus<any> {
   };
 
   public getState() {
-    return this.state;
+    let tmp=deepClone(this.state);
+    return tmp;
   }
 
   public setState(path: string, value: unknown) {
-    // Используем вашу утилиту set, которая позволяет устанавливать значение по пути 'user.first_name' и т.д.
     set(this.state, path, value);
-
     // Оповещаем всех подписчиков, что состояние обновилось
     this.emit(StoreEvents.Updated, this.getState());
 
