@@ -2,22 +2,9 @@ type PlainObject<T = any> = {
   [k in string]: T;
 };
 
-function isArray(value: unknown): boolean {
-  return Array.isArray(value);
-}
 
-function isPlainObject(value: unknown): boolean {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    value.constructor === Object &&
-    Object.prototype.toString.call(value) === '[object Object]'
-  );
-}
 
-function isArrayOrObject(value: unknown) {
-  return isArray(value) || isPlainObject(value);
-}
+
 
 export function isEqual(obj1: PlainObject, obj2: PlainObject): boolean {
   if (obj1 === obj2) {
