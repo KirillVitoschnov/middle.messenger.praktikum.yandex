@@ -11,6 +11,8 @@ export default class ChatCurrent extends Service.Block<TProps> {
   private chatId: number;
 
   constructor(props: TProps) {
+    // Приводим идентификатор чата к числовому типу
+    const chatIdNumber = Number(props.id);
     const state = store.getState();
     const chats = state.chats || [];
 
@@ -67,17 +69,14 @@ export default class ChatCurrent extends Service.Block<TProps> {
       ActiveChat: new Component.ActiveChat({
         ChatHeader: new Component.ChatHeader({
           chatHeader: (() => {
-            const messagesByChat = state.messages?.[props.id] || [];
-            const currentChat = chats.find((chatItem: any) => chatItem.id === props.id) || null;
-
-            return messagesByChat.length > 0
-                ? 'Чат ЛОЛ'
-                : `Чат с ${currentChat?.title || 'Неизвестный'}`;
+            // Ищем чат по числовому идентификатору
+            const currentChat = chats.find((chatItem: any) => chatItem.id === chatIdNumber) || null;
+            return `Чат с ${currentChat.title || 'Неизвестный'}`
           })(),
         }),
         Messages: new Component.Messages({
           Message: (() => {
-            const messagesByChat = state.messages?.[props.id] || [];
+            const messagesByChat = state.messages?.[chatIdNumber] || [];
             return messagesByChat.map((message: any) => {
               return new Component.Message({
                 type: message.user_id === state.user?.id ? 'sent' : 'received',
@@ -135,7 +134,8 @@ export default class ChatCurrent extends Service.Block<TProps> {
       }),
     });
 
-    this.chatId = props.id;
+    // Сохраняем числовой идентификатор чата
+    this.chatId = chatIdNumber;
     chatController.connectToChat(this.chatId);
   }
 
@@ -143,7 +143,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
     if (isEqual(oldProps, newProps)) return false;
     const state = store.getState();
     const chats = state.chats || [];
-    const currentChat = chats.find((chatItem: any) => chatItem.id === this.props.id) || null;
+    const currentChat = chats.find((chatItem: any) => chatItem.id === this.chatId) || null;
     console.log(`currentChat: ${JSON.stringify(currentChat)}`);
 
     // Обновляем список чатов в боковой панели (SideBar)
@@ -184,10 +184,8 @@ export default class ChatCurrent extends Service.Block<TProps> {
     if (activeChatInstance) {
       const updatedChatHeader = new Component.ChatHeader({
         chatHeader: (() => {
-          const messagesByChat = state.messages?.[this.props.id] || [];
-          return messagesByChat.length > 0
-              ? 'Чат ЛОЛ'
-              : `Чат с ${currentChat?.title || 'Неизвестный'}`;
+          const currentChat = state.chats?.find((chatItem: any) => chatItem.id === this.chatId) || null;
+          return `Чат с ${currentChat.title || 'Неизвестный'}`
         })(),
       });
 
