@@ -13,7 +13,6 @@ export default class ChatCurrent extends Service.Block<TProps> {
   constructor(props: TProps) {
     const state = store.getState();
     const chats = state.chats || [];
-    const currentChat = chats.find((chatItem: any) => chatItem.id === props.id) || null;
 
     super({
       ...props,
@@ -69,6 +68,8 @@ export default class ChatCurrent extends Service.Block<TProps> {
         ChatHeader: new Component.ChatHeader({
           chatHeader: (() => {
             const messagesByChat = state.messages?.[props.id] || [];
+            const currentChat = chats.find((chatItem: any) => chatItem.id === props.id) || null;
+
             return messagesByChat.length > 0
                 ? 'Чат ЛОЛ'
                 : `Чат с ${currentChat?.title || 'Неизвестный'}`;
