@@ -33,7 +33,6 @@ export class Store extends EventBus<any> {
     // Оповещаем всех подписчиков, что состояние обновилось
     this.emit(StoreEvents.Updated, this.getState());
 
-    console.log('store updated:', this.state);
   }
 }
 

@@ -81,7 +81,6 @@ export default class Authorization extends Service.Block {
       },
     });
     const Header = new Component.Header({});
-    console.log(props)
     super({
       title: 'Авторизация',
       form,

@@ -160,15 +160,12 @@ export default abstract class Block<
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   componentDidUpdate(oldProps: PropsType, newProps: PropsType) {
-    console.log('o', oldProps, 'n', newProps);
-    console.log(!isEqual(oldProps, newProps))
     return !isEqual(oldProps, newProps);
   }
 
 
 
   public setProps = (nextProps: Node) => {
-    console.log('nextProps: ', nextProps, 'this.props', this.props);
     if (!nextProps) {
       return;
     }

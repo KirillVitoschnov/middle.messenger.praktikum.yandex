@@ -1,11 +1,8 @@
-// controllers/chatController.ts
 
 import { chatAPI } from '../api';
-import { router } from '../services';
 import { store } from '../store';
 
 export class ChatController {
-    // Объект для хранения WebSocket-соединений по ID чата
     private sockets: { [chatId: number]: WebSocket } = {};
 
     public getChats() {
@@ -21,7 +18,6 @@ export class ChatController {
             });
     }
 
-    // Создать новый чат
     public createChat(title: string) {
         return chatAPI
             .createChatAPI({ title })
@@ -51,11 +47,10 @@ export class ChatController {
             });
     }
 
-    // ★ Новый метод: подключение к чату через WebSocket
     public connectToChat(chatId: number) {
         this.getChatToken(chatId)
             .then((token) => {
-                const userId = store.getState().user?.id || 3127;
+                const userId = store.getState().user?.id;
                 const socketUrl = `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`;
                 const socket = new WebSocket(socketUrl);
                 this.sockets[chatId] = socket;
@@ -96,7 +91,6 @@ export class ChatController {
 
                         }
 
-                        // Дополнительная обработка (например, ping/pong) при необходимости
                     } catch (error) {
                         console.error('Ошибка обработки входящего сообщения:', error);
                     }
@@ -119,7 +113,6 @@ export class ChatController {
             });
     }
 
-    // ★ Новый метод: отправка сообщения через WebSocket
     public sendMessage(chatId: number, messageText: string) {
         const socket = this.sockets[chatId];
         if (socket && socket.readyState === WebSocket.OPEN) {

@@ -22,7 +22,7 @@ export class AuthController {
                 store.setState('user', JSON.parse(data));
             })
             .catch((error) => {
-                // store.setState('errorMessage', JSON.parse(error.response).reason);
+                store.setState('errorMessage', JSON.parse(error.response).reason);
             });
     }
 

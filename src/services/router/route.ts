@@ -35,7 +35,7 @@ export class Route {
     return regExp.test(pathname);
   }
 
-  getParams(pathname: string): Record<string, string> {
+  getParams(pathname: string): Record<string, string> | null {
     const paramNames = [...this._pathname.matchAll(/:([a-zA-Z]+)/g)].map((match) => match[1]);
     const routePattern = this._pathname.replace(/:([a-zA-Z]+)/g, '([^/]+)');
     const regExp = new RegExp(`^${routePattern}$`);
