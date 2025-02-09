@@ -31,7 +31,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
           SideBarChatListItem: chats.map((chat: any) => {
             return new Component.SideBarChatListItem({
               SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                src: chat.avatar || 'default-avatar.png',
+                src: chat.avatar || '/default-avatar.svg',
               }),
               SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                 name: chat.title,

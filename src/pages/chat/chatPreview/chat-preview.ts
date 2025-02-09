@@ -27,7 +27,7 @@ export default class ChatPreview extends Service.Block<TProps> {
           SideBarChatListItem: chats.map((chat: any) =>
               new Component.SideBarChatListItem({
                 SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                  src: chat.avatar || 'default-avatar.png',
+                  src: chat.avatar || '/default-avatar.svg',
                 }),
                 SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                   name: chat.title,
@@ -80,7 +80,7 @@ export default class ChatPreview extends Service.Block<TProps> {
         SideBarChatListItem: chats.map((chat: any) =>
             new Component.SideBarChatListItem({
               SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                src: chat.avatar || 'default-avatar.png',
+                src: chat.avatar || '/default-avatar.svg',
               }),
               SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                 name: chat.title,
