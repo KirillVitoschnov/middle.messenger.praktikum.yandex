@@ -19,6 +19,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
     super({
       ...props,
       SideBar: new Component.SideBar({
+        // Заголовок сайдбара с профилем пользователя
         SideBarHeader: new Component.SideBarHeader({
           sidebarHeaderProfile: new Component.SideBarHeaderProfile({
             events: {
@@ -28,6 +29,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
             },
           }),
         }),
+        // Список чатов
         SideBarChatList: new Component.SideBarChatList({
           SideBarChatListItem: chats.map((chat: any) => {
             return new Component.SideBarChatListItem({
@@ -53,6 +55,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
             });
           }),
         }),
+        // Кнопка создания нового чата
         SideBarNewChat: new Component.Button({
           text: 'Новый чат',
           type: 'button',
@@ -67,13 +70,14 @@ export default class ChatCurrent extends Service.Block<TProps> {
         }),
       }),
       ActiveChat: new Component.ActiveChat({
+        // Заголовок активного чата
         ChatHeader: new Component.ChatHeader({
           chatHeader: (() => {
-            // Ищем чат по числовому идентификатору
             const currentChat = chats.find((chatItem: any) => chatItem.id === chatIdNumber) || null;
-            return `Чат с ${currentChat.title || 'Неизвестный'}`
+            return `Чат с ${currentChat?.title || 'Неизвестный'}`;
           })(),
         }),
+        // Список сообщений
         Messages: new Component.Messages({
           Message: (() => {
             const messagesByChat = state.messages?.[chatIdNumber] || [];
@@ -86,6 +90,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
             });
           })(),
         }),
+        // Поле ввода сообщения с кнопкой отправки
         MessageInput: new Component.MessageInput({
           input: new Component.Input({
             name: 'message',
@@ -121,6 +126,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
                   return;
                 }
                 chatController.sendMessage(this.chatId, messageText);
+                // Очищаем поле ввода после отправки
                 const activeChat = this.children.ActiveChat as Component.ActiveChat;
                 const messageInput = activeChat.children.MessageInput as Component.MessageInput;
                 const inputEl = messageInput.children.input.element as HTMLInputElement;
@@ -146,9 +152,10 @@ export default class ChatCurrent extends Service.Block<TProps> {
     const currentChat = chats.find((chatItem: any) => chatItem.id === this.chatId) || null;
     console.log(`currentChat: ${JSON.stringify(currentChat)}`);
 
-    // Обновляем список чатов в боковой панели (SideBar)
+    // Обновляем сайдбар, чтобы не потерять компоненты создания чата и заголовок
     const sideBarInstance = this.children.SideBar as any;
     if (sideBarInstance) {
+      // Создаем новый экземпляр списка чатов с обновленными данными
       const updatedSideBarChatList = new Component.SideBarChatList({
         SideBarChatListItem: chats.map((chat: any) =>
             new Component.SideBarChatListItem({
@@ -174,8 +181,12 @@ export default class ChatCurrent extends Service.Block<TProps> {
             })
         ),
       });
-      sideBarInstance.setProps({
-        SideBarChatList: updatedSideBarChatList,
+
+      // Обновляем все дочерние компоненты сайдбара: заголовок, список чатов и кнопку нового чата
+      sideBarInstance.setChildren({
+        SideBarHeader: sideBarInstance.children.SideBarHeader, // сохраняем уже созданный заголовок
+        SideBarChatList: updatedSideBarChatList,              // обновленный список чатов
+        SideBarNewChat: sideBarInstance.children.SideBarNewChat, // сохраняем кнопку нового чата
       });
     }
 
@@ -185,7 +196,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
       const updatedChatHeader = new Component.ChatHeader({
         chatHeader: (() => {
           const currentChat = state.chats?.find((chatItem: any) => chatItem.id === this.chatId) || null;
-          return `Чат с ${currentChat.title || 'Неизвестный'}`
+          return `Чат с ${currentChat?.title || 'Неизвестный'}`;
         })(),
       });
 
@@ -202,6 +213,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
         })(),
       });
 
+      // Сохраняем уже существующий компонент ввода сообщения
       const existingMessageInput = activeChatInstance.children.MessageInput;
 
       activeChatInstance.setChildren({
