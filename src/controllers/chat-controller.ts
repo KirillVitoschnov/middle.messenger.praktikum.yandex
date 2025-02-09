@@ -8,12 +8,10 @@ export class ChatController {
     // Объект для хранения WebSocket-соединений по ID чата
     private sockets: { [chatId: number]: WebSocket } = {};
 
-    // Получить список чатов (метод уже существовал)
     public getChats() {
         return chatAPI
             .getChatsAPI()
             .then((data) => {
-                console.log(data);
                 store.setState('chats', JSON.parse(data));
                 return JSON.parse(data);
             })
@@ -54,7 +52,6 @@ export class ChatController {
         return chatAPI
             .addUserToChatAPI({ chatId, userId })
             .then(() => {
-                console.log(`Пользователь ${userId} добавлен в чат ${chatId}`);
             })
             .catch((error) => {
                 console.error('Ошибка при добавлении пользователя в чат:', error);

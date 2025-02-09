@@ -12,9 +12,7 @@ export function connect(Component: typeof Block, mapStateToProps: (state: Indexe
 
       store.on(StoreEvents.Updated, () => {
         const newState = mapStateToProps(store.getState());
-        console.log('hoc', state, newState);
         if (!isEqual(state, newState)) {
-          console.log('hoc: не одинаковые', state, newState);
           this.setProps({ ...newState });
         }
 

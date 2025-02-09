@@ -14,7 +14,6 @@ export class UserAPI extends Service.BaseAPI {
         },
       })
       .then((data) => {
-        console.log('api', data);
         return data;
       });
   }

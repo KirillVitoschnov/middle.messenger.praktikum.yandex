@@ -22,7 +22,6 @@ export class AuthController {
                 store.setState('user', JSON.parse(data));
             })
             .catch((error) => {
-                // console.log(error);
                 // store.setState('errorMessage', JSON.parse(error.response).reason);
             });
     }
@@ -38,7 +37,6 @@ export class AuthController {
             )
             .catch((error) => {
                 store.setState('errorMessage', JSON.parse(error.response).reason);
-                console.log(store)
                 router.go('/');
             });
     }
@@ -49,12 +47,10 @@ export class AuthController {
             .then(() =>
                 authAPI.getUserAPI().then((data) => {
                     store.setState('user', JSON.parse(data));
-                    console.log('data');
                     router.go('/messenger');
                 }),
             )
             .catch((error) => {
-                console.log('bad', error);
                 store.setState('errorMessage', JSON.parse(error.response).reason);
             });
     }
