@@ -1,5 +1,5 @@
 import {PasswordChangeType, UserType} from '../types';
-import {authAPI, userAPI} from '../api';
+import { userAPI} from '../api';
 import { router } from '../services';
 import { store } from '../store';
 

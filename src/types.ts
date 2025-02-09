@@ -32,7 +32,8 @@ export type UserLoginType = {
 export type StoreType = {
   errorMessage: '';
   user: UserType | {};
-  chats:[]
+  chats:[],
+  messages: []
 };
 
 /* general */
@@ -119,6 +120,10 @@ export type ChatLeftSideBarType = {
 export type PasswordChangeType = {
   oldPassword: string;
   newPassword: string;
+};
+
+export type ChatType = {
+  title:string;
 };
 
 export type TProps = Record<string, string | Function | unknown>;

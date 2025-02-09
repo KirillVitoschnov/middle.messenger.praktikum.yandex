@@ -16,6 +16,7 @@ export class ChatAPI extends Service.BaseAPI {
 
     // Создание нового чата
     createChatAPI(data: ChatType) {
+        console.log(data);
         return chatAPIInstance.post('/', {
             isCredentials: true,
             headers: {
