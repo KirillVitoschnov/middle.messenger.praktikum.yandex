@@ -1,27 +1,31 @@
-import * as Component from '../../../components';
-import * as Service from '../../../services';
-import { TProps } from '../../../types';
-import template from '../template.hbs?raw';
-import { store } from '../../../store';
-import { getDataForm } from '../../../utils';
-import { userController , authController } from '../../../controllers';
+import * as Component from '../../../components'
+import * as Service from '../../../services'
+import template from '../template.hbs?raw'
+import { store } from '../../../store'
+import { getDataForm } from '../../../utils'
+import { userController, authController } from '../../../controllers'
+import { UserType } from '../../../types' // <-- Импортируем глобальный тип
+
+export type TProps = {
+  [key: string]: unknown
+  errorMessage?: string
+}
 
 export default class ProfileInfo extends Service.Block {
   constructor(props: TProps = {}) {
-    const state = store.getState();
-    const user = state.user || {};
+    const state = store.getState()
+    const user = (state.user || {}) as Partial<UserType>
 
-    const header = new Component.Header({});
+    const header = new Component.Header({})
 
     const avatarBlock = new Component.AvatarBlock({
-      avatar:
-          'https://sun9-10.userapi.com/impg/c857220/v857220791/1a63d2/s84IGNUrCIA.jpg?size=604x604&quality=96&sign=a34d795389b61c25532a3e630586b393&type=album',
+      avatar: 'https://sun9-10.userapi.com/impg/c857220/v857220791/1a63d2/s84IGNUrCIA.jpg?size=604x604&quality=96&sign=a34d795389b61c25532a3e630586b393&type=album',
       events: {
         click: () => {
-          console.log('Avatar clicked');
-        },
-      },
-    });
+          console.log('Avatar clicked')
+        }
+      }
+    })
 
     const fieldsProps = [
       {
@@ -32,14 +36,14 @@ export default class ProfileInfo extends Service.Block {
           value: user.email || '',
           attr: {
             'data-required': true,
-            'data-valid-email': true,
+            'data-valid-email': true
           },
           events: {
             blur: (event: FocusEvent) => {
-              Service.validate(event.target as HTMLInputElement);
-            },
-          },
-        }),
+              Service.validate(event.target as HTMLInputElement)
+            }
+          }
+        })
       },
       {
         label: 'Логин',
@@ -49,14 +53,14 @@ export default class ProfileInfo extends Service.Block {
           value: user.login || '',
           attr: {
             'data-required': true,
-            'data-valid-login': true,
+            'data-valid-login': true
           },
           events: {
             blur: (event: FocusEvent) => {
-              Service.validate(event.target as HTMLInputElement);
-            },
-          },
-        }),
+              Service.validate(event.target as HTMLInputElement)
+            }
+          }
+        })
       },
       {
         label: 'Имя',
@@ -66,14 +70,14 @@ export default class ProfileInfo extends Service.Block {
           value: user.first_name || '',
           attr: {
             'data-required': true,
-            'data-valid-name': true,
+            'data-valid-name': true
           },
           events: {
             blur: (event: FocusEvent) => {
-              Service.validate(event.target as HTMLInputElement);
-            },
-          },
-        }),
+              Service.validate(event.target as HTMLInputElement)
+            }
+          }
+        })
       },
       {
         label: 'Фамилия',
@@ -83,14 +87,14 @@ export default class ProfileInfo extends Service.Block {
           value: user.second_name || '',
           attr: {
             'data-required': true,
-            'data-valid-name': true,
+            'data-valid-name': true
           },
           events: {
             blur: (event: FocusEvent) => {
-              Service.validate(event.target as HTMLInputElement);
-            },
-          },
-        }),
+              Service.validate(event.target as HTMLInputElement)
+            }
+          }
+        })
       },
       {
         label: 'Отображаемое имя',
@@ -100,14 +104,14 @@ export default class ProfileInfo extends Service.Block {
           value: user.display_name || '',
           attr: {
             'data-required': true,
-            'data-valid-name': true,
+            'data-valid-name': true
           },
           events: {
             blur: (event: FocusEvent) => {
-              Service.validate(event.target as HTMLInputElement);
-            },
-          },
-        }),
+              Service.validate(event.target as HTMLInputElement)
+            }
+          }
+        })
       },
       {
         label: 'Телефон',
@@ -117,29 +121,28 @@ export default class ProfileInfo extends Service.Block {
           value: user.phone || '',
           attr: {
             'data-required': true,
-            'data-valid-phone': true,
+            'data-valid-phone': true
           },
           events: {
             blur: (event: FocusEvent) => {
-              Service.validate(event.target as HTMLInputElement);
-            },
-          },
-        }),
-      },
-    ];
+              Service.validate(event.target as HTMLInputElement)
+            }
+          }
+        })
+      }
+    ]
 
-    const inputBlocks = fieldsProps.map((field) => new Component.InputBlock(field));
+    const inputBlocks = fieldsProps.map((field) => new Component.InputBlock(field))
 
     const changePasswordLink = new Component.Link({
       text: 'Сменить пароль',
       className: 'profile-link',
       events: {
         click: () => {
-          console.log('link event Сменить пароль');
-          Service.router.go('/settings/edit-password');
-        },
-      },
-    });
+          Service.router.go('/settings/edit-password')
+        }
+      }
+    })
 
     const link = new Component.Link({
       text: 'Выйти',
@@ -148,40 +151,38 @@ export default class ProfileInfo extends Service.Block {
       events: {
         click: () => {
           authController.logout()
-        },
-      },
-    });
+        }
+      }
+    })
 
     const saveButton = new Component.Button({
       text: 'Сохранить изменения',
-      attr: { withInternalID: true,  type:'submit'},
-    });
+      attr: { withInternalID: true, type: 'submit' }
+    })
 
     const backButton = new Component.Button({
       text: '← Назад',
       className: 'button-back',
       events: {
         click: () => {
-          Service.router.go('/messenger');
-          console.log('Кнопка Назад нажата');
-        },
-      },
-    });
+          Service.router.go('/messenger')
+        }
+      }
+    })
 
     const form = new Component.Form({
       inputBlocks,
       button: saveButton,
       events: {
         submit: (event: Event) => {
-          event.preventDefault();
+          event.preventDefault()
           if (Service.validateForm(event)) {
-            const formData = getDataForm(event);
-            userController.updateUserProfile(formData as UserType);
+            const formData = getDataForm(event)
+            userController.updateUserProfile(formData)
           }
-        },
-      },
-    });
-
+        }
+      }
+    })
 
     super({
       ...props,
@@ -194,11 +195,12 @@ export default class ProfileInfo extends Service.Block {
       link,
       blockLinks: new Component.BlockLinks({}),
       backButton,
-      errorMessage:props.errorMessage,
-    });
+      errorMessage: props.errorMessage
+    })
   }
 
   render() {
-    return this.compile(template, { ...this.props });
+    return this.compile(template, { ...this.props })
   }
 }
+
