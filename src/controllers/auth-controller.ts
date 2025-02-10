@@ -19,19 +19,19 @@ export class AuthController {
         return authAPI
             .getUserAPI()
             .then((data) => {
-                store.setState('user', JSON.parse(data));
+                store.setState('user', JSON.parse(data as string));
             })
             .catch((error) => {
                 store.setState('errorMessage', JSON.parse(error.response).reason);
             });
     }
 
-    login(dataForm: UserType) {
+    public login(dataForm: UserType) {
         return authAPI
             .loginAPI(dataForm)
             .then(() =>
                 authAPI.getUserAPI().then((data) => {
-                    store.setState('user', JSON.parse(data));
+                    store.setState('user', JSON.parse(data as string));
                     router.go('/messenger');
                 }),
             )
@@ -41,12 +41,12 @@ export class AuthController {
             });
     }
 
-    signUp(dataForm: UserType) {
+    public signUp(dataForm: UserType) {
         return authAPI
             .signUpAPI(dataForm)
             .then(() =>
                 authAPI.getUserAPI().then((data) => {
-                    store.setState('user', JSON.parse(data));
+                    store.setState('user', JSON.parse(data as string));
                     router.go('/messenger');
                 }),
             )
@@ -55,7 +55,7 @@ export class AuthController {
             });
     }
 
-    logout() {
+    public logout() {
         return authAPI
             .logoutAPI()
             .then(() => {
@@ -68,7 +68,6 @@ export class AuthController {
                 console.log('Logout error', error);
             });
     }
-
 }
 
 export const authController = new AuthController();

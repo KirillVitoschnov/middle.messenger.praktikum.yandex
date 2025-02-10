@@ -1,6 +1,6 @@
-
 import { chatAPI } from '../api';
 import { store } from '../store';
+import {  UserType } from '../types';
 
 export class ChatController {
     private sockets: { [chatId: number]: WebSocket } = {};
@@ -9,12 +9,13 @@ export class ChatController {
         return chatAPI
             .getChatsAPI()
             .then((data) => {
-                store.setState('chats', JSON.parse(data));
-                return JSON.parse(data);
+                const chats = JSON.parse(data as string);
+                store.setState('chats', chats);
+                return chats;
             })
             .catch((error) => {
                 console.error('Ошибка при получении чатов:', error);
-                store.setState('errorMessage', JSON.parse(error.response).reason);
+                store.setState('errorMessage', JSON.parse(error.response as string).reason);
             });
     }
 
@@ -22,35 +23,32 @@ export class ChatController {
         return chatAPI
             .createChatAPI({ title })
             .then(() => {
-                this.getChats(); // Обновляем список чатов
+                this.getChats();
             })
             .catch((error) => {
                 console.error('Ошибка при создании чата:', error);
-                store.setState('errorMessage', JSON.parse(error.response).reason);
+                store.setState('errorMessage', JSON.parse(error.response as string).reason);
             });
     }
 
-
-
-    // Получить токен для чата
     public getChatToken(chatId: number) {
         return chatAPI
             .getChatTokenAPI(chatId)
             .then((data) => {
-                const token = JSON.parse(data).token;
+                const token = JSON.parse(data as string).token;
                 store.setState(`token_${chatId}`, token);
                 return token;
             })
             .catch((error) => {
                 console.error('Ошибка при получении токена для чата:', error);
-                store.setState('errorMessage', JSON.parse(error.response).reason);
+                store.setState('errorMessage', JSON.parse(error.response as string).reason);
             });
     }
 
     public connectToChat(chatId: number) {
         this.getChatToken(chatId)
             .then((token) => {
-                const userId = store.getState().user?.id;
+                const userId = (store.getState().user as UserType)?.id;
                 const socketUrl = `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`;
                 const socket = new WebSocket(socketUrl);
                 this.sockets[chatId] = socket;
@@ -68,9 +66,8 @@ export class ChatController {
                 socket.addEventListener('message', (event: MessageEvent) => {
                     try {
                         const data = JSON.parse(event.data);
-                        // Если пришёл массив – это «старые» сообщения
+
                         if (Array.isArray(data)) {
-                            // Разворачиваем массив, чтобы последние сообщения шли внизу
                             const reversed = data.reverse();
                             store.setState('messages', {
                                 ...store.getState().messages,
@@ -79,7 +76,6 @@ export class ChatController {
                             store.setState('errorMessage', JSON.stringify(reversed));
 
                         }
-                        // Если пришло новое сообщение или файл
                         else if (data.type === 'message' || data.type === 'file') {
                             const currentMessages = store.getState().messages?.[chatId] || [];
                             const newMessages = [...currentMessages, data];
@@ -88,9 +84,7 @@ export class ChatController {
                                 [chatId]: newMessages,
                             });
                             store.setState('errorMessage', JSON.stringify(newMessages));
-
                         }
-
                     } catch (error) {
                         console.error('Ошибка обработки входящего сообщения:', error);
                     }
