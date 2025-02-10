@@ -17,7 +17,7 @@ export type RouteProps = {
 
 /* store */
 export type UserType = {
-  id: number
+  id?: number
   email: string
   login: string
   first_name: string
