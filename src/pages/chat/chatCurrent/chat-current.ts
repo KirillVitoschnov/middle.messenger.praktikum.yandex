@@ -41,7 +41,6 @@ export default class ChatCurrent extends Service.Block<TProps> {
 
   constructor(props: TProps) {
     const chatIdNumber = Number(props.id);
-    // Приводим состояние к типу AppState
     const state = store.getState() as AppState;
     const chats: Chat[] = state.chats || [];
 
@@ -105,7 +104,6 @@ export default class ChatCurrent extends Service.Block<TProps> {
         }),
         Messages: new Component.Messages({
           Message: (() => {
-            // Приводим сообщения к типу Message[]
             const messagesByChat: Message[] = state.messages?.[chatIdNumber] || [];
             return messagesByChat.map((message: Message) => {
               return new Component.Message({
@@ -215,7 +213,6 @@ export default class ChatCurrent extends Service.Block<TProps> {
       });
     }
 
-    // Приведение типа для доступа к ActiveChat
     const activeChatInstance = (this.children as any).ActiveChat;
     if (activeChatInstance) {
       const updatedChatHeader = new Component.ChatHeader({
