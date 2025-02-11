@@ -1,40 +1,13 @@
 import * as Service from '../../../services';
 import * as Component from '../../../components';
-import { TProps } from '../../../types';
+import { TProps,Chat,Message,AppState } from '../../../types';
 import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { DateFormatter } from '../../../utils/dateFormatter';
 import { chatController } from '../../../controllers';
 import { getDataForm, isEqual } from '../../../utils';
 
-// Определяем интерфейсы для чата и сообщения
-interface Chat {
-  id: number;
-  title: string;
-  avatar?: string;
-  last_message?: {
-    content: string;
-    time: string;
-  } | null;
-  unread_count?: number;
-}
 
-interface Message {
-  user_id: number;
-  content: string;
-  time: string;
-}
-
-// Интерфейс для состояния приложения
-interface AppState {
-  chats?: Chat[];
-  messages?: {
-    [key: number]: Message[];
-  };
-  user?: {
-    id: number;
-  };
-}
 
 export default class ChatCurrent extends Service.Block<TProps> {
   private chatId: number;

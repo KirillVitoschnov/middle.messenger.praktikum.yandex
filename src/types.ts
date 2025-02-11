@@ -68,57 +68,7 @@ export type TBlockProps = AttrEventsType & {
   [key: string]: Block<PropsType> | Block<PropsType>[] | string | unknown;
 };
 
-export type TObjectKeys = {
-  <T, K extends keyof T>(obj: T, key: K): T[K];
-};
 
-export type PropsAttrType = Record<string, string | boolean | number | Function | unknown>;
-
-/* components */
-export type ButtonType = AttrEventsType & {
-  text?: string;
-  type?: string;
-  className?: string;
-  withInternalId?: boolean;
-};
-
-export type InputType = AttrEventsType & {
-  text?: string;
-  type: string;
-  name: string;
-  value?: string;
-  className?: string;
-  placeholderText?: string;
-};
-
-export type LinkType = AttrEventsType & {
-  className?: string;
-  text?: string;
-};
-
-export type ChatBlockType = AttrEventsType & {
-  userName: string;
-  userMessage: string;
-  date: string;
-  countMessage?: string;
-};
-export type TextareaType = AttrEventsType & {
-  name: string;
-  id?: string;
-  className?: string;
-  placeholderText?: string;
-};
-
-export type ChatFormType = AttrEventsType & {
-  textarea: ObjectType;
-  sentButton: ObjectType;
-};
-
-export type ChatLeftSideBarType = {
-  linkProfile: ObjectType;
-  searchInput: ObjectType;
-  chatsBlock: ObjectType[];
-};
 
 export type PasswordChangeType = {
   oldPassword: string;
@@ -128,5 +78,32 @@ export type PasswordChangeType = {
 export type ChatType = {
   title:string;
 };
+
+export type Chat={
+  id: number;
+  title: string;
+  avatar?: string;
+  last_message?: {
+    content: string;
+    time: string;
+  } | null;
+  unread_count?: number;
+}
+
+export type Message = {
+  user_id: number;
+  content: string;
+  time: string;
+}
+
+export type AppState ={
+  chats?: Chat[];
+  messages?: {
+    [key: number]: Message[];
+  };
+  user?: {
+    id: number;
+  };
+}
 
 export type TProps = Record<string, string | Function | unknown>;
