@@ -7,48 +7,32 @@ import { DateFormatter } from '../../../utils/dateFormatter';
 import { isEqual } from '../../../utils';
 import { chatController } from '../../../controllers';
 
-/**
- * Интерфейс пропсов для компонента ChatPreview.
- * При необходимости можно расширять дополнительными свойствами.
- */
+
 interface ChatPreviewProps extends TProps {}
 
-/**
- * Интерфейс для дочерних компонентов, используемых в ChatPreview.
- */
+
 interface ChatPreviewChildren {
   SideBar: Component.SideBar;
   chatPanelPlaceholder: Component.chatPanelPlaceholder;
   blockLinks: Component.BlockLinks;
 }
 
-/**
- * Интерфейс для дочерних компонентов внутри компонента SideBar.
- */
+
 interface SideBarChildren {
   SideBarHeader: Component.SideBarHeader;
   SideBarChatList: Component.SideBarChatList;
   SideBarNewChat: Component.Button;
 }
 
-/**
- * Компонент ChatPreview отображает предварительный вид страницы мессенджера.
- * В нём присутствует боковая панель (SideBar) с заголовком, списком чатов и кнопкой создания нового чата,
- * а также плейсхолдер для области чата (chatPanelPlaceholder) вместо полноценного компонента активного чата.
- */
+
 export default class ChatPreview extends Service.Block<ChatPreviewProps> {
   constructor(props: TProps) {
-    // Получаем состояние приложения из store (список чатов)
     const state = store.getState();
     const chats = state.chats || [];
 
-    // Вызываем конструктор базового класса с подготовленными дочерними компонентами.
-    // Здесь передаётся боковая панель, плейсхолдер для области чата и дополнительные блоки (например, ссылки).
     super({
       ...props,
-      // Боковая панель (SideBar)
       SideBar: new Component.SideBar({
-        // Заголовок боковой панели с профилем пользователя
         SideBarHeader: new Component.SideBarHeader({
           sidebarHeaderProfile: new Component.SideBarHeaderProfile({
             events: {
@@ -58,7 +42,6 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
             },
           }),
         }),
-        // Список чатов, полученных из состояния
         SideBarChatList: new Component.SideBarChatList({
           SideBarChatListItem: chats.map((chat: any) =>
               new Component.SideBarChatListItem({
@@ -84,7 +67,6 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
               })
           ),
         }),
-        // Кнопка для создания нового чата
         SideBarNewChat: new Component.Button({
           text: 'Новый чат',
           type: 'button',
@@ -98,17 +80,12 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
           },
         }),
       }),
-      // Плейсхолдер для области чата – в превью активного чата не отображается
       chatPanelPlaceholder: new Component.chatPanelPlaceholder({}),
-      // Дополнительные блоки, например, ссылки или другая информация
       blockLinks: new Component.BlockLinks({}),
     });
   }
 
-  /**
-   * Метод componentDidUpdate вызывается при обновлении компонента.
-   * Здесь происходит обновление списка чатов в боковой панели, если данные изменились.
-   */
+
   override componentDidUpdate(oldProps: ChatPreviewProps, newProps: ChatPreviewProps): boolean {
     if (isEqual(oldProps, newProps)) {
       return false;
@@ -117,7 +94,6 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
     const state = store.getState();
     const chats = state.chats || [];
 
-    // Приводим this.children к типу ChatPreviewChildren для доступа к дочерним компонентам.
     const children = this.children as ChatPreviewChildren;
     const sideBarInstance = children.SideBar;
     if (sideBarInstance) {
@@ -147,10 +123,8 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
         ),
       });
 
-      // Приводим children боковой панели к типу SideBarChildren
       const sideBarChildren = sideBarInstance.children as SideBarChildren;
 
-      // Обновляем дочерние компоненты боковой панели, сохраняя существующий заголовок и кнопку "Новый чат"
       sideBarInstance.setChildren({
         SideBarHeader: sideBarChildren.SideBarHeader,
         SideBarChatList: updatedSideBarChatList,
