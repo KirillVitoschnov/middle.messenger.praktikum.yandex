@@ -36,7 +36,7 @@ export type StoreType = {
   errorMessage: '';
   user: UserType | {};
   chats:[],
-  messages: []
+  messages?: []
 };
 
 /* general */
