@@ -1,4 +1,5 @@
 import Block, { PropsType } from './services/block';
+import * as Component from "./components";
 
 /* service HTTPTransport */
 export type HTTPMethodType = (url: string, options?: any) => Promise<unknown>;
@@ -68,7 +69,18 @@ export type TBlockProps = AttrEventsType & {
   [key: string]: Block<PropsType> | Block<PropsType>[] | string | unknown;
 };
 
+export type ChatPreviewChildren ={
+  SideBar: Component.SideBar;
+  chatPanelPlaceholder: Component.chatPanelPlaceholder;
+  blockLinks: Component.BlockLinks;
+}
 
+
+export type SideBarChildren ={
+  SideBarHeader: Component.SideBarHeader;
+  SideBarChatList: Component.SideBarChatList;
+  SideBarNewChat: Component.Button;
+}
 
 export type PasswordChangeType = {
   oldPassword: string;

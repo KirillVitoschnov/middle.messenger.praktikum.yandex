@@ -1,6 +1,6 @@
 import * as Service from '../../../services';
 import * as Component from '../../../components';
-import { TProps } from '../../../types';
+import { TProps,ChatPreviewChildren,SideBarChildren } from '../../../types';
 import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { DateFormatter } from '../../../utils/dateFormatter';
@@ -11,18 +11,7 @@ import { chatController } from '../../../controllers';
 interface ChatPreviewProps extends TProps {}
 
 
-interface ChatPreviewChildren {
-  SideBar: Component.SideBar;
-  chatPanelPlaceholder: Component.chatPanelPlaceholder;
-  blockLinks: Component.BlockLinks;
-}
 
-
-interface SideBarChildren {
-  SideBarHeader: Component.SideBarHeader;
-  SideBarChatList: Component.SideBarChatList;
-  SideBarNewChat: Component.Button;
-}
 
 
 export default class ChatPreview extends Service.Block<ChatPreviewProps> {

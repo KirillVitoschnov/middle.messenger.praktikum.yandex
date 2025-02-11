@@ -45,7 +45,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   function mapUserToProps(state: any) {
     const tmpUser = state.user || {};
     const errorMessage = state.errorMessage || null;
-    console.log('Состояние стора:', state);
     return {
       user: tmpUser,
       chats: state.chats,

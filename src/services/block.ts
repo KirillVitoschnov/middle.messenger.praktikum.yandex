@@ -150,7 +150,6 @@ export default abstract class Block<
       return;
     }
     const response = this.componentDidUpdate(oldProps, newProps);
-    console.log('response', response);
     if (!response) {
       return;
     }
