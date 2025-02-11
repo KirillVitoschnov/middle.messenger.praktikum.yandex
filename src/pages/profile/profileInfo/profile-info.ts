@@ -4,7 +4,7 @@ import template from '../template.hbs?raw'
 import { store } from '../../../store'
 import { getDataForm } from '../../../utils'
 import { userController, authController } from '../../../controllers'
-import { UserType } from '../../../types' // <-- Импортируем глобальный тип
+import { UserType } from '../../../types' // Импортируем глобальный тип
 
 export type TProps = {
   [key: string]: unknown
@@ -19,7 +19,8 @@ export default class ProfileInfo extends Service.Block {
     const header = new Component.Header({})
 
     const avatarBlock = new Component.AvatarBlock({
-      avatar: 'https://sun9-10.userapi.com/impg/c857220/v857220791/1a63d2/s84IGNUrCIA.jpg?size=604x604&quality=96&sign=a34d795389b61c25532a3e630586b393&type=album',
+      avatar:
+          'https://sun9-10.userapi.com/impg/c857220/v857220791/1a63d2/s84IGNUrCIA.jpg?size=604x604&quality=96&sign=a34d795389b61c25532a3e630586b393&type=album',
       events: {
         click: () => {
           console.log('Avatar clicked')
@@ -178,7 +179,28 @@ export default class ProfileInfo extends Service.Block {
           event.preventDefault()
           if (Service.validateForm(event)) {
             const formData = getDataForm(event)
-            userController.updateUserProfile(formData)
+            // Проверяем наличие всех обязательных полей и их тип
+            if (
+                typeof formData.email === 'string' &&
+                typeof formData.login === 'string' &&
+                typeof formData.first_name === 'string' &&
+                typeof formData.second_name === 'string' &&
+                typeof formData.display_name === 'string' &&
+                typeof formData.phone === 'string'
+            ) {
+              // Создаем объект типа UserType
+              const userProfile: UserType = {
+                email: formData.email,
+                login: formData.login,
+                first_name: formData.first_name,
+                second_name: formData.second_name,
+                display_name: formData.display_name,
+                phone: formData.phone
+              }
+              userController.updateUserProfile(userProfile)
+            } else {
+              console.error('Ошибка: одно из обязательных полей отсутствует или имеет неверный тип')
+            }
           }
         }
       }
@@ -203,4 +225,3 @@ export default class ProfileInfo extends Service.Block {
     return this.compile(template, { ...this.props })
   }
 }
-

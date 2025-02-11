@@ -10,6 +10,7 @@ import {deepClone} from "../utils/deepClone";
 export class Store extends EventBus<any> {
   private state: StoreType = {
     chats: [],
+    messages:[],
     errorMessage: '',
     user: {
       id: null,

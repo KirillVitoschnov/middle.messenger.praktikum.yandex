@@ -23,7 +23,7 @@ export type UserType = {
   first_name: string
   second_name: string
   phone: string
-  password: string
+  password?: string
   display_name?: string
 }
 
