@@ -7,13 +7,43 @@ import { DateFormatter } from '../../../utils/dateFormatter';
 import { chatController } from '../../../controllers';
 import { getDataForm, isEqual } from '../../../utils';
 
+// Определяем интерфейсы для чата и сообщения
+interface Chat {
+  id: number;
+  title: string;
+  avatar?: string;
+  last_message?: {
+    content: string;
+    time: string;
+  } | null;
+  unread_count?: number;
+}
+
+interface Message {
+  user_id: number;
+  content: string;
+  time: string;
+}
+
+// Интерфейс для состояния приложения
+interface AppState {
+  chats?: Chat[];
+  messages?: {
+    [key: number]: Message[];
+  };
+  user?: {
+    id: number;
+  };
+}
+
 export default class ChatCurrent extends Service.Block<TProps> {
   private chatId: number;
 
   constructor(props: TProps) {
     const chatIdNumber = Number(props.id);
-    const state = store.getState();
-    const chats = state.chats || [];
+    // Приводим состояние к типу AppState
+    const state = store.getState() as AppState;
+    const chats: Chat[] = state.chats || [];
 
     super({
       ...props,
@@ -28,7 +58,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
           }),
         }),
         SideBarChatList: new Component.SideBarChatList({
-          SideBarChatListItem: chats.map((chat: any) => {
+          SideBarChatListItem: chats.map((chat: Chat) => {
             return new Component.SideBarChatListItem({
               SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
                 src: chat.avatar || '/default-avatar.svg',
@@ -39,9 +69,10 @@ export default class ChatCurrent extends Service.Block<TProps> {
                 lastMessageTime: chat.last_message
                     ? DateFormatter.formatDateTime(chat.last_message.time)
                     : '',
-                SideBarChatListItemBadge: chat.unread_count > 0
-                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                    : null,
+                SideBarChatListItemBadge:
+                    chat.unread_count && chat.unread_count > 0
+                        ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                        : null,
                 events: {
                   click: () => {
                     Service.router.go(`/messenger/${chat.id}`);
@@ -67,16 +98,18 @@ export default class ChatCurrent extends Service.Block<TProps> {
       ActiveChat: new Component.ActiveChat({
         ChatHeader: new Component.ChatHeader({
           chatHeader: (() => {
-            const currentChat = chats.find((chatItem: any) => chatItem.id === chatIdNumber) || null;
+            const currentChat: Chat | null =
+                chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
             return `Чат с ${currentChat?.title || 'Неизвестный'}`;
           })(),
         }),
         Messages: new Component.Messages({
           Message: (() => {
-            const messagesByChat = state.messages?.[chatIdNumber] || [];
-            return messagesByChat.map((message: any) => {
+            // Приводим сообщения к типу Message[]
+            const messagesByChat: Message[] = state.messages?.[chatIdNumber] || [];
+            return messagesByChat.map((message: Message) => {
               return new Component.Message({
-                type: message.user_id === state.user?.id ? 'sent' : 'received',
+                type: message.user_id === (state.user?.id || 0) ? 'sent' : 'received',
                 text: message.content,
                 time: DateFormatter.formatDateTime(message.time),
               });
@@ -118,9 +151,12 @@ export default class ChatCurrent extends Service.Block<TProps> {
                   return;
                 }
                 chatController.sendMessage(this.chatId, messageText);
-                const activeChat = this.children.ActiveChat as Component.ActiveChat;
-                const messageInput = activeChat.children.MessageInput as Component.MessageInput;
-                const inputEl = messageInput.children.input.element as HTMLInputElement;
+                // Используем приведение типов для доступа к дочерним компонентам
+                const activeChat = (this.children as any).ActiveChat as Component.ActiveChat;
+                const messageInput = (activeChat.children as any)
+                    .MessageInput as Component.MessageInput;
+                const inputEl = ((messageInput.children as any).input as Component.Input)
+                    .element as HTMLInputElement;
                 if (inputEl) {
                   inputEl.value = '';
                 }
@@ -137,15 +173,17 @@ export default class ChatCurrent extends Service.Block<TProps> {
 
   override componentDidUpdate(oldProps: TProps, newProps: TProps): boolean {
     if (isEqual(oldProps, newProps)) return false;
-    const state = store.getState();
-    const chats = state.chats || [];
-    const currentChat = chats.find((chatItem: any) => chatItem.id === this.chatId) || null;
+    const state = store.getState() as AppState;
+    const chats: Chat[] = state.chats || [];
+    const currentChat: Chat | null =
+        chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
     console.log(`currentChat: ${JSON.stringify(currentChat)}`);
 
-    const sideBarInstance = this.children.SideBar as any;
+    // Приведение типа для доступа к SideBar
+    const sideBarInstance = (this.children as any).SideBar;
     if (sideBarInstance) {
       const updatedSideBarChatList = new Component.SideBarChatList({
-        SideBarChatListItem: chats.map((chat: any) =>
+        SideBarChatListItem: chats.map((chat: Chat) =>
             new Component.SideBarChatListItem({
               SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
                 src: chat.avatar || '/default-avatar.svg',
@@ -157,9 +195,10 @@ export default class ChatCurrent extends Service.Block<TProps> {
                     ? DateFormatter.formatDateTime(chat.last_message.time)
                     : '',
               }),
-              SideBarChatListItemBadge: chat.unread_count > 0
-                  ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                  : null,
+              SideBarChatListItemBadge:
+                  chat.unread_count && chat.unread_count > 0
+                      ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                      : null,
               events: {
                 click: () => {
                   Service.router.go(`/messenger/${chat.id}`);
@@ -176,21 +215,23 @@ export default class ChatCurrent extends Service.Block<TProps> {
       });
     }
 
-    const activeChatInstance = this.children.ActiveChat as any;
+    // Приведение типа для доступа к ActiveChat
+    const activeChatInstance = (this.children as any).ActiveChat;
     if (activeChatInstance) {
       const updatedChatHeader = new Component.ChatHeader({
         chatHeader: (() => {
-          const currentChat = state.chats?.find((chatItem: any) => chatItem.id === this.chatId) || null;
+          const currentChat: Chat | null =
+              chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
           return `Чат с ${currentChat?.title || 'Неизвестный'}`;
         })(),
       });
 
       const updatedMessages = new Component.Messages({
         Message: (() => {
-          const messagesByChat = state.messages?.[this.chatId] || [];
-          return messagesByChat.map((message: any) =>
+          const messagesByChat: Message[] = state.messages?.[this.chatId] || [];
+          return messagesByChat.map((message: Message) =>
               new Component.Message({
-                type: message.user_id === state.user?.id ? 'sent' : 'received',
+                type: message.user_id === (state.user?.id || 0) ? 'sent' : 'received',
                 text: message.content,
                 time: DateFormatter.formatDateTime(message.time),
               })

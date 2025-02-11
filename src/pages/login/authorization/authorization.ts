@@ -1,15 +1,12 @@
 import { getDataForm } from '../../../utils';
 import * as Component from '../../../components';
 import * as Service from '../../../services';
-import { TProps, UserLoginType } from '../../../types'; // где TProps и UserLoginType корректно описаны
+import { TProps, UserLoginType, UserType } from '../../../types'; // Предполагается, что UserType описан как:
 import template from '../template.hbs?raw';
 import { authController } from '../../../controllers';
 
 export default class Authorization extends Service.Block {
   constructor(props: TProps = {}) {
-    // Подставляем props: TProps = {} по умолчанию,
-    // чтобы исключить ситуацию, когда props может быть undefined.
-
     const fieldsProps = [
       {
         label: 'Логин',
@@ -24,7 +21,6 @@ export default class Authorization extends Service.Block {
           },
           events: {
             blur: (event: Event) => {
-              // Явно указываем тип Event, чтобы убрать ошибку про any.
               Service.validate(event.target as HTMLInputElement);
             },
           },
@@ -77,14 +73,18 @@ export default class Authorization extends Service.Block {
       events: {
         submit: (event: Event) => {
           event.preventDefault();
-
-          // Вызываем валидацию формы
           if (Service.validateForm(event)) {
-            // Если валидация пройдена, собираем данные формы
-            const data = getDataForm(event);
-            // Передаём данные (login, password) в контроллер
-            // Предполагается, что authController.login ожидает UserLoginType
-            authController.login(data as UserLoginType);
+            const data = getDataForm(event) as UserLoginType;
+            const fullData: UserType = {
+              login: data.login,
+              password: data.password,
+              email: '',
+              first_name: '',
+              second_name: '',
+              phone: '',
+            };
+
+            authController.login(fullData);
           }
         },
       },
@@ -95,7 +95,7 @@ export default class Authorization extends Service.Block {
     super({
       title: 'Авторизация',
       form,
-      errorMessage: props.errorMessage, // props теперь не будет undefined
+      errorMessage: props.errorMessage,
       Header,
       blockLinks: new Component.BlockLinks({}),
     });
