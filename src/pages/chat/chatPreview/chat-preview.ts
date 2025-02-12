@@ -3,7 +3,7 @@ import * as Component from '../../../components';
 import { TProps, ChatPreviewChildren, SideBarChildren } from '../../../types';
 import template from '../template.hbs?raw';
 import { store } from '../../../store';
-import { isEqual, DateFormatter } from '../../../utils';
+import { isEqual, dateFormatter } from '../../../utils';
 import { chatController } from '../../../controllers';
 
 interface ChatPreviewProps extends TProps {}
@@ -36,7 +36,7 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
                   name: chat.title,
                   lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
                   lastMessageTime: chat.last_message
-                    ? DateFormatter.formatDateTime(chat.last_message.time)
+                    ? dateFormatter.formatDateTime(chat.last_message.time)
                     : '',
                   SideBarChatListItemBadge:
                     chat.unread_count && chat.unread_count > 0
@@ -91,7 +91,7 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
                 name: chat.title,
                 lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
                 lastMessageTime: chat.last_message
-                  ? DateFormatter.formatDateTime(chat.last_message.time)
+                  ? dateFormatter.formatDateTime(chat.last_message.time)
                   : '',
                 SideBarChatListItemBadge:
                   chat.unread_count && chat.unread_count > 0
