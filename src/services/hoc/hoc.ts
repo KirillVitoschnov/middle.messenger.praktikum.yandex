@@ -1,28 +1,28 @@
-import { isEqual } from '../../utils';
-import { Block } from '../';
+import { Block } from '..';
 import { store, StoreEvents } from '../../store';
 import { Indexed } from '../../types';
+import { isEqual } from '../../utils';
+import { PropsType } from '../block';
 
-export function connect<T extends Indexed, U extends Indexed>(
-    Component: new (props: T & U) => Block,
-    mapStateToProps: (state: Indexed) => U
+type Constructor<P extends Partial<PropsType>> = new (...args: any[]) => Block<P>;
+
+export function connect<P extends PropsType>(
+    Component: Constructor<P>,
+    mapStateToProps: (state: Indexed) => Partial<P>
 ) {
   return class extends Component {
-    constructor(props: T) {
-      // Получаем часть состояния из стора и приводим её к типу U.
-      let state: U = mapStateToProps(store.getState());
+    constructor(...args: any[]) {
+      const props = args[0] || {};
+      const state = mapStateToProps(store.getState());
 
-      // Передаём объединённые пропсы: родительские (T) и данные из стора (U).
       super({ ...props, ...state });
 
-      // Подписываемся на обновления стора.
       store.on(StoreEvents.Updated, () => {
-        const newState: U = mapStateToProps(store.getState());
-        // Если данные изменились, обновляем свойства компонента.
+        const newState = mapStateToProps(store.getState());
+
         if (!isEqual(state, newState)) {
           this.setProps({ ...newState });
         }
-        state = newState;
       });
     }
   };
