@@ -1,13 +1,11 @@
 import * as Service from '../../../services';
 import * as Component from '../../../components';
-import { TProps,Chat,Message,AppState } from '../../../types';
+import { TProps, Chat, Message, AppState } from '../../../types';
 import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { DateFormatter } from '../../../utils/dateFormatter';
 import { chatController } from '../../../controllers';
 import { getDataForm, isEqual } from '../../../utils';
-
-
 
 export default class ChatCurrent extends Service.Block<TProps> {
   private chatId: number;
@@ -39,12 +37,12 @@ export default class ChatCurrent extends Service.Block<TProps> {
                 name: chat.title,
                 lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
                 lastMessageTime: chat.last_message
-                    ? DateFormatter.formatDateTime(chat.last_message.time)
-                    : '',
+                  ? DateFormatter.formatDateTime(chat.last_message.time)
+                  : '',
                 SideBarChatListItemBadge:
-                    chat.unread_count && chat.unread_count > 0
-                        ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                        : null,
+                  chat.unread_count && chat.unread_count > 0
+                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                    : null,
                 events: {
                   click: () => {
                     Service.router.go(`/messenger/${chat.id}`);
@@ -71,7 +69,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
         ChatHeader: new Component.ChatHeader({
           chatHeader: (() => {
             const currentChat: Chat | null =
-                chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
+              chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
             return `Чат с ${currentChat?.title || 'Неизвестный'}`;
           })(),
         }),
@@ -125,9 +123,9 @@ export default class ChatCurrent extends Service.Block<TProps> {
                 // Используем приведение типов для доступа к дочерним компонентам
                 const activeChat = (this.children as any).ActiveChat as Component.ActiveChat;
                 const messageInput = (activeChat.children as any)
-                    .MessageInput as Component.MessageInput;
+                  .MessageInput as Component.MessageInput;
                 const inputEl = ((messageInput.children as any).input as Component.Input)
-                    .element as HTMLInputElement;
+                  .element as HTMLInputElement;
                 if (inputEl) {
                   inputEl.value = '';
                 }
@@ -147,14 +145,15 @@ export default class ChatCurrent extends Service.Block<TProps> {
     const state = store.getState() as AppState;
     const chats: Chat[] = state.chats || [];
     const currentChat: Chat | null =
-        chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
+      chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
     console.log(`currentChat: ${JSON.stringify(currentChat)}`);
 
     // Приведение типа для доступа к SideBar
     const sideBarInstance = (this.children as any).SideBar;
     if (sideBarInstance) {
       const updatedSideBarChatList = new Component.SideBarChatList({
-        SideBarChatListItem: chats.map((chat: Chat) =>
+        SideBarChatListItem: chats.map(
+          (chat: Chat) =>
             new Component.SideBarChatListItem({
               SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
                 src: chat.avatar || '/default-avatar.svg',
@@ -163,19 +162,19 @@ export default class ChatCurrent extends Service.Block<TProps> {
                 name: chat.title,
                 lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
                 lastMessageTime: chat.last_message
-                    ? DateFormatter.formatDateTime(chat.last_message.time)
-                    : '',
+                  ? DateFormatter.formatDateTime(chat.last_message.time)
+                  : '',
               }),
               SideBarChatListItemBadge:
-                  chat.unread_count && chat.unread_count > 0
-                      ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                      : null,
+                chat.unread_count && chat.unread_count > 0
+                  ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                  : null,
               events: {
                 click: () => {
                   Service.router.go(`/messenger/${chat.id}`);
                 },
               },
-            })
+            }),
         ),
       });
 
@@ -191,7 +190,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
       const updatedChatHeader = new Component.ChatHeader({
         chatHeader: (() => {
           const currentChat: Chat | null =
-              chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
+            chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
           return `Чат с ${currentChat?.title || 'Неизвестный'}`;
         })(),
       });
@@ -199,12 +198,13 @@ export default class ChatCurrent extends Service.Block<TProps> {
       const updatedMessages = new Component.Messages({
         Message: (() => {
           const messagesByChat: Message[] = state.messages?.[this.chatId] || [];
-          return messagesByChat.map((message: Message) =>
+          return messagesByChat.map(
+            (message: Message) =>
               new Component.Message({
                 type: message.user_id === (state.user?.id || 0) ? 'sent' : 'received',
                 text: message.content,
                 time: DateFormatter.formatDateTime(message.time),
-              })
+              }),
           );
         })(),
       });

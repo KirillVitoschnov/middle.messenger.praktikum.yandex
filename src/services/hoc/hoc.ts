@@ -7,8 +7,8 @@ import { PropsType } from '../block';
 type Constructor<P extends Partial<PropsType>> = new (...args: any[]) => Block<P>;
 
 export function connect<P extends PropsType>(
-    Component: Constructor<P>,
-    mapStateToProps: (state: Indexed) => Partial<P>
+  Component: Constructor<P>,
+  mapStateToProps: (state: Indexed) => Partial<P>,
 ) {
   return class extends Component {
     constructor(...args: any[]) {

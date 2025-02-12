@@ -1,18 +1,13 @@
 import * as Service from '../../../services';
 import * as Component from '../../../components';
-import { TProps,ChatPreviewChildren,SideBarChildren } from '../../../types';
+import { TProps, ChatPreviewChildren, SideBarChildren } from '../../../types';
 import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { DateFormatter } from '../../../utils/dateFormatter';
 import { isEqual } from '../../../utils';
 import { chatController } from '../../../controllers';
 
-
 interface ChatPreviewProps extends TProps {}
-
-
-
-
 
 export default class ChatPreview extends Service.Block<ChatPreviewProps> {
   constructor(props: TProps) {
@@ -32,7 +27,8 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
           }),
         }),
         SideBarChatList: new Component.SideBarChatList({
-          SideBarChatListItem: chats.map((chat: any) =>
+          SideBarChatListItem: chats.map(
+            (chat: any) =>
               new Component.SideBarChatListItem({
                 SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
                   src: chat.avatar || '/default-avatar.svg',
@@ -41,19 +37,19 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
                   name: chat.title,
                   lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
                   lastMessageTime: chat.last_message
-                      ? DateFormatter.formatDateTime(chat.last_message.time)
-                      : '',
+                    ? DateFormatter.formatDateTime(chat.last_message.time)
+                    : '',
                   SideBarChatListItemBadge:
-                      chat.unread_count && chat.unread_count > 0
-                          ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                          : null,
+                    chat.unread_count && chat.unread_count > 0
+                      ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                      : null,
                   events: {
                     click: () => {
                       Service.router.go(`/messenger/${chat.id}`);
                     },
                   },
                 }),
-              })
+              }),
           ),
         }),
         SideBarNewChat: new Component.Button({
@@ -74,7 +70,6 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
     });
   }
 
-
   override componentDidUpdate(oldProps: ChatPreviewProps, newProps: ChatPreviewProps): boolean {
     if (isEqual(oldProps, newProps)) {
       return false;
@@ -87,7 +82,8 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
     const sideBarInstance = children.SideBar;
     if (sideBarInstance) {
       const updatedSideBarChatList = new Component.SideBarChatList({
-        SideBarChatListItem: chats.map((chat: any) =>
+        SideBarChatListItem: chats.map(
+          (chat: any) =>
             new Component.SideBarChatListItem({
               SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
                 src: chat.avatar || '/default-avatar.svg',
@@ -96,19 +92,19 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
                 name: chat.title,
                 lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
                 lastMessageTime: chat.last_message
-                    ? DateFormatter.formatDateTime(chat.last_message.time)
-                    : '',
+                  ? DateFormatter.formatDateTime(chat.last_message.time)
+                  : '',
                 SideBarChatListItemBadge:
-                    chat.unread_count && chat.unread_count > 0
-                        ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                        : null,
+                  chat.unread_count && chat.unread_count > 0
+                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                    : null,
               }),
               events: {
                 click: () => {
                   Service.router.go(`/messenger/${chat.id}`);
                 },
               },
-            })
+            }),
         ),
       });
 
@@ -123,7 +119,6 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
 
     return true;
   }
-
 
   public render(): DocumentFragment {
     return this.compile(template, {

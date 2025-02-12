@@ -1,5 +1,5 @@
 import Block, { PropsType } from './services/block';
-import * as Component from "./components";
+import * as Component from './components';
 
 /* service HTTPTransport */
 export type HTTPMethodType = (url: string, options?: any) => Promise<unknown>;
@@ -18,16 +18,15 @@ export type RouteProps = {
 
 /* store */
 export type UserType = {
-  id?: number
-  email: string
-  login: string
-  first_name: string
-  second_name: string
-  phone: string
-  password?: string
-  display_name?: string
-}
-
+  id?: number;
+  email: string;
+  login: string;
+  first_name: string;
+  second_name: string;
+  phone: string;
+  password?: string;
+  display_name?: string;
+};
 
 export type UserLoginType = {
   login: string;
@@ -36,8 +35,8 @@ export type UserLoginType = {
 export type StoreType = {
   errorMessage: '';
   user: UserType | {};
-  chats:[],
-  messages?: []
+  chats: [];
+  messages?: [];
 };
 
 /* general */
@@ -69,18 +68,17 @@ export type TBlockProps = AttrEventsType & {
   [key: string]: Block<PropsType> | Block<PropsType>[] | string | unknown;
 };
 
-export type ChatPreviewChildren ={
+export type ChatPreviewChildren = {
   SideBar: Component.SideBar;
   chatPanelPlaceholder: Component.chatPanelPlaceholder;
   blockLinks: Component.BlockLinks;
-}
+};
 
-
-export type SideBarChildren ={
+export type SideBarChildren = {
   SideBarHeader: Component.SideBarHeader;
   SideBarChatList: Component.SideBarChatList;
   SideBarNewChat: Component.Button;
-}
+};
 
 export type PasswordChangeType = {
   oldPassword: string;
@@ -88,10 +86,10 @@ export type PasswordChangeType = {
 };
 
 export type ChatType = {
-  title:string;
+  title: string;
 };
 
-export type Chat={
+export type Chat = {
   id: number;
   title: string;
   avatar?: string;
@@ -100,15 +98,15 @@ export type Chat={
     time: string;
   } | null;
   unread_count?: number;
-}
+};
 
 export type Message = {
   user_id: number;
   content: string;
   time: string;
-}
+};
 
-export type AppState ={
+export type AppState = {
   chats?: Chat[];
   messages?: {
     [key: number]: Message[];
@@ -116,6 +114,6 @@ export type AppState ={
   user?: {
     id: number;
   };
-}
+};
 
 export type TProps = Record<string, string | Function | unknown>;

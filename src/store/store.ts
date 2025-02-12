@@ -5,7 +5,7 @@ export enum StoreEvents {
 import { set } from '../utils';
 import { StoreType } from '../types';
 import EventBus from '../services/eventBus';
-import {deepClone} from "../utils/deepClone";
+import { deepClone } from '../utils/deepClone';
 
 export class Store extends EventBus<any> {
   private state: StoreType = {
@@ -24,7 +24,7 @@ export class Store extends EventBus<any> {
   };
 
   public getState() {
-    let tmp=deepClone(this.state);
+    let tmp = deepClone(this.state);
     return tmp;
   }
 
@@ -32,7 +32,6 @@ export class Store extends EventBus<any> {
     set(this.state, path, value);
     // Оповещаем всех подписчиков, что состояние обновилось
     this.emit(StoreEvents.Updated, this.getState());
-
   }
 }
 

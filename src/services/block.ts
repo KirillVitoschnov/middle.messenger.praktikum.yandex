@@ -20,9 +20,9 @@ type PropsListsType = {
 
 type PropsTypeOrEmptyObject = Partial<PropsType> & {};
 export default abstract class Block<
-    Props extends Partial<PropsType> = {},
-    Children extends Partial<PropsChildrenType> = {},
-    Lists extends Partial<PropsListsType> = {},
+  Props extends Partial<PropsType> = {},
+  Children extends Partial<PropsChildrenType> = {},
+  Lists extends Partial<PropsListsType> = {},
 > {
   static EVENTS = {
     INIT: 'init',
@@ -146,7 +146,7 @@ export default abstract class Block<
   }
 
   private _componentDidUpdate(oldProps: PropsType, newProps: PropsType): void {
-    if (!oldProps && !newProps){
+    if (!oldProps && !newProps) {
       return;
     }
     const response = this.componentDidUpdate(oldProps, newProps);
@@ -162,7 +162,6 @@ export default abstract class Block<
     return !isEqual(oldProps, newProps);
   }
 
-
   public setProps = (nextProps: Partial<Props>) => {
     if (!nextProps) {
       return;
@@ -171,8 +170,6 @@ export default abstract class Block<
     Object.assign(this.props, nextProps);
     this.eventBus().emit(Block.EVENTS.FLOW_CDU);
   };
-
-
 
   compile(template: string, props: PropsType): DocumentFragment {
     const propsAndStubs: PropsType = { ...props };
@@ -216,7 +213,7 @@ export default abstract class Block<
         });
 
         const stub = fragment.content.querySelector(
-            `[data-id="${blockList.map((item: unknown) => (item as unknown as Block<PropsType>).id!).join(',')}"]`,
+          `[data-id="${blockList.map((item: unknown) => (item as unknown as Block<PropsType>).id!).join(',')}"]`,
         );
 
         if (stub) {
@@ -289,7 +286,6 @@ export default abstract class Block<
     return proxyProps;
   }
   public setChildren = (propssses: Props & Children & Lists) => {
-
     const { children, lists } = this._getChildrenAndList(propssses!);
     this.children = children;
     this.lists = lists;

@@ -37,11 +37,11 @@ export default class HttpClient {
     const fullUrl = this._createUrl(url);
 
     return this.request(
-        options?.data ? `${fullUrl}${this.queryStringify(options.data)}` : fullUrl,
-        {
-          ...options,
-          method: METHODS.GET,
-        },
+      options?.data ? `${fullUrl}${this.queryStringify(options.data)}` : fullUrl,
+      {
+        ...options,
+        method: METHODS.GET,
+      },
     );
   };
 

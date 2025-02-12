@@ -1,4 +1,4 @@
-import {UserType} from '../types';
+import { UserType } from '../types';
 import * as Service from '../services';
 
 const chatAPIInstance = new Service.HttpClient('https://ya-praktikum.tech/api/v2/auth');

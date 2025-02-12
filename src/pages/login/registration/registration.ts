@@ -184,7 +184,6 @@ export default class Registration extends Service.Block {
               display_name: formData.display_name,
               phone: formData.phone,
               password: formData.password,
-
             };
 
             authController.signUp(userData);

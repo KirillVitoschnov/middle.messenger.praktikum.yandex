@@ -55,13 +55,13 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   // Настройка роутинга: сопоставляем маршруты с компонентами
   router
-      .use(routes.login, connect(Page.Authorization, mapUserToProps))
-      .use(routes.signUp, connect(Page.Registration, mapUserToProps))
-      .use(routes.settings, connect(Page.ProfileInfo, mapUserToProps))
-      .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword, mapUserToProps))
-      .use(routes.chat, connect(Page.ChatPreview, mapUserToProps))
-      .use(routes.chatCurrent, connect(Page.ChatCurrent, mapUserToProps))
-      .use(routes.notFoundPage, connect(Page.ChatPreview, mapUserToProps));
+    .use(routes.login, connect(Page.Authorization, mapUserToProps))
+    .use(routes.signUp, connect(Page.Registration, mapUserToProps))
+    .use(routes.settings, connect(Page.ProfileInfo, mapUserToProps))
+    .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword, mapUserToProps))
+    .use(routes.chat, connect(Page.ChatPreview, mapUserToProps))
+    .use(routes.chatCurrent, connect(Page.ChatCurrent, mapUserToProps))
+    .use(routes.notFoundPage, connect(Page.ChatPreview, mapUserToProps));
 
   const pathWindow = window.location.pathname;
 
@@ -75,10 +75,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Если пользователь не авторизован, а запрашивается защищённый маршрут – переадресовываем на страницу логина
   if (!isAuth) {
     if (
-        pathWindow === '/messenger' ||
-        pathWindow === '/settings' ||
-        pathWindow === '/settings/edit-password' ||
-        pathWindow.startsWith('/messenger/')
+      pathWindow === '/messenger' ||
+      pathWindow === '/settings' ||
+      pathWindow === '/settings/edit-password' ||
+      pathWindow.startsWith('/messenger/')
     ) {
       router.go(routes.login);
     }
@@ -86,9 +86,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   // Если текущий путь не соответствует ни одному из маршрутов – показываем страницу "не найдено"
   if (
-      !Object.values(routes).some((route) =>
-          pathWindow.match(new RegExp(`^${route.replace(/:([a-zA-Z]+)/g, '[^/]+')}$`))
-      )
+    !Object.values(routes).some((route) =>
+      pathWindow.match(new RegExp(`^${route.replace(/:([a-zA-Z]+)/g, '[^/]+')}$`)),
+    )
   ) {
     router.go(routes.notFoundPage);
   }

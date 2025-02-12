@@ -2,7 +2,7 @@ import * as Component from '../../../components';
 import * as Service from '../../../services';
 import { TProps } from '../../../types';
 import template from '../template.hbs?raw';
-import {authController, userController} from '../../../controllers';
+import { authController, userController } from '../../../controllers';
 import { getDataForm } from '../../../utils';
 
 export default class ProfileEditPassword extends Service.Block {
@@ -88,7 +88,7 @@ export default class ProfileEditPassword extends Service.Block {
       className: 'profile-link',
       events: {
         click: () => {
-          authController.logout()
+          authController.logout();
           console.log('link event Выйти');
         },
       },
@@ -134,7 +134,7 @@ export default class ProfileEditPassword extends Service.Block {
       link,
       blockLinks: null,
       backButton,
-      errorMessage:props.errorMessage,
+      errorMessage: props.errorMessage,
     });
   }
 

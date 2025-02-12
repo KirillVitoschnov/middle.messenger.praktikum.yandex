@@ -1,4 +1,4 @@
-import {PasswordChangeType, UserType} from '../types';
+import { PasswordChangeType, UserType } from '../types';
 import * as Service from '../services';
 
 const chatAPIInstance = new Service.HttpClient('https://ya-praktikum.tech/api/v2/user');
@@ -17,15 +17,15 @@ export class UserAPI extends Service.BaseAPI {
         return data;
       });
   }
-    changePasswordAPI(data: PasswordChangeType) {
-        return chatAPIInstance.put('/password', {
-            isCredentials: true,
-            headers: {
-                'content-type': 'application/json',
-            },
-            data: JSON.stringify(data),
-        });
-    }
+  changePasswordAPI(data: PasswordChangeType) {
+    return chatAPIInstance.put('/password', {
+      isCredentials: true,
+      headers: {
+        'content-type': 'application/json',
+      },
+      data: JSON.stringify(data),
+    });
+  }
 }
 
 export const userAPI = new UserAPI();

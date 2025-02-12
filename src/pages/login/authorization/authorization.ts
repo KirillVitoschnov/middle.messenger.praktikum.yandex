@@ -46,9 +46,7 @@ export default class Authorization extends Service.Block {
       },
     ];
 
-    const inputBlocks = fieldsProps.map(
-        (field) => new Component.InputBlock(field)
-    );
+    const inputBlocks = fieldsProps.map((field) => new Component.InputBlock(field));
 
     const button = new Component.Button({
       text: 'Авторизация',
