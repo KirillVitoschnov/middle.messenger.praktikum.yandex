@@ -1,4 +1,4 @@
-export class DateFormatter {
+export class dateFormatter {
   /**
    * Форматирует дату и время для отображения в стиле популярных мессенджеров.
    * @param isoDateTime Время в формате ISO (например, "2025-01-19T12:37:47+00:00").
@@ -14,14 +14,14 @@ export class DateFormatter {
     const isYesterday: boolean = date.toDateString() === yesterday.toDateString();
 
     if (isToday) {
-      return `Сегодня в ${DateFormatter.formatTime(date)}`;
+      return `Сегодня в ${dateFormatter.formatTime(date)}`;
     }
 
     if (isYesterday) {
       return 'Вчера';
     }
 
-    return DateFormatter.formatDate(date);
+    return dateFormatter.formatDate(date);
   }
 
   /**
