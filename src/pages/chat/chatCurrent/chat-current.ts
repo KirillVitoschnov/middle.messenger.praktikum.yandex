@@ -4,7 +4,7 @@ import { TProps, Chat, Message, AppState } from '../../../types';
 import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { chatController } from '../../../controllers';
-import { getDataForm, isEqual, dateFormatter } from '../../../utils';
+import { getDataForm, isEqual, formatDateTime } from '../../../utils';
 
 export default class ChatCurrent extends Service.Block<TProps> {
   private chatId: number;
@@ -35,9 +35,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
               SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                 name: chat.title,
                 lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
-                lastMessageTime: chat.last_message
-                  ? dateFormatter.formatDateTime(chat.last_message.time)
-                  : '',
+                lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
                 SideBarChatListItemBadge:
                   chat.unread_count && chat.unread_count > 0
                     ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
@@ -79,7 +77,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
               return new Component.Message({
                 type: message.user_id === (state.user?.id || 0) ? 'sent' : 'received',
                 text: message.content,
-                time: dateFormatter.formatDateTime(message.time),
+                time: formatDateTime(message.time),
               });
             });
           })(),
@@ -160,9 +158,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
               SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                 name: chat.title,
                 lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
-                lastMessageTime: chat.last_message
-                  ? dateFormatter.formatDateTime(chat.last_message.time)
-                  : '',
+                lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
               }),
               SideBarChatListItemBadge:
                 chat.unread_count && chat.unread_count > 0
@@ -202,7 +198,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
               new Component.Message({
                 type: message.user_id === (state.user?.id || 0) ? 'sent' : 'received',
                 text: message.content,
-                time: dateFormatter.formatDateTime(message.time),
+                time: formatDateTime(message.time),
               }),
           );
         })(),

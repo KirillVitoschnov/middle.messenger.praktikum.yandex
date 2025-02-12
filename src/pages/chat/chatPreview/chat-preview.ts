@@ -3,7 +3,7 @@ import * as Component from '../../../components';
 import { TProps, ChatPreviewChildren, SideBarChildren } from '../../../types';
 import template from '../template.hbs?raw';
 import { store } from '../../../store';
-import { isEqual, dateFormatter } from '../../../utils';
+import { isEqual, formatDateTime } from '../../../utils';
 import { chatController } from '../../../controllers';
 
 interface ChatPreviewProps extends TProps {}
@@ -35,9 +35,7 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
                 SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                   name: chat.title,
                   lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
-                  lastMessageTime: chat.last_message
-                    ? dateFormatter.formatDateTime(chat.last_message.time)
-                    : '',
+                  lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
                   SideBarChatListItemBadge:
                     chat.unread_count && chat.unread_count > 0
                       ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
@@ -90,9 +88,7 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
               SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                 name: chat.title,
                 lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
-                lastMessageTime: chat.last_message
-                  ? dateFormatter.formatDateTime(chat.last_message.time)
-                  : '',
+                lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
                 SideBarChatListItemBadge:
                   chat.unread_count && chat.unread_count > 0
                     ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
