@@ -3,9 +3,8 @@ import * as Component from '../../../components';
 import { TProps, Chat, Message, AppState } from '../../../types';
 import template from '../template.hbs?raw';
 import { store } from '../../../store';
-import { DateFormatter } from '../../../utils/dateFormatter';
 import { chatController } from '../../../controllers';
-import { getDataForm, isEqual } from '../../../utils';
+import { getDataForm, isEqual, DateFormatter } from '../../../utils';
 
 export default class ChatCurrent extends Service.Block<TProps> {
   private chatId: number;

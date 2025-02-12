@@ -3,8 +3,7 @@ import * as Component from '../../../components';
 import { TProps, ChatPreviewChildren, SideBarChildren } from '../../../types';
 import template from '../template.hbs?raw';
 import { store } from '../../../store';
-import { DateFormatter } from '../../../utils/dateFormatter';
-import { isEqual } from '../../../utils';
+import { isEqual, DateFormatter } from '../../../utils';
 import { chatController } from '../../../controllers';
 
 interface ChatPreviewProps extends TProps {}
