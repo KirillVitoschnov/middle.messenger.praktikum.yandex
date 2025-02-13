@@ -26,6 +26,7 @@ export type UserType = {
   phone: string;
   password?: string;
   display_name?: string;
+  avatar?: string;
 };
 
 export type UserLoginType = {

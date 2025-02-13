@@ -19,8 +19,7 @@ export default class ProfileInfo extends Service.Block {
     const header = new Component.Header({});
 
     const avatarBlock = new Component.AvatarBlock({
-      avatar:
-        'https://sun9-10.userapi.com/impg/c857220/v857220791/1a63d2/s84IGNUrCIA.jpg?size=604x604&quality=96&sign=a34d795389b61c25532a3e630586b393&type=album',
+      avatar: user.avatar?`https://ya-praktikum.tech/api/v2/resources/${user.avatar}` : 'https://sun9-10.userapi.com/impg/c857220/v857220791/1a63d2/s84IGNUrCIA.jpg?size=604x604&quality=96&sign=a34d795389b61c25532a3e630586b393&type=album',
       events: {
         click: () => {
           console.log('Avatar clicked');
@@ -179,14 +178,13 @@ export default class ProfileInfo extends Service.Block {
           event.preventDefault();
           if (Service.validateForm(event)) {
             const formData = getDataForm(event);
-            // Проверяем наличие всех обязательных полей и их тип
             if (
-              typeof formData.email === 'string' &&
-              typeof formData.login === 'string' &&
-              typeof formData.first_name === 'string' &&
-              typeof formData.second_name === 'string' &&
-              typeof formData.display_name === 'string' &&
-              typeof formData.phone === 'string'
+                typeof formData.email === 'string' &&
+                typeof formData.login === 'string' &&
+                typeof formData.first_name === 'string' &&
+                typeof formData.second_name === 'string' &&
+                typeof formData.display_name === 'string' &&
+                typeof formData.phone === 'string'
             ) {
               // Создаем объект типа UserType
               const userProfile: UserType = {
@@ -199,11 +197,35 @@ export default class ProfileInfo extends Service.Block {
               };
               userController.updateUserProfile(userProfile);
             } else {
-              console.error(
-                'Ошибка: одно из обязательных полей отсутствует или имеет неверный тип',
-              );
+              console.error('Ошибка: одно из обязательных полей отсутствует или имеет неверный тип');
             }
           }
+        },
+      },
+    });
+
+    const avatarInput = new Component.Input({
+      type: 'file',
+      name: 'avatar',
+      attr: {
+        accept: 'image/*',
+      },
+    });
+
+    const uploadAvatarButton = new Component.Button({
+      text: 'Загрузить аватар',
+      attr: { withInternalID: true, type: 'submit' },
+    });
+
+    const avatarForm = new Component.Form({
+      inputBlocks: [new Component.InputBlock({ label: 'Новый аватар', input: avatarInput })],
+      button: uploadAvatarButton,
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault();
+          const formElement = event.target as HTMLFormElement;
+          const newAvatarData = new FormData(formElement);
+          userController.updateAvatar(newAvatarData);
         },
       },
     });
@@ -216,6 +238,8 @@ export default class ProfileInfo extends Service.Block {
       changePasswordLink,
       title: 'Профиль пользователя',
       form,
+      // Новая форма для загрузки аватара
+      avatarForm,
       link,
       blockLinks: new Component.BlockLinks({}),
       backButton,
