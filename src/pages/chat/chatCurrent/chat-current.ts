@@ -92,10 +92,14 @@ export default class ChatCurrent extends Service.Block<TProps> {
             icon: '/icons/delete-chat.svg',
             events: {
               click: () => {
-                chatController.deleteChat(chatIdNumber);
+                if (window.confirm('Вы точно хотите удалить чат?')) {
+                  chatController.deleteChat(this.chatId);
+                }
               },
             },
           }),
+
+
         }),
         Messages: new Component.Messages({
           Message: (() => {
@@ -232,7 +236,9 @@ export default class ChatCurrent extends Service.Block<TProps> {
           icon: '/icons/delete-chat.svg',
           events: {
             click: () => {
-              chatController.deleteChat(this.chatId);
+              if (window.confirm('Вы точно хотите удалить чат?')) {
+                chatController.deleteChat(this.chatId);
+              }
             },
           },
         }),
