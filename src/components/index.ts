@@ -10,6 +10,7 @@ export { InputBlock } from './InputBlock';
 export { Input } from './Input';
 export { Button } from './Button';
 export { ChatHeader } from './ChatHeader';
+export { ChatHeaderButton } from './ChatHeaderButton';
 export { Messages } from './Messages';
 export { Message } from './Message';
 export { MessageInput } from './MessageInput';

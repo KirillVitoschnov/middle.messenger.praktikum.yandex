@@ -34,6 +34,17 @@ export class ChatAPI extends Service.BaseAPI {
       },
     });
   }
+
+  // Удаление чата
+  deleteChatAPI(chatId: number) {
+    return chatAPIInstance.delete('/', {
+      isCredentials: true,
+      headers: {
+        'content-type': 'application/json',
+      },
+      data: JSON.stringify({ chatId }),
+    });
+  }
 }
 
 export const chatAPI = new ChatAPI();

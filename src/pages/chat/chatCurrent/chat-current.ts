@@ -37,9 +37,9 @@ export default class ChatCurrent extends Service.Block<TProps> {
                 lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
                 lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
                 SideBarChatListItemBadge:
-                  chat.unread_count && chat.unread_count > 0
-                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                    : null,
+                    chat.unread_count && chat.unread_count > 0
+                        ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                        : null,
                 events: {
                   click: () => {
                     Service.router.go(`/messenger/${chat.id}`);
@@ -66,9 +66,36 @@ export default class ChatCurrent extends Service.Block<TProps> {
         ChatHeader: new Component.ChatHeader({
           chatHeader: (() => {
             const currentChat: Chat | null =
-              chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
+                chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
             return `Чат с ${currentChat?.title || 'Неизвестный'}`;
           })(),
+          ChatHeaderAddUser: new Component.ChatHeaderButton({
+            title: 'Добавить пользователя',
+            icon: '/icons/add-user.svg',
+            events: {
+              click: () => {
+                console.log('Нажата кнопка "Добавить пользователя"');
+              },
+            },
+          }),
+          ChatHeaderRemoveUser: new Component.ChatHeaderButton({
+            title: 'Удалить пользователя',
+            icon: '/icons/remove-user.svg',
+            events: {
+              click: () => {
+                console.log('Нажата кнопка "Удалить пользователя"');
+              },
+            },
+          }),
+          ChatHeaderDeleteChat: new Component.ChatHeaderButton({
+            title: 'Удалить чат',
+            icon: '/icons/delete-chat.svg',
+            events: {
+              click: () => {
+                chatController.deleteChat(chatIdNumber);
+              },
+            },
+          }),
         }),
         Messages: new Component.Messages({
           Message: (() => {
@@ -117,12 +144,9 @@ export default class ChatCurrent extends Service.Block<TProps> {
                   return;
                 }
                 chatController.sendMessage(this.chatId, messageText);
-                // Используем приведение типов для доступа к дочерним компонентам
                 const activeChat = (this.children as any).ActiveChat as Component.ActiveChat;
-                const messageInput = (activeChat.children as any)
-                  .MessageInput as Component.MessageInput;
-                const inputEl = ((messageInput.children as any).input as Component.Input)
-                  .element as HTMLInputElement;
+                const messageInput = (activeChat.children as any).MessageInput as Component.MessageInput;
+                const inputEl = ((messageInput.children as any).input as Component.Input).element as HTMLInputElement;
                 if (inputEl) {
                   inputEl.value = '';
                 }
@@ -142,35 +166,32 @@ export default class ChatCurrent extends Service.Block<TProps> {
     const state = store.getState() as AppState;
     const chats: Chat[] = state.chats || [];
     const currentChat: Chat | null =
-      chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
-    console.log(`currentChat: ${JSON.stringify(currentChat)}`);
+        chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
 
-    // Приведение типа для доступа к SideBar
     const sideBarInstance = (this.children as any).SideBar;
     if (sideBarInstance) {
       const updatedSideBarChatList = new Component.SideBarChatList({
-        SideBarChatListItem: chats.map(
-          (chat: Chat) =>
-            new Component.SideBarChatListItem({
-              SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                src: chat.avatar || '/default-avatar.svg',
-              }),
-              SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
-                name: chat.title,
-                lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
-                lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
-              }),
-              SideBarChatListItemBadge:
-                chat.unread_count && chat.unread_count > 0
-                  ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                  : null,
-              events: {
-                click: () => {
-                  Service.router.go(`/messenger/${chat.id}`);
-                },
-              },
+        SideBarChatListItem: chats.map((chat: Chat) => {
+          return new Component.SideBarChatListItem({
+            SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
+              src: chat.avatar || '/default-avatar.svg',
             }),
-        ),
+            SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
+              name: chat.title,
+              lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
+              lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
+            }),
+            SideBarChatListItemBadge:
+                chat.unread_count && chat.unread_count > 0
+                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                    : null,
+            events: {
+              click: () => {
+                Service.router.go(`/messenger/${chat.id}`);
+              },
+            },
+          });
+        }),
       });
 
       sideBarInstance.setChildren({
@@ -185,27 +206,52 @@ export default class ChatCurrent extends Service.Block<TProps> {
       const updatedChatHeader = new Component.ChatHeader({
         chatHeader: (() => {
           const currentChat: Chat | null =
-            chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
+              chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
           return `Чат с ${currentChat?.title || 'Неизвестный'}`;
         })(),
+        ChatHeaderAddUser: new Component.ChatHeaderButton({
+          title: 'Добавить пользователя',
+          icon: '/icons/add-user.svg',
+          events: {
+            click: () => {
+              console.log('Нажата кнопка "Добавить пользователя"');
+            },
+          },
+        }),
+        ChatHeaderRemoveUser: new Component.ChatHeaderButton({
+          title: 'Удалить пользователя',
+          icon: '/icons/remove-user.svg',
+          events: {
+            click: () => {
+              console.log('Нажата кнопка "Удалить пользователя"');
+            },
+          },
+        }),
+        ChatHeaderDeleteChat: new Component.ChatHeaderButton({
+          title: 'Удалить чат',
+          icon: '/icons/delete-chat.svg',
+          events: {
+            click: () => {
+              chatController.deleteChat(this.chatId);
+            },
+          },
+        }),
       });
 
       const updatedMessages = new Component.Messages({
         Message: (() => {
           const messagesByChat: Message[] = state.messages?.[this.chatId] || [];
-          return messagesByChat.map(
-            (message: Message) =>
-              new Component.Message({
-                type: message.user_id === (state.user?.id || 0) ? 'sent' : 'received',
-                text: message.content,
-                time: formatDateTime(message.time),
-              }),
-          );
+          return messagesByChat.map((message: Message) => {
+            return new Component.Message({
+              type: message.user_id === (state.user?.id || 0) ? 'sent' : 'received',
+              text: message.content,
+              time: formatDateTime(message.time),
+            });
+          });
         })(),
       });
 
       const existingMessageInput = activeChatInstance.children.MessageInput;
-
       activeChatInstance.setChildren({
         ChatHeader: updatedChatHeader,
         Messages: updatedMessages,
