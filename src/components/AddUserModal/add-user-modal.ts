@@ -1,42 +1,84 @@
-import { Block } from '../../services'
-import { TProps } from '../../types'
-import template from './template.hbs?raw'
-import { chatController } from '../../controllers'
+import { Block } from '../../services';
+import { TProps } from '../../types';
+import template from './template.hbs?raw';
+import * as Component from '../index';
+import * as Service from '../../services';
+import { getDataForm } from '../../utils';
+import { userController } from '../../controllers'; // Добавлен импорт контроллера пользователей
 
 export default class AddUserModal extends Block {
   constructor(props: TProps) {
-    super({
-      ...props,
+
+    const fieldsProps = [
+      {
+        label: 'Логин',
+        input: new Component.Input({
+          type: 'text',
+          name: 'login',
+          value:  '',
+          attr: {
+            'data-required': true,
+            'data-valid-login': true,
+          },
+          events: {
+            blur: (event: FocusEvent) => {
+              Service.validate(event.target as HTMLInputElement);
+            },
+          },
+        }),
+      },
+    ];
+
+    const inputBlocks = fieldsProps.map((field) => new Component.InputBlock(field));
+
+    const saveButton = new Component.Button({
+      text: 'Поиск пользователя',
+      attr: { withInternalID: true, type: 'submit' },
+    });
+
+    const form = new Component.Form({
+      inputBlocks,
+      button: saveButton,
       events: {
-        click: (event: MouseEvent) => {
-          const target = event.target as HTMLElement
-          if (target.dataset.close === 'true' || target.classList.contains('modal-overlay')) {
-            this.setProps({ isOpen: false })
+        submit: async (event: Event) => {
+          event.preventDefault();
+          const formData = getDataForm(event);
+          if (typeof formData.login === 'string') {
+            try {
+              const users = await userController.searchUser(formData.login);
+              console.log('Найденные пользователи:', users);
+            } catch (error) {
+              console.error('Ошибка при поиске пользователя:', error);
+            }
+          } else {
+            console.error('Ошибка: логин не является строкой');
           }
         },
-        submit: (event: Event) => {
-          event.preventDefault()
-          const formData = new FormData(event.target as HTMLFormElement)
-          const userId = formData.get('userId')
-          if (userId) {
-            if (this.props.chatId) {
-              chatController.addUserToChat(this.props.chatId, Number(userId))
-            }
-            this.setProps({ isOpen: false })
+      },
+    });
+
+    super({
+      ...props,
+      form,
+      events: {
+        click: (event: MouseEvent) => {
+          const target = event.target as HTMLElement;
+          if (target.dataset.close === 'true' || target.classList.contains('modal-overlay')) {
+            this.setProps({ isOpen: false });
           }
-        }
-      }
-    })
+        },
+      },
+    });
   }
 
   public render() {
-    const { isOpen } = this.props
+    const { isOpen } = this.props;
     const overlayClass = isOpen
         ? 'modal-overlay add-user-overlay'
-        : 'modal-overlay add-user-overlay modal-closed'
+        : 'modal-overlay add-user-overlay modal-closed';
     return this.compile(template, {
       ...this.props,
-      overlayClass
-    })
+      overlayClass,
+    });
   }
 }

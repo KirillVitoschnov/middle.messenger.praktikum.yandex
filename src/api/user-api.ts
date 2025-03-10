@@ -13,26 +13,35 @@ export class UserAPI extends Service.BaseAPI {
                     'content-type': 'application/json',
                 },
             })
-            .then((data) => {
-                return data;
-            });
+            .then((data) => data);
     }
 
     changePasswordAPI(data: PasswordChangeType) {
         return userAPIInstance.put('/password', {
+            data: JSON.stringify(data),
             isCredentials: true,
             headers: {
                 'content-type': 'application/json',
             },
-            data: JSON.stringify(data),
         });
     }
 
     updateAvatarAPI(formData: FormData) {
         return userAPIInstance.put('/profile/avatar', {
-            isCredentials: true,
             data: formData,
+            isCredentials: true,
             headers: {},
+        });
+    }
+
+
+    searchUserAPI(login: string) {
+        return userAPIInstance.post('/search', {
+            data: JSON.stringify({ login }),
+            isCredentials: true,
+            headers: {
+                'content-type': 'application/json',
+            },
         });
     }
 }

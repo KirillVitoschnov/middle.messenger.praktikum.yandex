@@ -47,6 +47,21 @@ export class UserController {
                 router.go('/profile');
             });
     }
+
+    searchUser(login: string) {
+        return userAPI
+            .searchUserAPI(login)
+            .then((data) => {
+                console.log('Результат поиска пользователя:', data);
+                return data;
+            })
+            .catch((error) => {
+                console.error('Ошибка при поиске пользователя:', error);
+                if (error.response) {
+                    store.setState('errorMessage', JSON.parse(error.response as string).reason);
+                }
+            });
+    }
 }
 
 export const userController = new UserController();

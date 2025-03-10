@@ -25,7 +25,7 @@ export class ChatAPI extends Service.BaseAPI {
     });
   }
 
-  // Получение токена
+  // Получение токена для подключения к чату по chatId
   getChatTokenAPI(chatId: number) {
     return chatAPIInstance.post(`/token/${chatId}`, {
       isCredentials: true,
@@ -43,6 +43,38 @@ export class ChatAPI extends Service.BaseAPI {
         'content-type': 'application/json',
       },
       data: JSON.stringify({ chatId }),
+    });
+  }
+
+  // Добавление пользователя(ей) в чат
+  addUserToChat(users: number[], chatId: number) {
+    return chatAPIInstance.put('/users', {
+      data: JSON.stringify({ users, chatId }),
+      isCredentials: true,
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
+  }
+
+  // Получение списка пользователей в конкретном чате
+  getUsersFromChat(chatId: number) {
+    return chatAPIInstance.get(`/${chatId}/users`, {
+      isCredentials: true,
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
+  }
+
+  // Удаление пользователя(ей) из чата
+  removeUserFromChat(users: number[], chatId: number) {
+    return chatAPIInstance.delete('/users', {
+      data: JSON.stringify({ users, chatId }),
+      isCredentials: true,
+      headers: {
+        'content-type': 'application/json',
+      },
     });
   }
 }

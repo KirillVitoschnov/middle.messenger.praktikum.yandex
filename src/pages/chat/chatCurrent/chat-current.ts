@@ -78,7 +78,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
             events: {
               click: () => {
                 const modal = this.children.AddUserModal
-                modal.setProps({ isOpen: true })
+                modal.setProps({ isOpen: true, chatId: chatIdNumber })
               }
             }
           }),
@@ -88,7 +88,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
             events: {
               click: () => {
                 const modal = this.children.DeleteUserModal
-                modal.setProps({ isOpen: true })
+                modal.setProps({ isOpen: true,chatId: chatIdNumber })
               }
             }
           }),
@@ -223,7 +223,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
           events: {
             click: () => {
               const modal = this.children.DeleteUserModal
-              modal.setProps({ isOpen: true })
+              modal.setProps({ isOpen: true ,   chatId: 123, })
             }
           }
         }),
