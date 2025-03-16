@@ -1,7 +1,8 @@
 <div class="user-info-item">
-    <img class="user-info-avatar" src="avatar.jpg" alt="User Avatar">
+
+    <img class="user-info-avatar" src="{{user.avatar}}" alt="{{user.login}}">
     <label class="user-info-label">
-        <input  type="checkbox" class="user-info-checkbox">
-        <span>Имя Фамилия</span>
+        <input id="{{user.id}}" name="{{user.id}}"   type="checkbox" class="user-info-checkbox">
+        <span>{{user.login}}</span>
     </label>
 </div>

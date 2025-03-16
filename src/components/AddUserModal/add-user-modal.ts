@@ -64,10 +64,11 @@ export default class AddUserModal extends Block<TProps> {
     const userInfoItems = new Component.UserInfoItems({
       items: (state.users || []).map((user) =>
           new Component.UserInfoItem({
+            user:user
           })
       ),
     });
-
+console.log(userInfoItems)
     super({
       ...props,
       form,
@@ -86,10 +87,11 @@ export default class AddUserModal extends Block<TProps> {
     });
     this.currentUsers = state.users || [];
   }
-  // override componentDidUpdate(oldProps: TProps, newProps: TProps): boolean {
-  //   if (isEqual(oldProps, newProps)) return false
-  //   return true
-  // }
+  override componentDidUpdate(oldProps: TProps, newProps: TProps): boolean {
+    console.log(oldProps, newProps);
+    if (isEqual(oldProps, newProps)) return false
+    return true
+  }
 
   public render() {
     const { isOpen } = this.props;

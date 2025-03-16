@@ -18,7 +18,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
 
     super({
       ...props,
-      AddUserModal: new Component.AddUserModal({ isOpen: false, chatId: chatIdNumber }),
+      AddUserModal: new Component.AddUserModal({ isOpen: false, chatId: chatIdNumber,state:state }),
       DeleteUserModal: new Component.DeleteUserModal({ isOpen: false, chatId: chatIdNumber }),
       SideBar: new Component.SideBar({
         SideBarHeader: new Component.SideBarHeader({
@@ -78,7 +78,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
             events: {
               click: () => {
                 const modal = this.children.AddUserModal
-                modal.setProps({ isOpen: true, chatId: chatIdNumber })
+                modal.setProps({ isOpen: true, chatId: chatIdNumber,state:state })
               }
             }
           }),
@@ -213,7 +213,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
           events: {
             click: () => {
               const modal = this.children.AddUserModal
-              modal.setProps({ isOpen: true })
+              modal.setProps({ isOpen: true,state:state })
             }
           }
         }),
