@@ -3,19 +3,21 @@ import { TProps } from '../../types';
 import template from './template.hbs?raw';
 import * as Component from '../index';
 import * as Service from '../../services';
-import { getDataForm } from '../../utils';
-import { userController } from '../../controllers'; // Добавлен импорт контроллера пользователей
+import {  getDataForm, isEqual } from '../../utils';
+import {  userController } from '../../controllers';
+import { store } from '../../store';
 
-export default class AddUserModal extends Block {
+export default class AddUserModal extends Block<TProps> {
+  private currentUsers = [];
+
   constructor(props: TProps) {
-
     const fieldsProps = [
       {
         label: 'Логин',
         input: new Component.Input({
           type: 'text',
           name: 'login',
-          value:  '',
+          value: '',
           attr: {
             'data-required': true,
             'data-valid-login': true,
@@ -45,8 +47,7 @@ export default class AddUserModal extends Block {
           const formData = getDataForm(event);
           if (typeof formData.login === 'string') {
             try {
-              const users = await userController.searchUser(formData.login);
-              console.log('Найденные пользователи:', users);
+              await userController.searchUser(formData.login);
             } catch (error) {
               console.error('Ошибка при поиске пользователя:', error);
             }
@@ -57,25 +58,45 @@ export default class AddUserModal extends Block {
       },
     });
 
+
+    const state = store.getState();
+    console.log(state.users)
+    const userInfoItems = new Component.UserInfoItems({
+      items: (state.users || []).map((user) =>
+          new Component.UserInfoItem({
+          })
+      ),
+    });
+
     super({
       ...props,
       form,
+      userInfoItems,
       events: {
         click: (event: MouseEvent) => {
           const target = event.target as HTMLElement;
-          if (target.dataset.close === 'true' || target.classList.contains('modal-overlay')) {
+          if (
+              target.dataset.close === 'true' ||
+              target.classList.contains('modal-overlay')
+          ) {
             this.setProps({ isOpen: false });
           }
         },
       },
     });
+    this.currentUsers = state.users || [];
   }
+  // override componentDidUpdate(oldProps: TProps, newProps: TProps): boolean {
+  //   if (isEqual(oldProps, newProps)) return false
+  //   return true
+  // }
 
   public render() {
     const { isOpen } = this.props;
     const overlayClass = isOpen
         ? 'modal-overlay add-user-overlay'
         : 'modal-overlay add-user-overlay modal-closed';
+
     return this.compile(template, {
       ...this.props,
       overlayClass,

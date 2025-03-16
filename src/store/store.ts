@@ -11,6 +11,24 @@ export class Store extends EventBus<any> {
   private state: StoreType = {
     chats: [],
     errorMessage: '',
+    users:[
+      {
+        "id": 191,
+        "first_name": "Kirill",
+        "second_name": "K",
+        "display_name": null,
+        "login": "Kirill",
+        "avatar": null
+      },
+      {
+        "id": 192,
+        "first_name": "Kirill",
+        "second_name": "K",
+        "display_name": null,
+        "login": "Kirillsdfas",
+        "avatar": null
+      }
+    ],
     user: {
       id: null,
       first_name: '',
@@ -30,7 +48,6 @@ export class Store extends EventBus<any> {
 
   public setState(path: string, value: unknown) {
     set(this.state, path, value);
-    // Оповещаем всех подписчиков, что состояние обновилось
     this.emit(StoreEvents.Updated, this.getState());
   }
 }

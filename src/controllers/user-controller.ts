@@ -53,7 +53,7 @@ export class UserController {
             .searchUserAPI(login)
             .then((data) => {
                 console.log('Результат поиска пользователя:', data);
-                return data;
+                store.setState('users', JSON.parse(data as string));
             })
             .catch((error) => {
                 console.error('Ошибка при поиске пользователя:', error);
