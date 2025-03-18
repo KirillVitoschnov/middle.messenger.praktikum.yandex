@@ -46,17 +46,50 @@ export class AddUserModal extends Block<TProps> {
           if (typeof formData.login === 'string') {
             try {
               await userController.searchUser(formData.login)
-            } catch (error) {}
+            } catch (error) {
+              console.error('Ошибка при поиске пользователя:', error)
+            }
           }
         }
       }
     })
 
-    const state = store.getState()
-    const userInfoItems = new Component.UserInfoItems({
-      items: (state.users || []).map((user) =>
-          new Component.UserInfoItem({ user })
-      )
+    const addUserButton = new Component.Button({
+      text: 'Добавить пользователя',
+      attr: { withInternalID: true, type: 'button' },
+      events: {
+        click: (event: MouseEvent) => {
+          console.log('Кнопка "Добавить пользователя" нажата')
+          console.log('Текущий список пользователей:', store.getState().users)
+        }
+      }
+    })
+
+    const userInfoItems = new Component.Form({
+      button: addUserButton,
+      inputBlocks: (store.getState().users || []).map((user) =>
+          new Component.UserInfoItem({
+            user,
+            events: {
+              click: (event: MouseEvent) => {
+                console.log('Нажат элемент UserInfoItem, данные пользователя:', user)
+              }
+            }
+          })
+      ),
+      events: {
+        submit: async (event: Event) => {
+          event.preventDefault()
+          const formData = getDataForm(event)
+          if (typeof formData.login === 'string') {
+            try {
+              await userController.searchUser(formData.login)
+            } catch (error) {
+              console.error('Ошибка при поиске пользователя:', error)
+            }
+          }
+        }
+      }
     })
 
     super({
@@ -80,10 +113,31 @@ export class AddUserModal extends Block<TProps> {
   override componentDidUpdate(oldProps: TProps, newProps: TProps): boolean {
     if (isEqual(oldProps, newProps)) return false
     const state = store.getState()
-    const updatedUserInfoItems = new Component.UserInfoItems({
-      items: (state.users || []).map((user) =>
-          new Component.UserInfoItem({ user })
-      )
+    console.log(this)
+
+    const addUserButton = new Component.Button({
+      text: 'Добавить пользователя',
+      attr: { withInternalID: true, type: 'button' },
+      events: {
+        click: (event: MouseEvent) => {
+          console.log('Кнопка "Добавить пользователя" нажата')
+          console.log('Текущий список пользователей:', store.getState().users)
+        }
+      }
+    })
+
+    const updatedUserInfoItems = new Component.Form({
+      inputBlocks: (state.users || []).map((user) =>
+          new Component.UserInfoItem({
+            user,
+            events: {
+              click: (event: MouseEvent) => {
+                console.log('Нажат элемент UserInfoItem, данные пользователя:', user)
+              }
+            }
+          })
+      ),
+      button: addUserButton
     })
     this.children.userInfoItems = updatedUserInfoItems
     return true
