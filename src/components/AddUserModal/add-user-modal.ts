@@ -4,7 +4,7 @@ import template from './template.hbs?raw'
 import * as Component from '../index'
 import * as Service from '../../services'
 import { getDataForm, isEqual } from '../../utils'
-import { userController } from '../../controllers'
+import { userController, chatController } from '../../controllers'
 import { store } from '../../store'
 
 export class AddUserModal extends Block<TProps> {
@@ -28,14 +28,11 @@ export class AddUserModal extends Block<TProps> {
         })
       }
     ]
-
     const inputBlocks = fieldsProps.map((field) => new Component.InputBlock(field))
-
     const saveButton = new Component.Button({
       text: 'Поиск пользователя',
       attr: { withInternalID: true, type: 'submit' }
     })
-
     const form = new Component.Form({
       inputBlocks,
       button: saveButton,
@@ -46,52 +43,40 @@ export class AddUserModal extends Block<TProps> {
           if (typeof formData.login === 'string') {
             try {
               await userController.searchUser(formData.login)
-            } catch (error) {
-              console.error('Ошибка при поиске пользователя:', error)
-            }
+            } catch {}
           }
         }
       }
     })
-
-    const addUserButton = new Component.Button({
-      text: 'Добавить пользователя',
-      attr: { withInternalID: true, type: 'button' },
-      events: {
-        click: (event: MouseEvent) => {
-          console.log('Кнопка "Добавить пользователя" нажата')
-          console.log('Текущий список пользователей:', store.getState().users)
-        }
-      }
-    })
-
+    const addUserButton = store.getState().users?.length
+        ? new Component.Button({
+          text: 'Добавить пользователя',
+          attr: { withInternalID: true, type: 'button' },
+          events: {
+            click: () => {
+              const { users } = store.getState()
+              const selectedChatId = this.props.selectedChatId
+              if (selectedChatId && users?.length) {
+                const userIds = users.map((u: any) => u.id)
+                chatController.addUserToChat(userIds, selectedChatId)
+                this.setProps({ isOpen: false })
+                store.setState('users', [])
+              }
+            }
+          }
+        })
+        : null
     const userInfoItems = new Component.Form({
       button: addUserButton,
       inputBlocks: (store.getState().users || []).map((user) =>
           new Component.UserInfoItem({
             user,
             events: {
-              click: (event: MouseEvent) => {
-                console.log('Нажат элемент UserInfoItem, данные пользователя:', user)
-              }
+              click: () => {}
             }
           })
-      ),
-      events: {
-        submit: async (event: Event) => {
-          event.preventDefault()
-          const formData = getDataForm(event)
-          if (typeof formData.login === 'string') {
-            try {
-              await userController.searchUser(formData.login)
-            } catch (error) {
-              console.error('Ошибка при поиске пользователя:', error)
-            }
-          }
-        }
-      }
+      )
     })
-
     super({
       ...props,
       form,
@@ -99,41 +84,43 @@ export class AddUserModal extends Block<TProps> {
       events: {
         click: (event: MouseEvent) => {
           const target = event.target as HTMLElement
-          if (
-              target.dataset.close === 'true' ||
-              target.classList.contains('modal-overlay')
-          ) {
+          if (target.dataset.close === 'true' || target.classList.contains('modal-overlay')) {
             this.setProps({ isOpen: false })
+            store.setState('users', [])
           }
         }
       }
     })
   }
-
   override componentDidUpdate(oldProps: TProps, newProps: TProps): boolean {
-    if (isEqual(oldProps, newProps)) return false
+    if (isEqual(oldProps, newProps)) {
+      return false
+    }
     const state = store.getState()
-    console.log(this)
-
-    const addUserButton = new Component.Button({
-      text: 'Добавить пользователя',
-      attr: { withInternalID: true, type: 'button' },
-      events: {
-        click: (event: MouseEvent) => {
-          console.log('Кнопка "Добавить пользователя" нажата')
-          console.log('Текущий список пользователей:', store.getState().users)
-        }
-      }
-    })
-
+    const addUserButton = state.users?.length
+        ? new Component.Button({
+          text: 'Добавить пользователя',
+          attr: { withInternalID: true, type: 'button' },
+          events: {
+            click: () => {
+              const { users } = store.getState()
+              const selectedChatId = this.props.selectedChatId
+              if (selectedChatId && users?.length) {
+                const userIds = users.map((u: any) => u.id)
+                chatController.addUserToChat(userIds, selectedChatId)
+                this.setProps({ isOpen: false })
+                store.setState('users', [])
+              }
+            }
+          }
+        })
+        : null
     const updatedUserInfoItems = new Component.Form({
       inputBlocks: (state.users || []).map((user) =>
           new Component.UserInfoItem({
             user,
             events: {
-              click: (event: MouseEvent) => {
-                console.log('Нажат элемент UserInfoItem, данные пользователя:', user)
-              }
+              click: () => {}
             }
           })
       ),
@@ -142,7 +129,6 @@ export class AddUserModal extends Block<TProps> {
     this.children.userInfoItems = updatedUserInfoItems
     return true
   }
-
   public render() {
     const { isOpen } = this.props
     const overlayClass = isOpen

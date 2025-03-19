@@ -1,5 +1,3 @@
-// ChatCurrent.ts
-
 import * as Service from '../../../services'
 import * as Component from '../../../components'
 import { TProps, Chat, Message, AppState } from '../../../types'
@@ -18,8 +16,16 @@ export default class ChatCurrent extends Service.Block<TProps> {
 
     super({
       ...props,
-      AddUserModal: new Component.AddUserModal({ isOpen: false, chatId: chatIdNumber,state:state }),
-      DeleteUserModal: new Component.DeleteUserModal({ isOpen: false, chatId: chatIdNumber }),
+      AddUserModal: new Component.AddUserModal({
+        isOpen: false,
+        chatId: chatIdNumber,
+        selectedChatId: chatIdNumber,
+        state: state
+      }),
+      DeleteUserModal: new Component.DeleteUserModal({
+        isOpen: false,
+        chatId: chatIdNumber
+      }),
       SideBar: new Component.SideBar({
         SideBarHeader: new Component.SideBarHeader({
           sidebarHeaderProfile: new Component.SideBarHeaderProfile({
@@ -78,7 +84,12 @@ export default class ChatCurrent extends Service.Block<TProps> {
             events: {
               click: () => {
                 const modal = this.children.AddUserModal
-                modal.setProps({ isOpen: true, chatId: chatIdNumber,state:state })
+                modal.setProps({
+                  isOpen: true,
+                  chatId: chatIdNumber,
+                  selectedChatId: chatIdNumber,
+                  state: state
+                })
               }
             }
           }),
@@ -88,7 +99,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
             events: {
               click: () => {
                 const modal = this.children.DeleteUserModal
-                modal.setProps({ isOpen: true,chatId: chatIdNumber })
+                modal.setProps({ isOpen: true, chatId: chatIdNumber })
               }
             }
           }),
@@ -167,6 +178,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
 
   override componentDidUpdate(oldProps: TProps, newProps: TProps): boolean {
     if (isEqual(oldProps, newProps)) return false
+
     const state = store.getState() as AppState
     const chats: Chat[] = state.chats || []
     const sideBarInstance = this.children.SideBar
@@ -194,12 +206,14 @@ export default class ChatCurrent extends Service.Block<TProps> {
           })
         })
       })
+
       sideBarInstance.setChildren({
         SideBarHeader: sideBarInstance.children.SideBarHeader,
         SideBarChatList: updatedSideBarChatList,
         SideBarNewChat: sideBarInstance.children.SideBarNewChat
       })
     }
+
     const activeChatInstance = this.children.ActiveChat
     if (activeChatInstance) {
       const updatedChatHeader = new Component.ChatHeader({
@@ -213,7 +227,12 @@ export default class ChatCurrent extends Service.Block<TProps> {
           events: {
             click: () => {
               const modal = this.children.AddUserModal
-              modal.setProps({ isOpen: true,state:state })
+              modal.setProps({
+                isOpen: true,
+                chatId: this.chatId,
+                selectedChatId: this.chatId,
+                state: state
+              })
             }
           }
         }),
@@ -223,7 +242,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
           events: {
             click: () => {
               const modal = this.children.DeleteUserModal
-              modal.setProps({ isOpen: true ,   chatId: 123, })
+              modal.setProps({ isOpen: true, chatId: this.chatId })
             }
           }
         }),
@@ -239,6 +258,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
           }
         })
       })
+
       const messagesByChat: Message[] = state.messages?.[this.chatId] || []
       const updatedMessages = new Component.Messages({
         Message: messagesByChat.map((message: Message) => {
@@ -249,6 +269,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
           })
         })
       })
+
       const existingMessageInput = activeChatInstance.children.MessageInput
       activeChatInstance.setChildren({
         ChatHeader: updatedChatHeader,
@@ -256,6 +277,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
         MessageInput: existingMessageInput
       })
     }
+
     return true
   }
 
