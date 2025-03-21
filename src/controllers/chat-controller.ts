@@ -98,6 +98,7 @@ export class ChatController {
     }
 
     addUserToChat(users: number[], chatId: number) {
+        console.log('addUserToChat', users)
         return chatAPI
             .addUserToChat(users, chatId)
             .then((data) => {
@@ -115,6 +116,7 @@ export class ChatController {
         return chatAPI
             .getUsersFromChat(chatId)
             .then((data) => {
+                store.setState('currentChatUsers', JSON.parse(data as string))
                 return data
             })
             .catch((error) => {

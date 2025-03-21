@@ -12,6 +12,7 @@ export class Store extends EventBus<any> {
     chats: [],
     errorMessage: '',
     users:[],
+    currentChatUsers:[],
     user: {
       id: null,
       first_name: '',
@@ -35,5 +36,4 @@ export class Store extends EventBus<any> {
   }
 }
 
-// Экспортируем единый экземпляр стора
 export const store = new Store();

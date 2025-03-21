@@ -48,25 +48,32 @@ export class AddUserModal extends Block<TProps> {
         }
       }
     })
+
     const addUserButton = store.getState().users?.length
         ? new Component.Button({
           text: 'Добавить пользователя',
-          attr: { withInternalID: true, type: 'button' },
-          events: {
-            click: () => {
-              const { users } = store.getState()
-              const selectedChatId = this.props.selectedChatId
-              if (selectedChatId && users?.length) {
-                const userIds = users.map((u: any) => u.id)
-                chatController.addUserToChat(userIds, selectedChatId)
-                this.setProps({ isOpen: false })
-                store.setState('users', [])
-              }
-            }
-          }
+          attr: { withInternalID: true, type: 'submit' }, // изменили тип на submit
+          events: {}
         })
         : null
+
     const userInfoItems = new Component.Form({
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault()
+          console.log(event)
+          const formData = getDataForm(event)
+          const users = Object.keys(formData)
+              .filter(key => formData[key] === 'on')
+              .map(key => Number(key));
+          const selectedChatId = props.selectedChatId
+          if (selectedChatId && users?.length) {
+            chatController.addUserToChat(users, selectedChatId)
+            this.setProps({ isOpen: false })
+            store.setState('users', [])
+          }
+        }
+      },
       button: addUserButton,
       inputBlocks: (store.getState().users || []).map((user) =>
           new Component.UserInfoItem({
@@ -77,6 +84,7 @@ export class AddUserModal extends Block<TProps> {
           })
       )
     })
+
     super({
       ...props,
       form,
@@ -84,7 +92,10 @@ export class AddUserModal extends Block<TProps> {
       events: {
         click: (event: MouseEvent) => {
           const target = event.target as HTMLElement
-          if (target.dataset.close === 'true' || target.classList.contains('modal-overlay')) {
+          if (
+              target.dataset.close === 'true' ||
+              target.classList.contains('modal-overlay')
+          ) {
             this.setProps({ isOpen: false })
             store.setState('users', [])
           }
@@ -92,6 +103,7 @@ export class AddUserModal extends Block<TProps> {
       }
     })
   }
+
   override componentDidUpdate(oldProps: TProps, newProps: TProps): boolean {
     if (isEqual(oldProps, newProps)) {
       return false
@@ -100,22 +112,31 @@ export class AddUserModal extends Block<TProps> {
     const addUserButton = state.users?.length
         ? new Component.Button({
           text: 'Добавить пользователя',
-          attr: { withInternalID: true, type: 'button' },
-          events: {
-            click: () => {
-              const { users } = store.getState()
-              const selectedChatId = this.props.selectedChatId
-              if (selectedChatId && users?.length) {
-                const userIds = users.map((u: any) => u.id)
-                chatController.addUserToChat(userIds, selectedChatId)
-                this.setProps({ isOpen: false })
-                store.setState('users', [])
-              }
-            }
-          }
+          attr: { withInternalID: true, type: 'submit' }, // изменили тип на submit
+          events: {}
         })
         : null
+
     const updatedUserInfoItems = new Component.Form({
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault()
+          const formData = getDataForm(event)
+          const users = Object.keys(formData)
+              .filter(key => formData[key] === 'on')
+              .map(key => Number(key));
+          console.log(users)
+          console.log(formData)
+          console.log(event)
+
+          const selectedChatId = this.props.selectedChatId
+          if (selectedChatId && users?.length) {
+            chatController.addUserToChat(users, selectedChatId)
+            this.setProps({ isOpen: false })
+            store.setState('users', [])
+          }
+        }
+      },
       inputBlocks: (state.users || []).map((user) =>
           new Component.UserInfoItem({
             user,
@@ -129,11 +150,12 @@ export class AddUserModal extends Block<TProps> {
     this.children.userInfoItems = updatedUserInfoItems
     return true
   }
+
   public render() {
     const { isOpen } = this.props
     const overlayClass = isOpen
-        ? 'modal-overlay add-user-overlay'
-        : 'modal-overlay add-user-overlay modal-closed'
+        ? 'modal-overlay user-overlay'
+        : 'modal-overlay user-overlay modal-closed'
     return this.compile(template, {
       ...this.props,
       overlayClass

@@ -39,6 +39,7 @@ export type StoreType = {
   users:[],
   chats: [];
   messages?: [];
+  currentChatUsers?:[]
 };
 
 /* general */
