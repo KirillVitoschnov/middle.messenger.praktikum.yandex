@@ -802,7 +802,6 @@ form {
   border: 1px solid var(--color-border);
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .chat-header-button:hover {
@@ -842,7 +841,6 @@ form {
   pointer-events: none;
 }
 
-
 .add-user-modal {
   background-color: var(--color-bg-dark);
   color: var(--color-text-dark);
@@ -872,13 +870,11 @@ form {
   color: var(--color-accent-dark);
 }
 
-
 .add-user-modal h2 {
   margin-top: 0;
   margin-bottom: 1.5rem;
   font-size: 1.25rem;
 }
-
 
 .add-user-form {
   display: flex;
@@ -931,9 +927,11 @@ form {
   cursor: pointer;
   margin-bottom: 16px;
 }
+
 .user-info-item:hover {
   transform: scale(1.02);
 }
+
 .user-info-avatar {
   width: 50px;
   height: 50px;
@@ -942,12 +940,14 @@ form {
   margin-right: 12px;
   border: 2px solid var(--color-border);
 }
+
 .user-info-label {
   display: flex;
   align-items: center;
   font-size: 16px;
   font-weight: 500;
 }
+
 .user-info-checkbox {
   appearance: none;
   width: 22px;
@@ -956,13 +956,14 @@ form {
   border-radius: 6px;
   position: relative;
   cursor: pointer;
-  transition: background-color 0.3s, border-color 0.3s;
   margin-right: 8px;
 }
+
 .user-info-checkbox:checked {
   background-color: var(--color-accent);
   border-color: var(--color-accent);
 }
+
 .user-info-checkbox:checked::before {
   content: '';
   position: absolute;
