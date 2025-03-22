@@ -1,7 +1,9 @@
+// types.ts
+
 import Block, { PropsType } from './services/block';
 import * as Component from './components';
 
-/* service HTTPTransport */
+/* HTTP-транспорт */
 export type HTTPMethodType = (url: string, options?: any) => Promise<unknown>;
 export type HTTPCurrentMethodType = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type RequestOptionsType = {
@@ -11,12 +13,12 @@ export type RequestOptionsType = {
   isCredentials?: boolean;
 };
 
-/* router */
+/* Роутер */
 export type RouteProps = {
   rootQuery: string;
 };
 
-/* store */
+/* Стор */
 export type UserType = {
   id?: number;
   email: string;
@@ -33,18 +35,19 @@ export type UserLoginType = {
   login: string;
   password: string;
 };
+
 export type StoreType = {
   errorMessage: '';
   user: UserType | {};
-  users:[],
-  chats: [];
-  messages?: [];
-  currentChatUsers?:[]
+  users: any[];
+  chats: any[];
+  messages?: any[];
+  currentChatUsers?: any[];
 };
 
-/* general */
+/* Общие */
 export type Indexed<T = unknown> = {
-  [key in string]: T;
+  [key: string]: T;
 };
 
 export type EventType = {
@@ -60,10 +63,12 @@ export type ObjectType = {
 export type PropsListType = {
   [key: string]: Node[];
 };
+
 export type AttrEventsType = {
   events?: EventType;
   attr?: Record<string, string | boolean | number>;
 };
+
 export type TBlockProps = AttrEventsType & {
   className?: string;
   withInternalId?: boolean;
@@ -120,3 +125,22 @@ export type AppState = {
 };
 
 export type TProps = Record<string, string | Function | unknown>;
+
+
+export interface RemoveUserModalProps extends TProps {
+  selectedChatId: number;
+  currentChatUsers?: UserType[];
+  isOpen?: boolean;
+}
+
+export interface AddUserModalProps extends TProps {
+  selectedChatId: number;
+  isOpen?: boolean;
+}
+
+export interface ChatCurrentChildren {
+  AddUserModal: InstanceType<typeof Component.AddUserModal>;
+  DeleteUserModal: InstanceType<typeof Component.DeleteUserModal>;
+  SideBar: InstanceType<typeof Component.SideBar>;
+  ActiveChat: InstanceType<typeof Component.ActiveChat>;
+}

@@ -1,31 +1,19 @@
-import { Block } from '../../services'
-import { TProps,UserType } from '../../types'
-import template from './template.hbs?raw'
-import * as Component from '../index'
-import * as Service from '../../services'
-import { getDataForm, isEqual } from '../../utils'
-import { chatController } from '../../controllers'
-import { store } from '../../store'
-
-
-
-
-
-interface RemoveUserModalProps extends TProps {
-  selectedChatId: number;
-  currentChatUsers?: UserType[];
-  isOpen?: boolean;
-}
-
-
-interface Children {
-  userInfoItems?: Component.Form;
-}
+import { Block } from '../../services';
+import { RemoveUserModalProps,  UserType } from '../../types';
+import template from './template.hbs?raw';
+import * as Component from '../index';
+import * as Service from '../../services';
+import { getDataForm, isEqual } from '../../utils';
+import { chatController } from '../../controllers';
+import { store } from '../../store';
 
 export class RemoveUserModal extends Block<RemoveUserModalProps> {
-  public children: Children = {};
+  public children: {
+    userInfoItems?: Component.Form;
+  } = {};
 
   constructor(props: RemoveUserModalProps) {
+    // Получаем список пользователей текущего чата
     chatController.getUsersFromChat(props.selectedChatId);
 
     const removeUserButton = new Component.Button({
@@ -91,7 +79,7 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
 
     const updatedUserInfoItems = new Component.Form({
       button: removeUserButton,
-      inputBlocks: ((newProps.currentChatUsers) || []).map((user: UserType) =>
+      inputBlocks: (newProps.currentChatUsers || []).map((user: UserType) =>
           new Component.UserInfoItem({
             user,
             withCheckbox: true,
@@ -106,8 +94,6 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
               .filter(key => formData[key] === 'on')
               .map(key => Number(key));
           const selectedChatId: number = this.props.selectedChatId;
-          console.log(event);
-          console.log(formData);
           if (users.length && selectedChatId) {
             chatController.removeUserFromChat(users, selectedChatId);
             this.setProps({ isOpen: false });

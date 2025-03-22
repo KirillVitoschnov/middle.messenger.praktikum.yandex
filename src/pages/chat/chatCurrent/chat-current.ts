@@ -1,12 +1,11 @@
-import * as Service from '../../../services'
-import * as Component from '../../../components'
-import { TProps, Chat, Message, AppState } from '../../../types'
-import template from '../template.hbs?raw'
-import { store } from '../../../store'
-import { chatController } from '../../../controllers'
-import { getDataForm, isEqual, formatDateTime } from '../../../utils'
+import * as Service from '../../../services';
+import * as Component from '../../../components';
+import { TProps, Chat, Message, AppState } from '../../../types';
+import template from '../template.hbs?raw';
+import { store } from '../../../store';
+import { chatController } from '../../../controllers';
+import { getDataForm, isEqual, formatDateTime } from '../../../utils';
 
-// Определяем типы для дочерних компонентов через InstanceType
 interface ChatCurrentChildren {
   AddUserModal: InstanceType<typeof Component.AddUserModal>;
   DeleteUserModal: InstanceType<typeof Component.DeleteUserModal>;
@@ -15,7 +14,6 @@ interface ChatCurrentChildren {
 }
 
 export default class ChatCurrent extends Service.Block<TProps> {
-  // Используем declare для уточнения типа уже существующего свойства children
   declare public children: ChatCurrentChildren;
   private chatId: number;
 
@@ -168,9 +166,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
                 }
                 chatController.sendMessage(this.chatId, messageText);
                 const activeChat = this.children.ActiveChat;
-                // Приводим тип children, чтобы получить MessageInput
                 const messageInput = (activeChat.children as { MessageInput: InstanceType<typeof Component.MessageInput> }).MessageInput;
-                // Аналогично, для доступа к input внутри MessageInput
                 const inputEl = ((messageInput.children as { input: InstanceType<typeof Component.Input> }).input).element as HTMLInputElement;
                 if (inputEl) {
                   inputEl.value = '';
@@ -214,7 +210,6 @@ export default class ChatCurrent extends Service.Block<TProps> {
           });
         })
       });
-      // Приводим тип children для доступа к вложенным компонентам SideBar
       const sideBarChildren = sideBarInstance.children as {
         SideBarHeader: InstanceType<typeof Component.SideBarHeader>;
         SideBarNewChat: InstanceType<typeof Component.Button>;

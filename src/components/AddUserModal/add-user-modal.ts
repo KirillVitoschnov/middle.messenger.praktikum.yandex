@@ -1,15 +1,11 @@
-import { Block } from '../../services'
-import { TProps } from '../../types'
-import template from './template.hbs?raw'
-import * as Component from '../index'
-import * as Service from '../../services'
-import { getDataForm, isEqual } from '../../utils'
-import { userController, chatController } from '../../controllers'
-import { store } from '../../store'
-
-export interface AddUserModalProps extends TProps {
-  selectedChatId: number;
-}
+import { Block } from '../../services';
+import { AddUserModalProps } from '../../types';
+import template from './template.hbs?raw';
+import * as Component from '../index';
+import * as Service from '../../services';
+import { getDataForm, isEqual } from '../../utils';
+import { userController, chatController } from '../../controllers';
+import { store } from '../../store';
 
 export class AddUserModal extends Block<AddUserModalProps> {
   constructor(props: AddUserModalProps) {
@@ -26,7 +22,7 @@ export class AddUserModal extends Block<AddUserModalProps> {
           },
           events: {
             blur: (event: FocusEvent) => {
-              Service.validate(event.target as HTMLInputElement)
+              Service.validate(event.target as HTMLInputElement);
             }
           }
         })
