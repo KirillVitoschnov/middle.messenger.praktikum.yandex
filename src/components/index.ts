@@ -22,5 +22,5 @@ export { SideBarChatListItemAvatar } from './SideBarChatListItemAvatar';
 export { SideBarChatListItemInfo } from './SideBarChatListItemInfo';
 export { SideBarChatListItemBadge } from './SideBarChatListItemBadge';
 export { AddUserModal } from './AddUserModal';
-export {DeleteUserModal} from './DeleteUserModal';
-export {UserInfoItem} from './UserInfoItem';
+export { DeleteUserModal } from './DeleteUserModal';
+export { UserInfoItem } from './UserInfoItem';

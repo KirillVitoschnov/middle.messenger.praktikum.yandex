@@ -19,7 +19,9 @@ export default class ProfileInfo extends Service.Block {
     const header = new Component.Header({});
 
     const avatarBlock = new Component.AvatarBlock({
-      avatar: user.avatar?`https://ya-praktikum.tech/api/v2/resources/${user.avatar}` : 'https://sun9-10.userapi.com/impg/c857220/v857220791/1a63d2/s84IGNUrCIA.jpg?size=604x604&quality=96&sign=a34d795389b61c25532a3e630586b393&type=album',
+      avatar: user.avatar
+        ? `https://ya-praktikum.tech/api/v2/resources/${user.avatar}`
+        : 'https://sun9-10.userapi.com/impg/c857220/v857220791/1a63d2/s84IGNUrCIA.jpg?size=604x604&quality=96&sign=a34d795389b61c25532a3e630586b393&type=album',
       events: {
         click: () => {
           console.log('Avatar clicked');
@@ -179,12 +181,12 @@ export default class ProfileInfo extends Service.Block {
           if (Service.validateForm(event)) {
             const formData = getDataForm(event);
             if (
-                typeof formData.email === 'string' &&
-                typeof formData.login === 'string' &&
-                typeof formData.first_name === 'string' &&
-                typeof formData.second_name === 'string' &&
-                typeof formData.display_name === 'string' &&
-                typeof formData.phone === 'string'
+              typeof formData.email === 'string' &&
+              typeof formData.login === 'string' &&
+              typeof formData.first_name === 'string' &&
+              typeof formData.second_name === 'string' &&
+              typeof formData.display_name === 'string' &&
+              typeof formData.phone === 'string'
             ) {
               // Создаем объект типа UserType
               const userProfile: UserType = {
@@ -197,7 +199,9 @@ export default class ProfileInfo extends Service.Block {
               };
               userController.updateUserProfile(userProfile);
             } else {
-              console.error('Ошибка: одно из обязательных полей отсутствует или имеет неверный тип');
+              console.error(
+                'Ошибка: одно из обязательных полей отсутствует или имеет неверный тип',
+              );
             }
           }
         },

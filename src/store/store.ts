@@ -11,8 +11,8 @@ export class Store extends EventBus<any> {
   private state: StoreType = {
     chats: [],
     errorMessage: '',
-    users:[],
-    currentChatUsers:[],
+    users: [],
+    currentChatUsers: [],
     user: {
       id: null,
       first_name: '',

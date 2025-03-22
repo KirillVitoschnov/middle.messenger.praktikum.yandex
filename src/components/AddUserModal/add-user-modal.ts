@@ -18,20 +18,20 @@ export class AddUserModal extends Block<AddUserModalProps> {
           value: '',
           attr: {
             'data-required': true,
-            'data-valid-login': true
+            'data-valid-login': true,
           },
           events: {
             blur: (event: FocusEvent) => {
               Service.validate(event.target as HTMLInputElement);
-            }
-          }
-        })
-      }
+            },
+          },
+        }),
+      },
     ];
     const inputBlocks = fieldsProps.map((field) => new Component.InputBlock(field));
     const saveButton = new Component.Button({
       text: 'Поиск пользователя',
-      attr: { withInternalID: true, type: 'submit' }
+      attr: { withInternalID: true, type: 'submit' },
     });
     const form = new Component.Form({
       inputBlocks,
@@ -45,17 +45,17 @@ export class AddUserModal extends Block<AddUserModalProps> {
               await userController.searchUser(formData.login);
             } catch {}
           }
-        }
-      }
+        },
+      },
     });
 
     const addUserButton = store.getState().users?.length
-        ? new Component.Button({
+      ? new Component.Button({
           text: 'Добавить пользователя',
           attr: { withInternalID: true, type: 'submit' },
-          events: {}
+          events: {},
         })
-        : null;
+      : null;
 
     const userInfoItems = new Component.Form({
       events: {
@@ -63,25 +63,26 @@ export class AddUserModal extends Block<AddUserModalProps> {
           event.preventDefault();
           const formData = getDataForm(event);
           const users = Object.keys(formData)
-              .filter(key => formData[key] === 'on')
-              .map(key => Number(key));
+            .filter((key) => formData[key] === 'on')
+            .map((key) => Number(key));
           const selectedChatId = props.selectedChatId;
           if (selectedChatId && users?.length) {
             chatController.addUserToChat(users, selectedChatId);
             this.setProps({ isOpen: false });
             store.setState('users', []);
           }
-        }
+        },
       },
       button: addUserButton,
-      inputBlocks: (store.getState().users || []).map((user) =>
+      inputBlocks: (store.getState().users || []).map(
+        (user) =>
           new Component.UserInfoItem({
             user,
             events: {
-              click: () => {}
-            }
-          })
-      )
+              click: () => {},
+            },
+          }),
+      ),
     });
 
     super({
@@ -91,15 +92,12 @@ export class AddUserModal extends Block<AddUserModalProps> {
       events: {
         click: (event: MouseEvent) => {
           const target = event.target as HTMLElement;
-          if (
-              target.dataset.close === 'true' ||
-              target.classList.contains('modal-overlay')
-          ) {
+          if (target.dataset.close === 'true' || target.classList.contains('modal-overlay')) {
             this.setProps({ isOpen: false });
             store.setState('users', []);
           }
-        }
-      }
+        },
+      },
     });
   }
 
@@ -109,12 +107,12 @@ export class AddUserModal extends Block<AddUserModalProps> {
     }
     const state = store.getState();
     const addUserButton = state.users?.length
-        ? new Component.Button({
+      ? new Component.Button({
           text: 'Добавить пользователя',
           attr: { withInternalID: true, type: 'submit' },
-          events: {}
+          events: {},
         })
-        : null;
+      : null;
 
     const updatedUserInfoItems = new Component.Form({
       events: {
@@ -122,25 +120,26 @@ export class AddUserModal extends Block<AddUserModalProps> {
           event.preventDefault();
           const formData = getDataForm(event);
           const users = Object.keys(formData)
-              .filter(key => formData[key] === 'on')
-              .map(key => Number(key));
+            .filter((key) => formData[key] === 'on')
+            .map((key) => Number(key));
           const selectedChatId = this.props.selectedChatId;
           if (selectedChatId && users?.length) {
             chatController.addUserToChat(users, selectedChatId);
             this.setProps({ isOpen: false });
             store.setState('users', []);
           }
-        }
+        },
       },
-      inputBlocks: (state.users || []).map((user) =>
+      inputBlocks: (state.users || []).map(
+        (user) =>
           new Component.UserInfoItem({
             user,
             events: {
-              click: () => {}
-            }
-          })
+              click: () => {},
+            },
+          }),
       ),
-      button: addUserButton
+      button: addUserButton,
     });
     (this.children as any).userInfoItems = updatedUserInfoItems;
     return true;
@@ -149,11 +148,11 @@ export class AddUserModal extends Block<AddUserModalProps> {
   public render() {
     const { isOpen } = this.props;
     const overlayClass = isOpen
-        ? 'modal-overlay user-overlay'
-        : 'modal-overlay user-overlay modal-closed';
+      ? 'modal-overlay user-overlay'
+      : 'modal-overlay user-overlay modal-closed';
     return this.compile(template, {
       ...this.props,
-      overlayClass
+      overlayClass,
     });
   }
 }

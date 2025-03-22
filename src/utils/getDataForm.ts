@@ -10,10 +10,7 @@ export function getDataForm(event: Event) {
       } else {
         data[element.name] = element.value;
       }
-    } else if (
-        element instanceof HTMLSelectElement ||
-        element instanceof HTMLTextAreaElement
-    ) {
+    } else if (element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement) {
       data[element.name] = element.value;
     }
   });

@@ -126,7 +126,6 @@ export type AppState = {
 
 export type TProps = Record<string, string | Function | unknown>;
 
-
 export interface RemoveUserModalProps extends TProps {
   selectedChatId: number;
   currentChatUsers?: UserType[];
