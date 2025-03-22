@@ -15,6 +15,7 @@
   --color-input-bg-dark: rgba(54, 57, 63, 0.8);
   --color-error-dark: #ff6b6b;
 }
+
 [data-theme='light'] {
   --color-bg: var(--color-bg-light);
   --color-accent: var(--color-accent-light);
@@ -50,9 +51,10 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   transition:
-    background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    color 0.4s ease-in-out;
+          background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+          color 0.4s ease-in-out;
 }
+
 .sidebar {
   width: 25%;
   background-color: var(--color-bg);
@@ -258,10 +260,6 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-
-    &:hover {
-      background-color: #4752c4;
-    }
   }
 }
 
@@ -289,12 +287,14 @@ body {
   color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
+
   &:hover {
     background: #4752c4;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
   }
 }
+
 .button {
   padding: 12px 24px;
   border-radius: 20px;
@@ -364,6 +364,7 @@ body {
   color: var(--color-text);
   font-size: 16px;
   transition: all 0.3s ease;
+
   &:focus {
     outline: none;
     border-color: var(--color-accent);
@@ -384,12 +385,14 @@ body {
   justify-content: center;
   transition: all 0.3s ease;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+
   svg {
     width: 24px;
     height: 24px;
     fill: #fff;
     transition: transform 0.3s ease;
   }
+
   &:hover {
     background: #4752c4;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
@@ -440,8 +443,8 @@ body {
   align-items: center;
   gap: 10px;
   transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-5px);
@@ -457,7 +460,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
   h2 {
     margin: 0;
@@ -494,9 +496,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-5px);
@@ -741,6 +741,7 @@ form {
     display: block;
   }
 }
+
 .back-button {
   display: flex;
   justify-content: flex-start;
@@ -758,9 +759,9 @@ form {
   border-radius: 8px;
   cursor: pointer;
   transition:
-    background 0.3s ease,
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+          background 0.3s ease,
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -769,6 +770,7 @@ form {
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
 }
+
 .text-error {
   color: var(--color-error);
   font-size: 13px;
@@ -784,6 +786,7 @@ form {
   transition: color 0.2s ease;
   display: block;
 }
+
 .chat-header__buttons {
   display: flex;
   align-items: center;
@@ -802,12 +805,10 @@ form {
   border: 1px solid var(--color-border);
   border-radius: 4px;
   cursor: pointer;
-}
-
-.chat-header-button:hover {
-  background-color: var(--color-accent);
-  color: var(--color-text);
-  border-color: var(--color-accent);
+  transition:
+          background-color 0.2s,
+          color 0.2s,
+          border-color 0.2s;
 }
 
 .chat-header-button__icon {
@@ -886,6 +887,7 @@ form {
   margin-bottom: 0.5rem;
 }
 
+/* Изменили двойные кавычки на одинарные в селекторах атрибутов */
 .add-user-form input[type='text'] {
   padding: 0.75rem;
   border: 1px solid var(--color-border-dark);
@@ -955,6 +957,7 @@ form {
   border-radius: 6px;
   position: relative;
   cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
   margin-right: 8px;
 }
 
