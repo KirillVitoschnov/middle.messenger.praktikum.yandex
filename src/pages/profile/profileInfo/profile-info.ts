@@ -243,7 +243,6 @@ export default class ProfileInfo extends Service.Block {
       changePasswordLink,
       title: 'Профиль пользователя',
       form,
-      // Новая форма для загрузки аватара
       avatarForm,
       link,
       blockLinks: new Component.BlockLinks({}),

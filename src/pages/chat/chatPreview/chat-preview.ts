@@ -5,6 +5,7 @@ import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { isEqual, formatDateTime } from '../../../utils';
 import { chatController } from '../../../controllers';
+import {BASE_URL} from "../../../congfig";
 
 interface ChatPreviewProps extends TProps {}
 
@@ -29,7 +30,7 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
               (chat: Chat) =>
                   new Component.SideBarChatListItem({
                     SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                      src: chat.avatar || '/default-avatar.svg',
+                      src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg',
                     }),
                     SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                       name: chat.title,
@@ -80,7 +81,7 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
             (chat: Chat) =>
                 new Component.SideBarChatListItem({
                   SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                    src: chat.avatar || '/default-avatar.svg',
+                    src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg'
                   }),
                   SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                     name: chat.title,

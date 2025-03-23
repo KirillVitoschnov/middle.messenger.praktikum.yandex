@@ -5,6 +5,7 @@ import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { chatController } from '../../../controllers';
 import { getDataForm, isEqual, formatDateTime } from '../../../utils';
+import {BASE_URL} from "../../../congfig";
 
 interface ChatCurrentChildren {
   AddUserModal: InstanceType<typeof Component.AddUserModal>;
@@ -17,7 +18,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
   public declare children: ChatCurrentChildren;
   private chatId: number;
 
-  constructor(props: TProps= {}) {
+  constructor(props: TProps = {}) {
     const chatIdNumber = Number(props.id);
     const state = store.getState() as AppState;
     const chats: Chat[] = state.chats || [];
@@ -47,7 +48,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
           SideBarChatListItem: chats.map((chat: Chat) => {
             return new Component.SideBarChatListItem({
               SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                src: chat.avatar || '/default-avatar.svg',
+                src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg'
               }),
               SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                 name: chat.title,
@@ -82,8 +83,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
       ActiveChat: new Component.ActiveChat({
         ChatHeader: new Component.ChatHeader({
           chatHeader: (() => {
-            const currentChat: Chat | null =
-                chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
+            const currentChat: Chat | null = chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
             return `Чат с ${currentChat?.title || 'Неизвестный'}`;
           })(),
           ChatHeaderAddUser: new Component.ChatHeaderButton({
@@ -121,6 +121,32 @@ export default class ChatCurrent extends Service.Block<TProps> {
               },
             },
           }),
+          ChatHeaderUploadChatAvatarForm: new Component.Form({
+            customClass:'chat-avatar',
+            inputBlocks: [
+              new Component.InputBlock({
+                label: 'Изменить аватар чата',
+                input: new Component.Input({
+                  type: 'file',
+                  name: 'avatar',
+                  attr: { accept: 'image/*' },
+                }),
+              }),
+            ],
+            button: new Component.Button({
+              text: 'Загрузить',
+              attr: { type: 'submit', withInternalID: true },
+            }),
+            events: {
+              submit: (event: Event) => {
+                event.preventDefault();
+                const formElement = event.target as HTMLFormElement;
+                const formData = new FormData(formElement);
+                formData.append('chatId', String(this.chatId));
+                chatController.uploadChatAvatar(formData);
+              },
+            },
+          }),
         }),
         Messages: new Component.Messages({
           Message: (() => {
@@ -141,20 +167,13 @@ export default class ChatCurrent extends Service.Block<TProps> {
             events: {
               input: (event: Event) => {
                 const inputElement = event.target as HTMLInputElement;
-                if (inputElement.value.length > 50) {
-                  inputElement.style.border = '2px solid red';
-                } else {
-                  inputElement.style.border = '1px solid #ccc';
-                }
+                inputElement.style.border = inputElement.value.length > 50 ? '2px solid red' : '1px solid #ccc';
               },
             },
           }),
           button: new Component.Button({
             text: 'Отправить',
             type: 'submit',
-            events: {
-              click: () => {},
-            },
           }),
           events: {
             submit: (event: Event) => {
@@ -162,22 +181,12 @@ export default class ChatCurrent extends Service.Block<TProps> {
               if (Service.validateForm(event)) {
                 const formData = getDataForm(event);
                 const messageText = typeof formData.message === 'string' ? formData.message : '';
-                if (!messageText) {
-                  return;
-                }
+                if (!messageText) return;
                 chatController.sendMessage(this.chatId, messageText);
                 const activeChat = this.children.ActiveChat;
-                const messageInput = (
-                    activeChat.children as {
-                      MessageInput: InstanceType<typeof Component.MessageInput>;
-                    }
-                ).MessageInput;
-                const inputEl = (
-                    messageInput.children as { input: InstanceType<typeof Component.Input> }
-                ).input.element as HTMLInputElement;
-                if (inputEl) {
-                  inputEl.value = '';
-                }
+                const messageInput = (activeChat.children as { MessageInput: InstanceType<typeof Component.MessageInput> }).MessageInput;
+                const inputEl = (messageInput.children as { input: InstanceType<typeof Component.Input> }).input.element as HTMLInputElement;
+                if (inputEl) inputEl.value = '';
               }
             },
           },
@@ -192,28 +201,29 @@ export default class ChatCurrent extends Service.Block<TProps> {
     if (isEqual(oldProps, newProps)) return false;
     const state = store.getState() as AppState;
     const chats: Chat[] = state.chats || [];
+
     const sideBarInstance = this.children.SideBar;
     if (sideBarInstance) {
       const updatedSideBarChatList = new Component.SideBarChatList({
         SideBarChatListItem: chats.map((chat: Chat) => {
           return new Component.SideBarChatListItem({
             SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-              src: chat.avatar || '/default-avatar.svg',
+              src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg'
             }),
             SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
               name: chat.title,
               lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
               lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
-            }),
-            SideBarChatListItemBadge:
-                chat.unread_count && chat.unread_count > 0
-                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                    : null,
-            events: {
-              click: () => {
-                Service.router.go(`/messenger/${chat.id}`);
+              SideBarChatListItemBadge:
+                  chat.unread_count && chat.unread_count > 0
+                      ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                      : null,
+              events: {
+                click: () => {
+                  Service.router.go(`/messenger/${chat.id}`);
+                },
               },
-            },
+            }),
           });
         }),
       });
@@ -227,14 +237,13 @@ export default class ChatCurrent extends Service.Block<TProps> {
         SideBarNewChat: sideBarChildren.SideBarNewChat,
       });
     }
+
     const activeChatInstance = this.children.ActiveChat;
     if (activeChatInstance) {
+      const currentChat: Chat | null = chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
+
       const updatedChatHeader = new Component.ChatHeader({
-        chatHeader: (() => {
-          const currentChat: Chat | null =
-              chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
-          return `Чат с ${currentChat?.title || 'Неизвестный'}`;
-        })(),
+        chatHeader: `Чат с ${currentChat?.title || 'Неизвестный'}`,
         ChatHeaderAddUser: new Component.ChatHeaderButton({
           title: 'Добавить пользователя',
           icon: '/icons/add-user.svg',
@@ -270,7 +279,37 @@ export default class ChatCurrent extends Service.Block<TProps> {
             },
           },
         }),
+        ChatHeaderUploadChatAvatarForm: new Component.Form({
+          customClass:'chat-avatar',
+          inputBlocks: [
+            new Component.InputBlock({
+              label: 'Изменить аватар чата',
+              input: new Component.Input({
+                type: 'file',
+                name: 'avatar',
+                attr: { accept: 'image/*' },
+              }),
+            }),
+          ],
+          button: new Component.Button({
+            text: 'Загрузить',
+            attr: { type: 'submit', withInternalID: true },
+          }),
+          events: {
+            submit: (event: Event) => {
+              event.preventDefault();
+              const formElement = event.target as HTMLFormElement;
+              const formData = new FormData(formElement);
+              formData.append('chatId', String(this.chatId));
+              chatController.uploadChatAvatar(formData);
+            },
+          },
+        }),
       });
+
+
+
+
       const messagesByChat: Message[] = state.messages?.[this.chatId] || [];
       const updatedMessages = new Component.Messages({
         Message: messagesByChat.map((message: Message) => {
@@ -291,6 +330,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
         MessageInput: existingMessageInput,
       });
     }
+
     return true;
   }
 

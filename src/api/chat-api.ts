@@ -57,6 +57,13 @@ export class ChatAPI extends Service.BaseAPI {
       headers: { 'content-type': 'application/json' },
     });
   }
+  uploadChatAvatar(formData: FormData) {
+    return chatAPIInstance.put('/avatar', {
+      data: formData,
+      isCredentials: true,
+    });
+  }
+
 }
 
 export const chatAPI = new ChatAPI();

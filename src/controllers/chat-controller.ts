@@ -139,6 +139,17 @@ export class ChatController {
           }
         });
   }
+    uploadChatAvatar(formData: FormData) {
+        return chatAPI.uploadChatAvatar(formData)
+            .then(() => {
+                this.getChats();
+            })
+            .catch((error) => {
+                if (error.response) {
+                    store.setState('errorMessage', JSON.parse(error.response as string).reason);
+                }
+            });
+    }
 }
 
 export const chatController = new ChatController();
