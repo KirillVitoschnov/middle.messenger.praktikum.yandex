@@ -43,10 +43,10 @@ window.addEventListener('DOMContentLoaded', async () => {
       .use(routes.login, connect(Page.Authorization, mapUserToProps))
       .use(routes.signUp, connect(Page.Registration, mapUserToProps))
       .use(routes.settings, connect(Page.ProfileInfo, mapUserToProps))
-      .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword as any, mapUserToProps))
-      .use(routes.chat, connect(Page.ChatPreview as any, mapUserToProps))
-      .use(routes.chatCurrent, connect(Page.ChatCurrent as any, mapUserToProps))
-      .use(routes.notFoundPage, connect(Page.ChatPreview as any, mapUserToProps));
+      .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword, mapUserToProps))
+      .use(routes.chat, connect(Page.ChatPreview, mapUserToProps))
+      .use(routes.chatCurrent, connect(Page.ChatCurrent, mapUserToProps))
+      .use(routes.notFoundPage, connect(Page.ChatPreview, mapUserToProps));
   const pathWindow = window.location.pathname;
   if (isAuth) {
     if (pathWindow === '/' || pathWindow === '/sign-up') {
@@ -73,3 +73,5 @@ window.addEventListener('DOMContentLoaded', async () => {
   router.start();
   manageTheme();
 });
+
+

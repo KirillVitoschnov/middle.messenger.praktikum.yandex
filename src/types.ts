@@ -49,7 +49,7 @@ export type Message = {
 };
 
 export type StoreType = {
-  errorMessage: string;
+  errorMessage?: string | null;
   user: UserType | {};
   users: UserType[];
   chats: Chat[];
