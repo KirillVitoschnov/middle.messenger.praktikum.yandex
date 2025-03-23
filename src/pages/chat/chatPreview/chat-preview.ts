@@ -9,7 +9,7 @@ import { chatController } from '../../../controllers';
 interface ChatPreviewProps extends TProps {}
 
 export default class ChatPreview extends Service.Block<ChatPreviewProps> {
-  constructor(props: TProps) {
+  constructor(props: TProps= {}) {
     const state = store.getState();
     const chats: Chat[] = state.chats || [];
     super({

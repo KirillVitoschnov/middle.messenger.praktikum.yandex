@@ -17,7 +17,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
   public declare children: ChatCurrentChildren;
   private chatId: number;
 
-  constructor(props: TProps) {
+  constructor(props: TProps= {}) {
     const chatIdNumber = Number(props.id);
     const state = store.getState() as AppState;
     const chats: Chat[] = state.chats || [];
