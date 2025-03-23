@@ -1,8 +1,8 @@
 import * as Service from '../services';
 import { ChatType } from '../types';
-import {BASE_URL} from "../congfig";
+import { BASE_URL } from '../congfig';
 
-const chatAPIInstance = new Service.HttpClient(BASE_URL+'/chats');
+const chatAPIInstance = new Service.HttpClient(BASE_URL + '/chats');
 
 export class ChatAPI extends Service.BaseAPI {
   getChatsAPI() {
@@ -63,7 +63,6 @@ export class ChatAPI extends Service.BaseAPI {
       isCredentials: true,
     });
   }
-
 }
 
 export const chatAPI = new ChatAPI();

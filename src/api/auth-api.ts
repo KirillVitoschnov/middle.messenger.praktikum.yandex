@@ -1,8 +1,8 @@
 import { UserType } from '../types';
 import * as Service from '../services';
-import {BASE_URL} from "../congfig";
+import { BASE_URL } from '../congfig';
 
-const chatAPIInstance = new Service.HttpClient(BASE_URL+'/auth');
+const chatAPIInstance = new Service.HttpClient(BASE_URL + '/auth');
 
 export class AuthAPI extends Service.BaseAPI {
   getUserAPI() {

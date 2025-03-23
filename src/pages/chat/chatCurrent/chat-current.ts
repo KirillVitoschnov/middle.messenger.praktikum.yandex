@@ -5,7 +5,7 @@ import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { chatController } from '../../../controllers';
 import { getDataForm, isEqual, formatDateTime } from '../../../utils';
-import {BASE_URL} from "../../../congfig";
+import { BASE_URL } from '../../../congfig';
 
 interface ChatCurrentChildren {
   AddUserModal: InstanceType<typeof Component.AddUserModal>;
@@ -48,16 +48,16 @@ export default class ChatCurrent extends Service.Block<TProps> {
           SideBarChatListItem: chats.map((chat: Chat) => {
             return new Component.SideBarChatListItem({
               SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg'
+                src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg',
               }),
               SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
                 name: chat.title,
                 lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
                 lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
                 SideBarChatListItemBadge:
-                    chat.unread_count && chat.unread_count > 0
-                        ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                        : null,
+                  chat.unread_count && chat.unread_count > 0
+                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                    : null,
                 events: {
                   click: () => {
                     Service.router.go(`/messenger/${chat.id}`);
@@ -83,7 +83,8 @@ export default class ChatCurrent extends Service.Block<TProps> {
       ActiveChat: new Component.ActiveChat({
         ChatHeader: new Component.ChatHeader({
           chatHeader: (() => {
-            const currentChat: Chat | null = chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
+            const currentChat: Chat | null =
+              chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
             return `Чат с ${currentChat?.title || 'Неизвестный'}`;
           })(),
           ChatHeaderAddUser: new Component.ChatHeaderButton({
@@ -122,7 +123,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
             },
           }),
           ChatHeaderUploadChatAvatarForm: new Component.Form({
-            customClass:'chat-avatar',
+            customClass: 'chat-avatar',
             inputBlocks: [
               new Component.InputBlock({
                 label: 'Изменить аватар чата',
@@ -167,7 +168,8 @@ export default class ChatCurrent extends Service.Block<TProps> {
             events: {
               input: (event: Event) => {
                 const inputElement = event.target as HTMLInputElement;
-                inputElement.style.border = inputElement.value.length > 50 ? '2px solid red' : '1px solid #ccc';
+                inputElement.style.border =
+                  inputElement.value.length > 50 ? '2px solid red' : '1px solid #ccc';
               },
             },
           }),
@@ -184,8 +186,14 @@ export default class ChatCurrent extends Service.Block<TProps> {
                 if (!messageText) return;
                 chatController.sendMessage(this.chatId, messageText);
                 const activeChat = this.children.ActiveChat;
-                const messageInput = (activeChat.children as { MessageInput: InstanceType<typeof Component.MessageInput> }).MessageInput;
-                const inputEl = (messageInput.children as { input: InstanceType<typeof Component.Input> }).input.element as HTMLInputElement;
+                const messageInput = (
+                  activeChat.children as {
+                    MessageInput: InstanceType<typeof Component.MessageInput>;
+                  }
+                ).MessageInput;
+                const inputEl = (
+                  messageInput.children as { input: InstanceType<typeof Component.Input> }
+                ).input.element as HTMLInputElement;
                 if (inputEl) inputEl.value = '';
               }
             },
@@ -208,16 +216,16 @@ export default class ChatCurrent extends Service.Block<TProps> {
         SideBarChatListItem: chats.map((chat: Chat) => {
           return new Component.SideBarChatListItem({
             SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-              src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg'
+              src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg',
             }),
             SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
               name: chat.title,
               lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
               lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
               SideBarChatListItemBadge:
-                  chat.unread_count && chat.unread_count > 0
-                      ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                      : null,
+                chat.unread_count && chat.unread_count > 0
+                  ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                  : null,
               events: {
                 click: () => {
                   Service.router.go(`/messenger/${chat.id}`);
@@ -240,7 +248,8 @@ export default class ChatCurrent extends Service.Block<TProps> {
 
     const activeChatInstance = this.children.ActiveChat;
     if (activeChatInstance) {
-      const currentChat: Chat | null = chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
+      const currentChat: Chat | null =
+        chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
 
       const updatedChatHeader = new Component.ChatHeader({
         chatHeader: `Чат с ${currentChat?.title || 'Неизвестный'}`,
@@ -280,7 +289,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
           },
         }),
         ChatHeaderUploadChatAvatarForm: new Component.Form({
-          customClass:'chat-avatar',
+          customClass: 'chat-avatar',
           inputBlocks: [
             new Component.InputBlock({
               label: 'Изменить аватар чата',
@@ -306,9 +315,6 @@ export default class ChatCurrent extends Service.Block<TProps> {
           },
         }),
       });
-
-
-
 
       const messagesByChat: Message[] = state.messages?.[this.chatId] || [];
       const updatedMessages = new Component.Messages({

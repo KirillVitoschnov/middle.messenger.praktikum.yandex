@@ -40,13 +40,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     };
   }
   router
-      .use(routes.login, connect(Page.Authorization, mapUserToProps))
-      .use(routes.signUp, connect(Page.Registration, mapUserToProps))
-      .use(routes.settings, connect(Page.ProfileInfo, mapUserToProps))
-      .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword, mapUserToProps))
-      .use(routes.chat, connect(Page.ChatPreview, mapUserToProps))
-      .use(routes.chatCurrent, connect(Page.ChatCurrent, mapUserToProps))
-      .use(routes.notFoundPage, connect(Page.ChatPreview, mapUserToProps));
+    .use(routes.login, connect(Page.Authorization, mapUserToProps))
+    .use(routes.signUp, connect(Page.Registration, mapUserToProps))
+    .use(routes.settings, connect(Page.ProfileInfo, mapUserToProps))
+    .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword, mapUserToProps))
+    .use(routes.chat, connect(Page.ChatPreview, mapUserToProps))
+    .use(routes.chatCurrent, connect(Page.ChatCurrent, mapUserToProps))
+    .use(routes.notFoundPage, connect(Page.ChatPreview, mapUserToProps));
   const pathWindow = window.location.pathname;
   if (isAuth) {
     if (pathWindow === '/' || pathWindow === '/sign-up') {
@@ -55,23 +55,21 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
   if (!isAuth) {
     if (
-        pathWindow === '/messenger' ||
-        pathWindow === '/settings' ||
-        pathWindow === '/settings/edit-password' ||
-        pathWindow.startsWith('/messenger/')
+      pathWindow === '/messenger' ||
+      pathWindow === '/settings' ||
+      pathWindow === '/settings/edit-password' ||
+      pathWindow.startsWith('/messenger/')
     ) {
       router.go(routes.login);
     }
   }
   if (
-      !Object.values(routes).some((route) =>
-          pathWindow.match(new RegExp(`^${route.replace(/:([a-zA-Z]+)/g, '[^/]+')}$`))
-      )
+    !Object.values(routes).some((route) =>
+      pathWindow.match(new RegExp(`^${route.replace(/:([a-zA-Z]+)/g, '[^/]+')}$`)),
+    )
   ) {
     router.go(routes.notFoundPage);
   }
   router.start();
   manageTheme();
 });
-
-

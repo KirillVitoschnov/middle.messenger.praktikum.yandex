@@ -6,7 +6,7 @@ import { authController, userController } from '../../../controllers';
 import { getDataForm } from '../../../utils';
 
 export default class ProfileEditPassword extends Service.Block {
-  constructor(props: TProps= {}) {
+  constructor(props: TProps = {}) {
     const header = new Component.Header({});
 
     const inputBlocks = [

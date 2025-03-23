@@ -1,4 +1,4 @@
-import {Renderable} from "../types";
+import { Renderable } from '../types';
 
 export function render(query: string, block: Renderable): Element | null {
   const root = document.querySelector(query);

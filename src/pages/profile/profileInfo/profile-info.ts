@@ -5,7 +5,7 @@ import { store } from '../../../store';
 import { getDataForm } from '../../../utils';
 import { userController, authController } from '../../../controllers';
 import { UserType } from '../../../types';
-import {BASE_URL} from "../../../congfig";
+import { BASE_URL } from '../../../congfig';
 
 export type TProps = {
   [key: string]: unknown;

@@ -1,4 +1,4 @@
-import {PlainObject} from "../types";
+import { PlainObject } from '../types';
 
 function isArray(value: unknown): value is unknown[] {
   return Array.isArray(value);
@@ -6,10 +6,10 @@ function isArray(value: unknown): value is unknown[] {
 
 function isPlainObject(value: unknown): value is PlainObject {
   return (
-      typeof value === 'object' &&
-      value !== null &&
-      value.constructor === Object &&
-      Object.prototype.toString.call(value) === '[object Object]'
+    typeof value === 'object' &&
+    value !== null &&
+    value.constructor === Object &&
+    Object.prototype.toString.call(value) === '[object Object]'
   );
 }
 

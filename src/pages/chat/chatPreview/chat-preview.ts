@@ -5,12 +5,12 @@ import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { isEqual, formatDateTime } from '../../../utils';
 import { chatController } from '../../../controllers';
-import {BASE_URL} from "../../../congfig";
+import { BASE_URL } from '../../../congfig';
 
 interface ChatPreviewProps extends TProps {}
 
 export default class ChatPreview extends Service.Block<ChatPreviewProps> {
-  constructor(props: TProps= {}) {
+  constructor(props: TProps = {}) {
     const state = store.getState();
     const chats: Chat[] = state.chats || [];
     super({
@@ -27,26 +27,26 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
         }),
         SideBarChatList: new Component.SideBarChatList({
           SideBarChatListItem: chats.map(
-              (chat: Chat) =>
-                  new Component.SideBarChatListItem({
-                    SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                      src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg',
-                    }),
-                    SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
-                      name: chat.title,
-                      lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
-                      lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
-                      SideBarChatListItemBadge:
-                          chat.unread_count && chat.unread_count > 0
-                              ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                              : null,
-                      events: {
-                        click: () => {
-                          Service.router.go(`/messenger/${chat.id}`);
-                        },
-                      },
-                    }),
-                  }),
+            (chat: Chat) =>
+              new Component.SideBarChatListItem({
+                SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
+                  src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg',
+                }),
+                SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
+                  name: chat.title,
+                  lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
+                  lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
+                  SideBarChatListItemBadge:
+                    chat.unread_count && chat.unread_count > 0
+                      ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                      : null,
+                  events: {
+                    click: () => {
+                      Service.router.go(`/messenger/${chat.id}`);
+                    },
+                  },
+                }),
+              }),
           ),
         }),
         SideBarNewChat: new Component.Button({
@@ -78,26 +78,26 @@ export default class ChatPreview extends Service.Block<ChatPreviewProps> {
     if (sideBarInstance) {
       const updatedSideBarChatList = new Component.SideBarChatList({
         SideBarChatListItem: chats.map(
-            (chat: Chat) =>
-                new Component.SideBarChatListItem({
-                  SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                    src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg'
-                  }),
-                  SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
-                    name: chat.title,
-                    lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
-                    lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
-                    SideBarChatListItemBadge:
-                        chat.unread_count && chat.unread_count > 0
-                            ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                            : null,
-                  }),
-                  events: {
-                    click: () => {
-                      Service.router.go(`/messenger/${chat.id}`);
-                    },
-                  },
-                }),
+          (chat: Chat) =>
+            new Component.SideBarChatListItem({
+              SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
+                src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg',
+              }),
+              SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
+                name: chat.title,
+                lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
+                lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
+                SideBarChatListItemBadge:
+                  chat.unread_count && chat.unread_count > 0
+                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                    : null,
+              }),
+              events: {
+                click: () => {
+                  Service.router.go(`/messenger/${chat.id}`);
+                },
+              },
+            }),
         ),
       });
       const sideBarChildren = sideBarInstance.children as SideBarChildren;

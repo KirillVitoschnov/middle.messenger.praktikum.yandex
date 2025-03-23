@@ -2,61 +2,61 @@ import { chatAPI } from '../api';
 import { store } from '../store';
 import { UserType } from '../types';
 import { router } from '../services';
-import {WEBSOCKET_URL} from '../congfig'
+import { WEBSOCKET_URL } from '../congfig';
 export class ChatController {
   private sockets: { [chatId: number]: WebSocket } = {};
 
   getChats() {
     return chatAPI
-        .getChatsAPI()
-        .then((data) => {
-          const chats = JSON.parse(data as string);
-          store.setState('chats', chats);
-          return chats;
-        })
-        .catch((error) => {
-          store.setState('errorMessage', JSON.parse(error.response as string).reason);
-        });
+      .getChatsAPI()
+      .then((data) => {
+        const chats = JSON.parse(data as string);
+        store.setState('chats', chats);
+        return chats;
+      })
+      .catch((error) => {
+        store.setState('errorMessage', JSON.parse(error.response as string).reason);
+      });
   }
 
   createChat(title: string) {
     return chatAPI
-        .createChatAPI({ title })
-        .then(() => {
-          this.getChats();
-        })
-        .catch((error) => {
-          store.setState('errorMessage', JSON.parse(error.response as string).reason);
-        });
+      .createChatAPI({ title })
+      .then(() => {
+        this.getChats();
+      })
+      .catch((error) => {
+        store.setState('errorMessage', JSON.parse(error.response as string).reason);
+      });
   }
 
   deleteChat(chatId: number) {
     return chatAPI
-        .deleteChatAPI(chatId)
-        .then(() => {
-          if (this.sockets[chatId]) {
-            this.sockets[chatId].close();
-            delete this.sockets[chatId];
-          }
-          this.getChats();
-          router.go('/messenger');
-        })
-        .catch((error) => {
-          store.setState('errorMessage', JSON.parse(error.response as string).reason);
-        });
+      .deleteChatAPI(chatId)
+      .then(() => {
+        if (this.sockets[chatId]) {
+          this.sockets[chatId].close();
+          delete this.sockets[chatId];
+        }
+        this.getChats();
+        router.go('/messenger');
+      })
+      .catch((error) => {
+        store.setState('errorMessage', JSON.parse(error.response as string).reason);
+      });
   }
 
   getChatToken(chatId: number) {
     return chatAPI
-        .getChatTokenAPI(chatId)
-        .then((data) => {
-          const token = JSON.parse(data as string).token;
-          store.setState(`token_${chatId}`, token);
-          return token;
-        })
-        .catch((error) => {
-          store.setState('errorMessage', JSON.parse(error.response as string).reason);
-        });
+      .getChatTokenAPI(chatId)
+      .then((data) => {
+        const token = JSON.parse(data as string).token;
+        store.setState(`token_${chatId}`, token);
+        return token;
+      })
+      .catch((error) => {
+        store.setState('errorMessage', JSON.parse(error.response as string).reason);
+      });
   }
 
   connectToChat(chatId: number) {
@@ -100,56 +100,57 @@ export class ChatController {
 
   addUserToChat(users: number[], chatId: number) {
     return chatAPI
-        .addUserToChat(users, chatId)
-        .then((data) => {
-          this.getUsersFromChat(chatId);
-          return data;
-        })
-        .catch((error) => {
-          if (error.response) {
-            store.setState('errorMessage', JSON.parse(error.response as string).reason);
-          }
-        });
+      .addUserToChat(users, chatId)
+      .then((data) => {
+        this.getUsersFromChat(chatId);
+        return data;
+      })
+      .catch((error) => {
+        if (error.response) {
+          store.setState('errorMessage', JSON.parse(error.response as string).reason);
+        }
+      });
   }
 
   getUsersFromChat(chatId: number) {
     return chatAPI
-        .getUsersFromChat(chatId)
-        .then((data) => {
-          store.setState('currentChatUsers', JSON.parse(data as string));
-          return data;
-        })
-        .catch((error) => {
-          if (error.response) {
-            store.setState('errorMessage', JSON.parse(error.response as string).reason);
-          }
-        });
+      .getUsersFromChat(chatId)
+      .then((data) => {
+        store.setState('currentChatUsers', JSON.parse(data as string));
+        return data;
+      })
+      .catch((error) => {
+        if (error.response) {
+          store.setState('errorMessage', JSON.parse(error.response as string).reason);
+        }
+      });
   }
 
   removeUserFromChat(users: number[], chatId: number) {
     return chatAPI
-        .removeUserFromChat(users, chatId)
-        .then((data) => {
-          this.getUsersFromChat(chatId);
-          return data;
-        })
-        .catch((error) => {
-          if (error.response) {
-            store.setState('errorMessage', JSON.parse(error.response as string).reason);
-          }
-        });
+      .removeUserFromChat(users, chatId)
+      .then((data) => {
+        this.getUsersFromChat(chatId);
+        return data;
+      })
+      .catch((error) => {
+        if (error.response) {
+          store.setState('errorMessage', JSON.parse(error.response as string).reason);
+        }
+      });
   }
-    uploadChatAvatar(formData: FormData) {
-        return chatAPI.uploadChatAvatar(formData)
-            .then(() => {
-                this.getChats();
-            })
-            .catch((error) => {
-                if (error.response) {
-                    store.setState('errorMessage', JSON.parse(error.response as string).reason);
-                }
-            });
-    }
+  uploadChatAvatar(formData: FormData) {
+    return chatAPI
+      .uploadChatAvatar(formData)
+      .then(() => {
+        this.getChats();
+      })
+      .catch((error) => {
+        if (error.response) {
+          store.setState('errorMessage', JSON.parse(error.response as string).reason);
+        }
+      });
+  }
 }
 
 export const chatController = new ChatController();

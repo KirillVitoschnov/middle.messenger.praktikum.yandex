@@ -38,10 +38,10 @@ export default class HttpClient {
     const fullUrl = this._createUrl(url);
     let finalUrl = fullUrl;
     if (
-        options?.data &&
-        typeof options.data === 'object' &&
-        !(options.data instanceof Document) &&
-        this.isPlainObject(options.data)
+      options?.data &&
+      typeof options.data === 'object' &&
+      !(options.data instanceof Document) &&
+      this.isPlainObject(options.data)
     ) {
       finalUrl += this.queryStringify(options.data);
     }

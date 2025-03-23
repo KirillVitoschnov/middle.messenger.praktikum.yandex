@@ -1,4 +1,6 @@
-export default class EventBus<Events extends Record<string, unknown[]> = Record<string, unknown[]>> {
+export default class EventBus<
+  Events extends Record<string, unknown[]> = Record<string, unknown[]>,
+> {
   private listeners: Partial<{ [K in keyof Events]: ((...args: Events[K]) => void)[] }> = {};
 
   on<K extends keyof Events>(event: K, callback: (...args: Events[K]) => void): void {
@@ -13,7 +15,7 @@ export default class EventBus<Events extends Record<string, unknown[]> = Record<
       console.warn(`Нет события: ${String(event)}`);
       return;
     }
-    this.listeners[event] = this.listeners[event]!.filter(listener => listener !== callback);
+    this.listeners[event] = this.listeners[event]!.filter((listener) => listener !== callback);
   }
 
   emit<K extends keyof Events>(event: K, ...args: Events[K]): void {
@@ -21,7 +23,7 @@ export default class EventBus<Events extends Record<string, unknown[]> = Record<
       console.warn(`Нет слушателей для события: ${String(event)}`);
       return;
     }
-    this.listeners[event]!.forEach(listener => {
+    this.listeners[event]!.forEach((listener) => {
       try {
         listener(...args);
       } catch (err) {

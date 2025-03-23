@@ -28,9 +28,9 @@ export type BlockEventsMap<P = PropsType> = {
 };
 
 export default abstract class Block<
-    Props extends Partial<PropsType> = {},
-    Children extends Partial<PropsChildrenType> = {},
-    Lists extends Partial<PropsListsType> = {}
+  Props extends Partial<PropsType> = {},
+  Children extends Partial<PropsChildrenType> = {},
+  Lists extends Partial<PropsListsType> = {},
 > {
   static readonly EVENTS = {
     INIT: 'init',
@@ -172,8 +172,8 @@ export default abstract class Block<
       const blockList = list;
       if (Array.isArray(blockList)) {
         propsAndStubs[key] = `<div data-id="${blockList
-            .map((item) => (item instanceof Block ? item.id : String(item)))
-            .join(',')}"></div>`;
+          .map((item) => (item instanceof Block ? item.id : String(item)))
+          .join(',')}"></div>`;
       }
     });
     const compiledTemplate = Handlebars.compile(template);
@@ -200,9 +200,9 @@ export default abstract class Block<
           }
         });
         const stub = fragment.content.querySelector(
-            `[data-id="${blockList
-                .map((item) => (item instanceof Block ? item.id : String(item)))
-                .join(',')}"]`
+          `[data-id="${blockList
+            .map((item) => (item instanceof Block ? item.id : String(item)))
+            .join(',')}"]`,
         );
         if (stub) {
           stub.replaceWith(listContent.content);
@@ -251,7 +251,7 @@ export default abstract class Block<
       },
       deleteProperty() {
         throw new Error('Нет прав');
-      }
+      },
     });
     return proxyProps;
   }
