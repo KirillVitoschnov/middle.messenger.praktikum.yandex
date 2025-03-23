@@ -1,7 +1,8 @@
 import * as Service from '../services';
 import { ChatType } from '../types';
+import {BASE_URL} from "../congfig";
 
-const chatAPIInstance = new Service.HttpClient('https://ya-praktikum.tech/api/v2/chats');
+const chatAPIInstance = new Service.HttpClient(BASE_URL+'/chats');
 
 export class ChatAPI extends Service.BaseAPI {
   getChatsAPI() {

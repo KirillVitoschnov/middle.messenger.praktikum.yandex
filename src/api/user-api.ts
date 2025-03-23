@@ -1,7 +1,8 @@
 import { PasswordChangeType, UserType } from '../types';
 import * as Service from '../services';
+import {BASE_URL} from "../congfig";
 
-const userAPIInstance = new Service.HttpClient('https://ya-praktikum.tech/api/v2/user');
+const userAPIInstance = new Service.HttpClient(BASE_URL+'/user');
 
 export class UserAPI extends Service.BaseAPI {
   updateUserAPI(data: UserType) {

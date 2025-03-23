@@ -4,7 +4,8 @@ import template from '../template.hbs?raw';
 import { store } from '../../../store';
 import { getDataForm } from '../../../utils';
 import { userController, authController } from '../../../controllers';
-import { UserType } from '../../../types'; // Импортируем глобальный тип
+import { UserType } from '../../../types';
+import {BASE_URL} from "../../../congfig";
 
 export type TProps = {
   [key: string]: unknown;
@@ -20,7 +21,7 @@ export default class ProfileInfo extends Service.Block {
 
     const avatarBlock = new Component.AvatarBlock({
       avatar: user.avatar
-        ? `https://ya-praktikum.tech/api/v2/resources/${user.avatar}`
+        ? `${BASE_URL}/resources/${user.avatar}`
         : 'https://sun9-10.userapi.com/impg/c857220/v857220791/1a63d2/s84IGNUrCIA.jpg?size=604x604&quality=96&sign=a34d795389b61c25532a3e630586b393&type=album',
       events: {
         click: () => {

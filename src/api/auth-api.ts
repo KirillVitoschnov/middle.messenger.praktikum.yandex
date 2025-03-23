@@ -1,7 +1,8 @@
 import { UserType } from '../types';
 import * as Service from '../services';
+import {BASE_URL} from "../congfig";
 
-const chatAPIInstance = new Service.HttpClient('https://ya-praktikum.tech/api/v2/auth');
+const chatAPIInstance = new Service.HttpClient(BASE_URL+'/auth');
 
 export class AuthAPI extends Service.BaseAPI {
   getUserAPI() {
