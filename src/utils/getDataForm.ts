@@ -1,7 +1,7 @@
-export function getDataForm(event: Event) {
+export function getDataForm(event: Event): Record<string, string | boolean> {
   const form = event.target as HTMLFormElement;
   const elements = form.querySelectorAll('input, select, textarea');
-  const data: { [key: string]: any } = {};
+  const data: Record<string, string | boolean> = {};
 
   elements.forEach((element) => {
     if (element instanceof HTMLInputElement) {

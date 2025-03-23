@@ -1,5 +1,5 @@
 import { Block } from '../../services';
-import { RemoveUserModalProps, UserType } from '../../types';
+import { RemoveUserModalProps, UserType, StoreType } from '../../types';
 import template from './template.hbs?raw';
 import * as Component from '../index';
 import * as Service from '../../services';
@@ -13,23 +13,20 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
   } = {};
 
   constructor(props: RemoveUserModalProps) {
-    // Получаем список пользователей текущего чата
     chatController.getUsersFromChat(props.selectedChatId);
-
     const removeUserButton = new Component.Button({
       text: 'Удалить выбранных',
       attr: { type: 'submit' },
     });
-
     const userInfoItems = new Component.Form({
       button: removeUserButton,
       inputBlocks: (store.getState().currentChatUsers || []).map(
-        (user: UserType) =>
-          new Component.UserInfoItem({
-            user,
-            withCheckbox: true,
-            attr: { name: 'userIds' },
-          }),
+          (user: UserType) =>
+              new Component.UserInfoItem({
+                user,
+                withCheckbox: true,
+                attr: { name: 'userIds' },
+              }),
       ),
       events: {
         submit: (event: Event) => {
@@ -37,9 +34,8 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
           const formData = getDataForm(event);
           const selectedChatId: number = this.props.selectedChatId;
           const users: number[] = Object.keys(formData)
-            .filter((key) => formData[key] === 'on')
-            .map((key) => Number(key));
-
+              .filter((key) => formData[key] === 'on')
+              .map((key) => Number(key));
           if (users.length && selectedChatId) {
             chatController.removeUserFromChat(users, selectedChatId);
             this.setProps({ isOpen: false });
@@ -47,7 +43,6 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
         },
       },
     });
-
     super({
       ...props,
       userInfoItems,
@@ -60,38 +55,35 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
         },
       },
     });
-
     this.children.userInfoItems = userInfoItems;
   }
 
   override componentDidUpdate(
-    oldProps: RemoveUserModalProps,
-    newProps: RemoveUserModalProps,
+      oldProps: RemoveUserModalProps,
+      newProps: RemoveUserModalProps,
   ): boolean {
     if (isEqual(oldProps, newProps)) return false;
-
     const removeUserButton = new Component.Button({
       text: 'Удалить выбранных',
       attr: { type: 'submit' },
     });
-
     const updatedUserInfoItems = new Component.Form({
       button: removeUserButton,
       inputBlocks: (newProps.currentChatUsers || []).map(
-        (user: UserType) =>
-          new Component.UserInfoItem({
-            user,
-            withCheckbox: true,
-            attr: { name: 'userIds' },
-          }),
+          (user: UserType) =>
+              new Component.UserInfoItem({
+                user,
+                withCheckbox: true,
+                attr: { name: 'userIds' },
+              }),
       ),
       events: {
         submit: (event: Event) => {
           event.preventDefault();
           const formData = getDataForm(event);
           const users: number[] = Object.keys(formData)
-            .filter((key) => formData[key] === 'on')
-            .map((key) => Number(key));
+              .filter((key) => formData[key] === 'on')
+              .map((key) => Number(key));
           const selectedChatId: number = this.props.selectedChatId;
           if (users.length && selectedChatId) {
             chatController.removeUserFromChat(users, selectedChatId);
@@ -100,7 +92,6 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
         },
       },
     });
-
     this.children.userInfoItems = updatedUserInfoItems;
     return true;
   }
@@ -108,9 +99,8 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
   public render() {
     const { isOpen } = this.props;
     const overlayClass = isOpen
-      ? 'modal-overlay user-overlay'
-      : 'modal-overlay user-overlay modal-closed';
-
+        ? 'modal-overlay user-overlay'
+        : 'modal-overlay user-overlay modal-closed';
     return this.compile(template, {
       ...this.props,
       overlayClass,
@@ -118,7 +108,7 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
   }
 }
 
-function mapStateToProps(state: any): Partial<RemoveUserModalProps> {
+function mapStateToProps(state: StoreType): Partial<RemoveUserModalProps> {
   return state;
 }
 

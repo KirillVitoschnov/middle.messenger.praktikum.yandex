@@ -1,11 +1,16 @@
 import { Block } from '../../services';
-import { AddUserModalProps } from '../../types';
+import { AddUserModalProps, StoreType } from '../../types';
 import template from './template.hbs?raw';
 import * as Component from '../index';
 import * as Service from '../../services';
 import { getDataForm, isEqual } from '../../utils';
 import { userController, chatController } from '../../controllers';
 import { store } from '../../store';
+
+type AddUserModalChildren = {
+  form: InstanceType<typeof Component.Form>;
+  userInfoItems: InstanceType<typeof Component.Form> | null;
+};
 
 export class AddUserModal extends Block<AddUserModalProps> {
   constructor(props: AddUserModalProps) {
@@ -48,23 +53,21 @@ export class AddUserModal extends Block<AddUserModalProps> {
         },
       },
     });
-
     const addUserButton = store.getState().users?.length
-      ? new Component.Button({
+        ? new Component.Button({
           text: 'Добавить пользователя',
           attr: { withInternalID: true, type: 'submit' },
           events: {},
         })
-      : null;
-
+        : null;
     const userInfoItems = new Component.Form({
       events: {
         submit: (event: Event) => {
           event.preventDefault();
           const formData = getDataForm(event);
           const users = Object.keys(formData)
-            .filter((key) => formData[key] === 'on')
-            .map((key) => Number(key));
+              .filter((key) => formData[key] === 'on')
+              .map((key) => Number(key));
           const selectedChatId = props.selectedChatId;
           if (selectedChatId && users?.length) {
             chatController.addUserToChat(users, selectedChatId);
@@ -75,16 +78,15 @@ export class AddUserModal extends Block<AddUserModalProps> {
       },
       button: addUserButton,
       inputBlocks: (store.getState().users || []).map(
-        (user) =>
-          new Component.UserInfoItem({
-            user,
-            events: {
-              click: () => {},
-            },
-          }),
+          (user) =>
+              new Component.UserInfoItem({
+                user,
+                events: {
+                  click: () => {},
+                },
+              }),
       ),
     });
-
     super({
       ...props,
       form,
@@ -107,21 +109,20 @@ export class AddUserModal extends Block<AddUserModalProps> {
     }
     const state = store.getState();
     const addUserButton = state.users?.length
-      ? new Component.Button({
+        ? new Component.Button({
           text: 'Добавить пользователя',
           attr: { withInternalID: true, type: 'submit' },
           events: {},
         })
-      : null;
-
+        : null;
     const updatedUserInfoItems = new Component.Form({
       events: {
         submit: (event: Event) => {
           event.preventDefault();
           const formData = getDataForm(event);
           const users = Object.keys(formData)
-            .filter((key) => formData[key] === 'on')
-            .map((key) => Number(key));
+              .filter((key) => formData[key] === 'on')
+              .map((key) => Number(key));
           const selectedChatId = this.props.selectedChatId;
           if (selectedChatId && users?.length) {
             chatController.addUserToChat(users, selectedChatId);
@@ -131,25 +132,25 @@ export class AddUserModal extends Block<AddUserModalProps> {
         },
       },
       inputBlocks: (state.users || []).map(
-        (user) =>
-          new Component.UserInfoItem({
-            user,
-            events: {
-              click: () => {},
-            },
-          }),
+          (user) =>
+              new Component.UserInfoItem({
+                user,
+                events: {
+                  click: () => {},
+                },
+              }),
       ),
       button: addUserButton,
     });
-    (this.children as any).userInfoItems = updatedUserInfoItems;
+    (this.children as AddUserModalChildren).userInfoItems = updatedUserInfoItems;
     return true;
   }
 
   public render() {
     const { isOpen } = this.props;
     const overlayClass = isOpen
-      ? 'modal-overlay user-overlay'
-      : 'modal-overlay user-overlay modal-closed';
+        ? 'modal-overlay user-overlay'
+        : 'modal-overlay user-overlay modal-closed';
     return this.compile(template, {
       ...this.props,
       overlayClass,
@@ -157,7 +158,7 @@ export class AddUserModal extends Block<AddUserModalProps> {
   }
 }
 
-function mapStateToProps(state: any): Partial<AddUserModalProps> {
+function mapStateToProps(state: StoreType): Partial<AddUserModalProps> {
   return state;
 }
 

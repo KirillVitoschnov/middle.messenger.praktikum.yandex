@@ -7,7 +7,11 @@ import { StoreType } from '../types';
 import EventBus from '../services/eventBus';
 import { deepClone } from '../utils/deepClone';
 
-export class Store extends EventBus<any> {
+type StoreEventsMap = {
+  [StoreEvents.Updated]: [StoreType];
+};
+
+export class Store extends EventBus<StoreEventsMap> {
   private state: StoreType = {
     chats: [],
     errorMessage: '',
@@ -25,12 +29,11 @@ export class Store extends EventBus<any> {
     },
   };
 
-  public getState() {
-    let tmp = deepClone(this.state);
-    return tmp;
+  public getState(): StoreType {
+    return deepClone(this.state);
   }
 
-  public setState(path: string, value: unknown) {
+  public setState(path: string, value: unknown): void {
     set(this.state, path, value);
     this.emit(StoreEvents.Updated, this.getState());
   }

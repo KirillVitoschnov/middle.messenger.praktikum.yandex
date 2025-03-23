@@ -54,9 +54,9 @@ export default class ChatCurrent extends Service.Block<TProps> {
                 lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
                 lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
                 SideBarChatListItemBadge:
-                  chat.unread_count && chat.unread_count > 0
-                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                    : null,
+                    chat.unread_count && chat.unread_count > 0
+                        ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                        : null,
                 events: {
                   click: () => {
                     Service.router.go(`/messenger/${chat.id}`);
@@ -83,7 +83,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
         ChatHeader: new Component.ChatHeader({
           chatHeader: (() => {
             const currentChat: Chat | null =
-              chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
+                chats.find((chatItem: Chat) => chatItem.id === chatIdNumber) || null;
             return `Чат с ${currentChat?.title || 'Неизвестный'}`;
           })(),
           ChatHeaderAddUser: new Component.ChatHeaderButton({
@@ -161,19 +161,19 @@ export default class ChatCurrent extends Service.Block<TProps> {
               event.preventDefault();
               if (Service.validateForm(event)) {
                 const formData = getDataForm(event);
-                const messageText = formData.message || '';
+                const messageText = typeof formData.message === 'string' ? formData.message : '';
                 if (!messageText) {
                   return;
                 }
                 chatController.sendMessage(this.chatId, messageText);
                 const activeChat = this.children.ActiveChat;
                 const messageInput = (
-                  activeChat.children as {
-                    MessageInput: InstanceType<typeof Component.MessageInput>;
-                  }
+                    activeChat.children as {
+                      MessageInput: InstanceType<typeof Component.MessageInput>;
+                    }
                 ).MessageInput;
                 const inputEl = (
-                  messageInput.children as { input: InstanceType<typeof Component.Input> }
+                    messageInput.children as { input: InstanceType<typeof Component.Input> }
                 ).input.element as HTMLInputElement;
                 if (inputEl) {
                   inputEl.value = '';
@@ -206,9 +206,9 @@ export default class ChatCurrent extends Service.Block<TProps> {
               lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
             }),
             SideBarChatListItemBadge:
-              chat.unread_count && chat.unread_count > 0
-                ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
-                : null,
+                chat.unread_count && chat.unread_count > 0
+                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                    : null,
             events: {
               click: () => {
                 Service.router.go(`/messenger/${chat.id}`);
@@ -232,7 +232,7 @@ export default class ChatCurrent extends Service.Block<TProps> {
       const updatedChatHeader = new Component.ChatHeader({
         chatHeader: (() => {
           const currentChat: Chat | null =
-            chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
+              chats.find((chatItem: Chat) => chatItem.id === this.chatId) || null;
           return `Чат с ${currentChat?.title || 'Неизвестный'}`;
         })(),
         ChatHeaderAddUser: new Component.ChatHeaderButton({

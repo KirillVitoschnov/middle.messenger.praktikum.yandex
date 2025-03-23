@@ -1,40 +1,52 @@
-export type PlainObject<T = any> = {
-  [k in string]: T;
-};
+import {PlainObject} from "../types";
 
-function isArray(value: unknown): boolean {
+function isArray(value: unknown): value is unknown[] {
   return Array.isArray(value);
 }
 
-function isPlainObject(value: unknown): boolean {
+function isPlainObject(value: unknown): value is PlainObject {
   return (
-    typeof value === 'object' &&
-    value !== null &&
-    value.constructor === Object &&
-    Object.prototype.toString.call(value) === '[object Object]'
+      typeof value === 'object' &&
+      value !== null &&
+      value.constructor === Object &&
+      Object.prototype.toString.call(value) === '[object Object]'
   );
 }
 
-function isArrayOrObject(value: unknown) {
+function isArrayOrObject(value: unknown): value is PlainObject | unknown[] {
   return isArray(value) || isPlainObject(value);
 }
 
-export default function isObjectsEqual(obj1: PlainObject, obj2: PlainObject) {
-  if (Object.keys.length !== Object.keys.length) {
-    return false;
-  }
-
-  for (let [key, value] of Object.entries(obj1)) {
-    let rightValue = obj2[key];
-    if (isArrayOrObject(rightValue) && isArrayOrObject(value)) {
-      if (isObjectsEqual(value, rightValue)) {
-        continue;
+export default function isObjectsEqual(obj1: unknown, obj2: unknown): boolean {
+  if (isArrayOrObject(obj1) && isArrayOrObject(obj2)) {
+    if (isArray(obj1) && isArray(obj2)) {
+      if (obj1.length !== obj2.length) {
+        return false;
       }
+      for (let i = 0; i < obj1.length; i++) {
+        if (!isObjectsEqual(obj1[i], obj2[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    if (isArray(obj1) || isArray(obj2)) {
       return false;
     }
-    if (value !== rightValue) {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+    if (keys1.length !== keys2.length) {
       return false;
     }
+    for (const key of keys1) {
+      if (!Object.prototype.hasOwnProperty.call(obj2, key)) {
+        return false;
+      }
+      if (!isObjectsEqual(obj1[key], obj2[key])) {
+        return false;
+      }
+    }
+    return true;
   }
-  return true;
+  return obj1 === obj2;
 }

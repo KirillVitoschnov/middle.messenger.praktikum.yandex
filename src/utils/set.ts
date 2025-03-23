@@ -8,12 +8,9 @@ export function set(object: Indexed | unknown, path: string, value: unknown): In
   if (typeof object !== 'object' || object === null) {
     return object;
   }
-
-  const result = path.split('.').reduceRight<Indexed>((acc, currentValue) => {
-    return {
-      [currentValue]: acc,
-    };
-  }, value as any);
-
+  type NestedObject = { [key: string]: unknown };
+  const result = path.split('.').reduceRight<NestedObject>((acc, key) => ({
+    [key]: acc,
+  }), value as NestedObject);
   return merge(object as Indexed, result);
 }

@@ -2,12 +2,8 @@ import './styles/style.pcss';
 import * as Page from './pages';
 import { connect, router, routes } from './services';
 import { authController, chatController } from './controllers';
+import { StoreType } from './types';
 
-/**
- * Функция для управления темой оформления.
- * При загрузке страницы устанавливается сохранённая тема,
- * а по клику на кнопку тема переключается и сохраняется в localStorage.
- */
 function manageTheme() {
   const toggleButton = document.getElementById('theme-toggle');
   if (!toggleButton) return;
@@ -26,23 +22,13 @@ function manageTheme() {
   });
 }
 
-/**
- * Основная инициализация приложения после загрузки DOM.
- */
 window.addEventListener('DOMContentLoaded', async () => {
-  // Проверяем, авторизован ли пользователь
   const isAuth = await authController.getUserAuth();
   await authController.getUserData();
-
-  // Если пользователь авторизован, получаем список чатов
   if (isAuth) {
     await chatController.getChats();
   }
-
-  /**
-   * Функция маппинга данных из стора в пропсы для страниц.
-   */
-  function mapUserToProps(state: any) {
+  function mapUserToProps(state: StoreType) {
     const tmpUser = state.user || {};
     const errorMessage = state.errorMessage || null;
     return {
@@ -52,50 +38,37 @@ window.addEventListener('DOMContentLoaded', async () => {
       errorMessage,
     };
   }
-
-  // Настройка роутинга: сопоставляем маршруты с компонентами
   router
-    .use(routes.login, connect(Page.Authorization, mapUserToProps))
-    .use(routes.signUp, connect(Page.Registration, mapUserToProps))
-    .use(routes.settings, connect(Page.ProfileInfo, mapUserToProps))
-    .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword, mapUserToProps))
-    .use(routes.chat, connect(Page.ChatPreview, mapUserToProps))
-    .use(routes.chatCurrent, connect(Page.ChatCurrent, mapUserToProps))
-    .use(routes.notFoundPage, connect(Page.ChatPreview, mapUserToProps));
-
+      .use(routes.login, connect(Page.Authorization, mapUserToProps))
+      .use(routes.signUp, connect(Page.Registration, mapUserToProps))
+      .use(routes.settings, connect(Page.ProfileInfo, mapUserToProps))
+      .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword, mapUserToProps))
+      .use(routes.chat, connect(Page.ChatPreview, mapUserToProps))
+      .use(routes.chatCurrent, connect(Page.ChatCurrent, mapUserToProps))
+      .use(routes.notFoundPage, connect(Page.ChatPreview, mapUserToProps));
   const pathWindow = window.location.pathname;
-
-  // Если пользователь авторизован, при попытке попасть на главную или страницу регистрации – переадресовываем на настройки
   if (isAuth) {
     if (pathWindow === '/' || pathWindow === '/sign-up') {
       router.go(routes.settings);
     }
   }
-
-  // Если пользователь не авторизован, а запрашивается защищённый маршрут – переадресовываем на страницу логина
   if (!isAuth) {
     if (
-      pathWindow === '/messenger' ||
-      pathWindow === '/settings' ||
-      pathWindow === '/settings/edit-password' ||
-      pathWindow.startsWith('/messenger/')
+        pathWindow === '/messenger' ||
+        pathWindow === '/settings' ||
+        pathWindow === '/settings/edit-password' ||
+        pathWindow.startsWith('/messenger/')
     ) {
       router.go(routes.login);
     }
   }
-
-  // Если текущий путь не соответствует ни одному из маршрутов – показываем страницу "не найдено"
   if (
-    !Object.values(routes).some((route) =>
-      pathWindow.match(new RegExp(`^${route.replace(/:([a-zA-Z]+)/g, '[^/]+')}$`)),
-    )
+      !Object.values(routes).some((route) =>
+          pathWindow.match(new RegExp(`^${route.replace(/:([a-zA-Z]+)/g, '[^/]+')}$`))
+      )
   ) {
     router.go(routes.notFoundPage);
   }
-
-  // Запускаем роутер
   router.start();
-
-  // Инициализируем переключение темы
   manageTheme();
 });

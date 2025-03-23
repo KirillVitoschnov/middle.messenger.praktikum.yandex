@@ -1,24 +1,19 @@
-// types.ts
-
 import Block, { PropsType } from './services/block';
 import * as Component from './components';
 
-/* HTTP-транспорт */
-export type HTTPMethodType = (url: string, options?: any) => Promise<unknown>;
+export type HTTPMethodType = (url: string, options?: RequestOptionsType) => Promise<unknown>;
 export type HTTPCurrentMethodType = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type RequestOptionsType = {
-  method?: HTTPCurrentMethodType;
+  method?: HTTPCurrentMethodType | string;
   data?: Document | XMLHttpRequestBodyInit | null | undefined;
   headers?: { [key: string]: string };
   isCredentials?: boolean;
 };
 
-/* Роутер */
 export type RouteProps = {
   rootQuery: string;
 };
 
-/* Стор */
 export type UserType = {
   id?: number;
   email: string;
@@ -36,16 +31,32 @@ export type UserLoginType = {
   password: string;
 };
 
-export type StoreType = {
-  errorMessage: '';
-  user: UserType | {};
-  users: any[];
-  chats: any[];
-  messages?: any[];
-  currentChatUsers?: any[];
+export type Chat = {
+  id: number;
+  title: string;
+  avatar?: string;
+  last_message?: {
+    content: string;
+    time: string;
+  } | null;
+  unread_count?: number;
 };
 
-/* Общие */
+export type Message = {
+  user_id: number;
+  content: string;
+  time: string;
+};
+
+export type StoreType = {
+  errorMessage: string;
+  user: UserType | {};
+  users: UserType[];
+  chats: Chat[];
+  messages?: Message[];
+  currentChatUsers?: UserType[];
+};
+
 export type Indexed<T = unknown> = {
   [key: string]: T;
 };
@@ -97,23 +108,6 @@ export type ChatType = {
   title: string;
 };
 
-export type Chat = {
-  id: number;
-  title: string;
-  avatar?: string;
-  last_message?: {
-    content: string;
-    time: string;
-  } | null;
-  unread_count?: number;
-};
-
-export type Message = {
-  user_id: number;
-  content: string;
-  time: string;
-};
-
 export type AppState = {
   chats?: Chat[];
   messages?: {
@@ -143,3 +137,20 @@ export interface ChatCurrentChildren {
   SideBar: InstanceType<typeof Component.SideBar>;
   ActiveChat: InstanceType<typeof Component.ActiveChat>;
 }
+
+export interface Renderable {
+  getContent: () => Node;
+  dispatchComponentDidMount: () => void;
+}
+
+export type PlainObject<T = unknown> = {
+  [k: string]: T;
+};
+
+export enum StoreEvents {
+  Updated = 'updated',
+}
+
+export type StoreEventsMap = {
+  [StoreEvents.Updated]: StoreType;
+};
