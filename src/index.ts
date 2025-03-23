@@ -2,7 +2,7 @@ import './styles/style.pcss';
 import * as Page from './pages';
 import { connect, router, routes } from './services';
 import { authController, chatController } from './controllers';
-import { StoreType } from './types';
+import { StoreType, Indexed } from './types';
 
 function manageTheme() {
   const toggleButton = document.getElementById('theme-toggle');
@@ -28,13 +28,14 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (isAuth) {
     await chatController.getChats();
   }
-  function mapUserToProps(state: StoreType) {
-    const tmpUser = state.user || {};
-    const errorMessage = state.errorMessage || null;
+  function mapUserToProps(state: Indexed): Partial<StoreType> {
+    const s = state as StoreType;
+    const tmpUser = s.user || {};
+    const errorMessage = s.errorMessage || null;
     return {
       user: tmpUser,
-      chats: state.chats,
-      messages: state.messages,
+      chats: s.chats,
+      messages: s.messages,
       errorMessage,
     };
   }
@@ -42,10 +43,10 @@ window.addEventListener('DOMContentLoaded', async () => {
       .use(routes.login, connect(Page.Authorization, mapUserToProps))
       .use(routes.signUp, connect(Page.Registration, mapUserToProps))
       .use(routes.settings, connect(Page.ProfileInfo, mapUserToProps))
-      .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword, mapUserToProps))
-      .use(routes.chat, connect(Page.ChatPreview, mapUserToProps))
-      .use(routes.chatCurrent, connect(Page.ChatCurrent, mapUserToProps))
-      .use(routes.notFoundPage, connect(Page.ChatPreview, mapUserToProps));
+      .use(routes.settingsEditPassword, connect(Page.ProfileEditPassword as any, mapUserToProps))
+      .use(routes.chat, connect(Page.ChatPreview as any, mapUserToProps))
+      .use(routes.chatCurrent, connect(Page.ChatCurrent as any, mapUserToProps))
+      .use(routes.notFoundPage, connect(Page.ChatPreview as any, mapUserToProps));
   const pathWindow = window.location.pathname;
   if (isAuth) {
     if (pathWindow === '/' || pathWindow === '/sign-up') {

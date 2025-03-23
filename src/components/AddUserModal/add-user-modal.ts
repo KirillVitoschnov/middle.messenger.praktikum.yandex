@@ -1,5 +1,5 @@
 import { Block } from '../../services';
-import { AddUserModalProps, StoreType } from '../../types';
+import { AddUserModalProps, StoreType, Indexed } from '../../types';
 import template from './template.hbs?raw';
 import * as Component from '../index';
 import * as Service from '../../services';
@@ -13,7 +13,7 @@ type AddUserModalChildren = {
 };
 
 export class AddUserModal extends Block<AddUserModalProps> {
-  constructor(props: AddUserModalProps) {
+  constructor(props: AddUserModalProps = {} as AddUserModalProps) {
     const fieldsProps = [
       {
         label: 'Логин',
@@ -23,20 +23,20 @@ export class AddUserModal extends Block<AddUserModalProps> {
           value: '',
           attr: {
             'data-required': true,
-            'data-valid-login': true,
+            'data-valid-login': true
           },
           events: {
             blur: (event: FocusEvent) => {
               Service.validate(event.target as HTMLInputElement);
-            },
-          },
-        }),
-      },
+            }
+          }
+        })
+      }
     ];
     const inputBlocks = fieldsProps.map((field) => new Component.InputBlock(field));
     const saveButton = new Component.Button({
       text: 'Поиск пользователя',
-      attr: { withInternalID: true, type: 'submit' },
+      attr: { withInternalID: true, type: 'submit' }
     });
     const form = new Component.Form({
       inputBlocks,
@@ -50,14 +50,14 @@ export class AddUserModal extends Block<AddUserModalProps> {
               await userController.searchUser(formData.login);
             } catch {}
           }
-        },
-      },
+        }
+      }
     });
     const addUserButton = store.getState().users?.length
         ? new Component.Button({
           text: 'Добавить пользователя',
           attr: { withInternalID: true, type: 'submit' },
-          events: {},
+          events: {}
         })
         : null;
     const userInfoItems = new Component.Form({
@@ -74,7 +74,7 @@ export class AddUserModal extends Block<AddUserModalProps> {
             this.setProps({ isOpen: false });
             store.setState('users', []);
           }
-        },
+        }
       },
       button: addUserButton,
       inputBlocks: (store.getState().users || []).map(
@@ -82,10 +82,10 @@ export class AddUserModal extends Block<AddUserModalProps> {
               new Component.UserInfoItem({
                 user,
                 events: {
-                  click: () => {},
-                },
-              }),
-      ),
+                  click: () => {}
+                }
+              })
+      )
     });
     super({
       ...props,
@@ -98,8 +98,8 @@ export class AddUserModal extends Block<AddUserModalProps> {
             this.setProps({ isOpen: false });
             store.setState('users', []);
           }
-        },
-      },
+        }
+      }
     });
   }
 
@@ -112,7 +112,7 @@ export class AddUserModal extends Block<AddUserModalProps> {
         ? new Component.Button({
           text: 'Добавить пользователя',
           attr: { withInternalID: true, type: 'submit' },
-          events: {},
+          events: {}
         })
         : null;
     const updatedUserInfoItems = new Component.Form({
@@ -129,18 +129,18 @@ export class AddUserModal extends Block<AddUserModalProps> {
             this.setProps({ isOpen: false });
             store.setState('users', []);
           }
-        },
+        }
       },
       inputBlocks: (state.users || []).map(
           (user) =>
               new Component.UserInfoItem({
                 user,
                 events: {
-                  click: () => {},
-                },
-              }),
+                  click: () => {}
+                }
+              })
       ),
-      button: addUserButton,
+      button: addUserButton
     });
     (this.children as AddUserModalChildren).userInfoItems = updatedUserInfoItems;
     return true;
@@ -153,13 +153,13 @@ export class AddUserModal extends Block<AddUserModalProps> {
         : 'modal-overlay user-overlay modal-closed';
     return this.compile(template, {
       ...this.props,
-      overlayClass,
+      overlayClass
     });
   }
 }
 
-function mapStateToProps(state: StoreType): Partial<AddUserModalProps> {
-  return state;
+function mapStateToProps(state: Indexed): Partial<AddUserModalProps> {
+  return state as StoreType;
 }
 
 export default Service.connect(AddUserModal, mapStateToProps);

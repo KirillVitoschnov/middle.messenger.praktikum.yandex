@@ -18,9 +18,9 @@ type PropsListsType = {
   [key: string]: (Block<PropsType> | string)[];
 };
 
-type PropsTypeOrEmptyObject = Partial<PropsType> & {};
+type PropsTypeOrEmptyObject = Partial<PropsType>;
 
-export type BlockEventsMap<P = any> = {
+export type BlockEventsMap<P = PropsType> = {
   init: [];
   'flow:component-did-mount': [];
   'flow:render': [];
@@ -65,9 +65,9 @@ export default abstract class Block<
   }
 
   _getChildrenAndList(propsAndChildren: Props & Children & Lists) {
-    const children: {} & Partial<PropsChildrenType> = {};
-    const props: {} & Partial<PropsType> = {};
-    const lists: {} & Partial<PropsListsType> = {};
+    const children: Partial<PropsChildrenType> = {};
+    const props: Partial<PropsType> = {};
+    const lists: Partial<PropsListsType> = {};
     Object.entries(propsAndChildren as PropsTypeOrEmptyObject).forEach(([key, value]) => {
       if (value instanceof Block) {
         children[key] = value;
@@ -101,8 +101,7 @@ export default abstract class Block<
   }
 
   private _createDocumentElement(tagName: string) {
-    const element = document.createElement(tagName);
-    return element;
+    return document.createElement(tagName);
   }
 
   public abstract render(): DocumentFragment;
@@ -136,8 +135,7 @@ export default abstract class Block<
   private _componentDidMount() {
     this.componentDidMount();
     Object.values(this.children).forEach((child) => {
-      const blockChild = child as Block;
-      blockChild.dispatchComponentDidMount();
+      (child as Block<PropsType>).dispatchComponentDidMount();
     });
   }
 
@@ -167,7 +165,7 @@ export default abstract class Block<
   compile(template: string, props: PropsType): DocumentFragment {
     const propsAndStubs: PropsType = { ...props };
     Object.entries(this.children).forEach(([key, child]) => {
-      const blockChild = child as Block;
+      const blockChild = child as Block<PropsType>;
       propsAndStubs[key] = `<div data-id="${blockChild.id}"></div>`;
     });
     Object.entries(this.lists).forEach(([key, list]) => {
@@ -182,7 +180,7 @@ export default abstract class Block<
     const fragment = document.createElement('template');
     fragment.innerHTML = compiledTemplate(propsAndStubs);
     Object.values(this.children).forEach((child) => {
-      const blockChild = child as Block;
+      const blockChild = child as Block<PropsType>;
       const stub = fragment.content.querySelector(`[data-id="${blockChild.id}"]`);
       if (stub) {
         stub.replaceWith(blockChild.getContent() as Node);
@@ -220,9 +218,7 @@ export default abstract class Block<
       this._element?.setAttribute('data-id', this.id);
     }
     Object.entries(attr as ObjectType).forEach(([key, value]) => {
-      if (this._element) {
-        this._element.setAttribute(key, String(value));
-      }
+      this._element?.setAttribute(key, String(value));
     });
   }
 
@@ -243,25 +239,25 @@ export default abstract class Block<
   private _makePropsProxy(props: Props): Props {
     const self = this;
     const proxyProps = new Proxy(props, {
-      get(target: Props, prop: string) {
-        const value = target[prop];
+      get(target: Props, prop: string | symbol, _receiver: unknown) {
+        const value = target[prop as keyof Props];
         return typeof value === 'function' ? value.bind(target) : value;
       },
-      set(target: PropsTypeOrEmptyObject, prop: string, value) {
+      set(target: Props, prop: string | symbol, value: unknown, _receiver: unknown): boolean {
         const oldProps = { ...target };
-        target[prop] = value;
-        self.eventBus().emit(Block.EVENTS.FLOW_CDU, oldProps as unknown as Props, target as unknown as Props);
+        target[prop as keyof Props] = value as Props[keyof Props];
+        self.eventBus().emit(Block.EVENTS.FLOW_CDU, oldProps, target);
         return true;
       },
       deleteProperty() {
         throw new Error('Нет прав');
-      },
+      }
     });
-    return proxyProps as Props;
+    return proxyProps;
   }
 
   public setChildren = (propssses: Props & Children & Lists) => {
-    const { children, lists } = this._getChildrenAndList(propssses!);
+    const { children, lists } = this._getChildrenAndList(propssses);
     this.children = children;
     this.lists = lists;
     Object.assign(this.props, propssses);

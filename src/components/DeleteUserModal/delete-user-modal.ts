@@ -1,5 +1,5 @@
 import { Block } from '../../services';
-import { RemoveUserModalProps, UserType, StoreType } from '../../types';
+import { RemoveUserModalProps, UserType, StoreType, Indexed } from '../../types';
 import template from './template.hbs?raw';
 import * as Component from '../index';
 import * as Service from '../../services';
@@ -12,11 +12,11 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
     userInfoItems?: Component.Form;
   } = {};
 
-  constructor(props: RemoveUserModalProps) {
+  constructor(props: RemoveUserModalProps = {} as RemoveUserModalProps) {
     chatController.getUsersFromChat(props.selectedChatId);
     const removeUserButton = new Component.Button({
       text: 'Удалить выбранных',
-      attr: { type: 'submit' },
+      attr: { type: 'submit' }
     });
     const userInfoItems = new Component.Form({
       button: removeUserButton,
@@ -25,8 +25,8 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
               new Component.UserInfoItem({
                 user,
                 withCheckbox: true,
-                attr: { name: 'userIds' },
-              }),
+                attr: { name: 'userIds' }
+              })
       ),
       events: {
         submit: (event: Event) => {
@@ -40,8 +40,8 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
             chatController.removeUserFromChat(users, selectedChatId);
             this.setProps({ isOpen: false });
           }
-        },
-      },
+        }
+      }
     });
     super({
       ...props,
@@ -52,20 +52,17 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
           if (target.dataset.close === 'true' || target.classList.contains('modal-overlay')) {
             this.setProps({ isOpen: false });
           }
-        },
-      },
+        }
+      }
     });
     this.children.userInfoItems = userInfoItems;
   }
 
-  override componentDidUpdate(
-      oldProps: RemoveUserModalProps,
-      newProps: RemoveUserModalProps,
-  ): boolean {
+  override componentDidUpdate(oldProps: RemoveUserModalProps, newProps: RemoveUserModalProps): boolean {
     if (isEqual(oldProps, newProps)) return false;
     const removeUserButton = new Component.Button({
       text: 'Удалить выбранных',
-      attr: { type: 'submit' },
+      attr: { type: 'submit' }
     });
     const updatedUserInfoItems = new Component.Form({
       button: removeUserButton,
@@ -74,8 +71,8 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
               new Component.UserInfoItem({
                 user,
                 withCheckbox: true,
-                attr: { name: 'userIds' },
-              }),
+                attr: { name: 'userIds' }
+              })
       ),
       events: {
         submit: (event: Event) => {
@@ -89,8 +86,8 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
             chatController.removeUserFromChat(users, selectedChatId);
             this.setProps({ isOpen: false });
           }
-        },
-      },
+        }
+      }
     });
     this.children.userInfoItems = updatedUserInfoItems;
     return true;
@@ -103,13 +100,13 @@ export class RemoveUserModal extends Block<RemoveUserModalProps> {
         : 'modal-overlay user-overlay modal-closed';
     return this.compile(template, {
       ...this.props,
-      overlayClass,
+      overlayClass
     });
   }
 }
 
-function mapStateToProps(state: StoreType): Partial<RemoveUserModalProps> {
-  return state;
+function mapStateToProps(state: Indexed): Partial<RemoveUserModalProps> {
+  return state as StoreType;
 }
 
 export default Service.connect(RemoveUserModal, mapStateToProps);
