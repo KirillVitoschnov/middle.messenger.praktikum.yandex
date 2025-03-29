@@ -1,10 +1,12 @@
 import * as Component from '../../../components';
 import * as Service from '../../../services';
-import { TProps } from '../../../types';
+import { TProps, UserType } from '../../../types';
 import template from '../template.hbs?raw';
+import { getDataForm } from '../../../utils';
+import { authController } from '../../../controllers';
 
 export default class Registration extends Service.Block {
-  constructor(props: TProps) {
+  constructor(props: TProps = {}) {
     const fieldsProps = [
       {
         label: 'Почта',
@@ -16,7 +18,7 @@ export default class Registration extends Service.Block {
             'data-valid-email': true,
           },
           events: {
-            blur: (event: FocusEvent) => {
+            blur: (event: Event) => {
               Service.validate(event.target as HTMLInputElement);
             },
           },
@@ -73,6 +75,22 @@ export default class Registration extends Service.Block {
         }),
       },
       {
+        label: 'Отображаемое имя',
+        input: new Component.Input({
+          type: 'text',
+          name: 'display_name',
+          attr: {
+            'data-required': true,
+            'data-valid-name': true,
+          },
+          events: {
+            blur: (event: Event) => {
+              Service.validate(event.target as HTMLInputElement);
+            },
+          },
+        }),
+      },
+      {
         label: 'Телефон',
         input: new Component.Input({
           type: 'text',
@@ -102,17 +120,17 @@ export default class Registration extends Service.Block {
             'data-valid-password': true,
           },
           events: {
-            blur: (event: FocusEvent) => {
+            blur: (event: Event) => {
               Service.validate(event.target as HTMLInputElement);
             },
           },
         }),
       },
       {
-        label: 'Повторите пароль',
+        label: 'Пароль (ещё раз)',
         input: new Component.Input({
           type: 'password',
-          name: 'password',
+          name: 'password_repeat',
           attr: {
             'data-required': true,
             'data-max-length': 40,
@@ -120,7 +138,7 @@ export default class Registration extends Service.Block {
             'data-valid-password': true,
           },
           events: {
-            blur: (event: FocusEvent) => {
+            blur: (event: Event) => {
               Service.validate(event.target as HTMLInputElement);
             },
           },
@@ -135,11 +153,6 @@ export default class Registration extends Service.Block {
     const button = new Component.Button({
       text: 'Зарегистрироваться',
       attr: { withInternalID: true },
-      events: {
-        click: () => {
-          console.log('button event Зарегистрироваться');
-        },
-      },
     });
 
     const link = new Component.Link({
@@ -147,7 +160,7 @@ export default class Registration extends Service.Block {
       href: '/',
       events: {
         click: () => {
-          console.log('link event Войти');
+          Service.router.go(Service.routes.login);
         },
       },
     });
@@ -158,9 +171,22 @@ export default class Registration extends Service.Block {
       link,
       events: {
         submit: (event: Event) => {
-          Service.validateForm(event);
+          event.preventDefault();
+
           if (Service.validateForm(event)) {
-            Service.getDataForm(event);
+            const formData = getDataForm(event) as Record<string, string>;
+
+            const userData: UserType = {
+              email: formData.email,
+              login: formData.login,
+              first_name: formData.first_name,
+              second_name: formData.second_name,
+              display_name: formData.display_name,
+              phone: formData.phone,
+              password: formData.password,
+            };
+
+            authController.signUp(userData);
           }
         },
       },
@@ -174,10 +200,11 @@ export default class Registration extends Service.Block {
       Header,
       form,
       blockLinks: new Component.BlockLinks({}),
+      errorMessage: props.errorMessage,
     });
   }
 
-  render() {
+  override render() {
     return this.compile(template, { ...this.props });
   }
 }

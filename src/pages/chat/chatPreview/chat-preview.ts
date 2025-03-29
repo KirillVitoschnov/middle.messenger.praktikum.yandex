@@ -1,128 +1,65 @@
 import * as Service from '../../../services';
 import * as Component from '../../../components';
-import { TProps } from '../../../types';
+import { TProps, ChatPreviewChildren, SideBarChildren, Chat } from '../../../types';
 import template from '../template.hbs?raw';
+import { store } from '../../../store';
+import { isEqual, formatDateTime } from '../../../utils';
+import { chatController } from '../../../controllers';
+import { BASE_URL } from '../../../congfig';
 
-const chats = [
-  {
-    name: 'Алиса',
-    lastMessage: 'Рада слышать, спасибо, что написал!',
-    unreadCount: 3,
-    lastMessageTime: '12:00',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Боб',
-    lastMessage: 'Увидимся завтра!',
-    unreadCount: 1,
-    lastMessageTime: '12:00',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Чарли',
-    lastMessage: 'Что нового?',
-    unreadCount: 5,
-    lastMessageTime: '12:00',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Даниил',
-    lastMessage: 'На связи через минуту.',
-    unreadCount: 2,
-    lastMessageTime: '09:30',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Екатерина',
-    lastMessage: 'Ты видел это?',
-    unreadCount: 0,
-    lastMessageTime: '11:45',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Фёдор',
-    lastMessage: 'Привет, как дела?',
-    unreadCount: 4,
-    lastMessageTime: '10:15',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Григорий',
-    lastMessage: 'Отправил файл, проверь.',
-    unreadCount: 1,
-    lastMessageTime: '08:50',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Анна',
-    lastMessage: 'Отлично, спасибо!',
-    unreadCount: 0,
-    lastMessageTime: '07:20',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Михаил',
-    lastMessage: 'Согласен, давай так.',
-    unreadCount: 6,
-    lastMessageTime: '12:15',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Виктория',
-    lastMessage: 'До встречи!',
-    unreadCount: 3,
-    lastMessageTime: '14:00',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Игорь',
-    lastMessage: 'Это срочно!',
-    unreadCount: 8,
-    lastMessageTime: '15:30',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Ольга',
-    lastMessage: 'Позже расскажу.',
-    unreadCount: 0,
-    lastMessageTime: '16:00',
-    avatar: 'https://via.placeholder.com/50',
-  },
-  {
-    name: 'Павел',
-    lastMessage: 'Все готово.',
-    unreadCount: 2,
-    lastMessageTime: '17:45',
-    avatar: 'https://via.placeholder.com/50',
-  },
-];
+interface ChatPreviewProps extends TProps {}
 
-export default class ChatPreview extends Service.Block {
-  constructor(props: TProps) {
+export default class ChatPreview extends Service.Block<ChatPreviewProps> {
+  constructor(props: TProps = {}) {
+    const state = store.getState();
+    const chats: Chat[] = state.chats || [];
     super({
       ...props,
       SideBar: new Component.SideBar({
-        SideBarHeader: new Component.SideBarHeader({}),
+        SideBarHeader: new Component.SideBarHeader({
+          sidebarHeaderProfile: new Component.SideBarHeaderProfile({
+            events: {
+              click: () => {
+                Service.router.go('/settings');
+              },
+            },
+          }),
+        }),
         SideBarChatList: new Component.SideBarChatList({
           SideBarChatListItem: chats.map(
-            (chat) =>
+            (chat: Chat) =>
               new Component.SideBarChatListItem({
                 SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
-                  src: chat.avatar,
+                  src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg',
                 }),
                 SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
-                  name: chat.name,
-                  lastMessage: chat.lastMessage,
-                  lastMessageTime: chat.lastMessageTime,
+                  name: chat.title,
+                  lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
+                  lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
                   SideBarChatListItemBadge:
-                    chat.unreadCount > 0
-                      ? new Component.SideBarChatListItemBadge({
-                          count: chat.unreadCount,
-                        })
+                    chat.unread_count && chat.unread_count > 0
+                      ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
                       : null,
+                  events: {
+                    click: () => {
+                      Service.router.go(`/messenger/${chat.id}`);
+                    },
+                  },
                 }),
               }),
           ),
+        }),
+        SideBarNewChat: new Component.Button({
+          text: 'Новый чат',
+          type: 'button',
+          events: {
+            click: () => {
+              const title = window.prompt('Введите название нового чата');
+              if (title) {
+                chatController.createChat(title);
+              }
+            },
+          },
         }),
       }),
       chatPanelPlaceholder: new Component.chatPanelPlaceholder({}),
@@ -130,7 +67,50 @@ export default class ChatPreview extends Service.Block {
     });
   }
 
-  render() {
+  override componentDidUpdate(oldProps: ChatPreviewProps, newProps: ChatPreviewProps): boolean {
+    if (isEqual(oldProps, newProps)) {
+      return false;
+    }
+    const state = store.getState();
+    const chats: Chat[] = state.chats || [];
+    const children = this.children as ChatPreviewChildren;
+    const sideBarInstance = children.SideBar;
+    if (sideBarInstance) {
+      const updatedSideBarChatList = new Component.SideBarChatList({
+        SideBarChatListItem: chats.map(
+          (chat: Chat) =>
+            new Component.SideBarChatListItem({
+              SideBarChatListItemAvatar: new Component.SideBarChatListItemAvatar({
+                src: chat.avatar ? BASE_URL + '/resources/' + chat.avatar : '/default-avatar.svg',
+              }),
+              SideBarChatListItemInfo: new Component.SideBarChatListItemInfo({
+                name: chat.title,
+                lastMessage: chat.last_message ? chat.last_message.content : 'Нет сообщений',
+                lastMessageTime: chat.last_message ? formatDateTime(chat.last_message.time) : '',
+                SideBarChatListItemBadge:
+                  chat.unread_count && chat.unread_count > 0
+                    ? new Component.SideBarChatListItemBadge({ count: chat.unread_count })
+                    : null,
+              }),
+              events: {
+                click: () => {
+                  Service.router.go(`/messenger/${chat.id}`);
+                },
+              },
+            }),
+        ),
+      });
+      const sideBarChildren = sideBarInstance.children as SideBarChildren;
+      sideBarInstance.setChildren({
+        SideBarHeader: sideBarChildren.SideBarHeader,
+        SideBarChatList: updatedSideBarChatList,
+        SideBarNewChat: sideBarChildren.SideBarNewChat,
+      });
+    }
+    return true;
+  }
+
+  public render(): DocumentFragment {
     return this.compile(template, {
       ...this.props,
     });

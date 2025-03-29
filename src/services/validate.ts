@@ -4,8 +4,9 @@ function removeError(element: HTMLElement): void {
     parentElement.querySelectorAll('.text-error').forEach((errorSpan) => errorSpan.remove());
     parentElement.classList.remove('error');
   }
-}
 
+  // document.querySelector('.block-text-error')!.style.display = 'none';
+}
 function createError(element: HTMLElement, text: string): void {
   const parentElement = element.parentNode as HTMLElement;
   parentElement.classList.add('error');
@@ -13,6 +14,13 @@ function createError(element: HTMLElement, text: string): void {
   errorTextElement.classList.add('text-error');
   errorTextElement.textContent = text;
   parentElement.append(errorTextElement);
+
+  // let elementCodeError = document.querySelector('.block-text-error');
+  // if (elementCodeError!.textContent !== '') {
+  //   elementCodeError.style.display = 'block';
+  // } else {
+  //   elementCodeError.style.display = 'none';
+  // }
 }
 
 function executeRules(element: HTMLInputElement): [boolean, string] {
@@ -54,8 +62,6 @@ export function validate(element: HTMLInputElement): boolean {
 }
 
 export function validateForm(event: Event): boolean {
-  event.preventDefault();
-
   const form = event.target as HTMLFormElement;
   let validFormlist: boolean[] = [];
   const elements = form.querySelectorAll('input, select, checkbox, textarea');

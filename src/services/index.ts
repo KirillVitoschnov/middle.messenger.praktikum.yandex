@@ -1,5 +1,7 @@
 export { default as Block } from './block';
-export { default as EventBus } from './event-bus';
-export { getDataForm } from './get-data-form';
-export { renderDOM } from './render-dom';
+export { default as EventBus } from './eventBus';
 export { validate, validateForm } from './validate';
+export { Route, router, routes } from './router';
+export { BaseAPI, HttpClient } from './http';
+export { connect } from './hoc';
+export { default as isObjectsEqual } from './isObjectsEqual';
