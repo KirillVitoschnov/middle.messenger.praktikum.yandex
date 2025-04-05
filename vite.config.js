@@ -1,5 +1,10 @@
 import { defineConfig } from "vite";
 import { resolve } from 'path';
+import { webcrypto } from 'crypto';
+
+if (!globalThis.crypto) {
+    globalThis.crypto = webcrypto;
+}
 
 export default defineConfig({
     build: {
@@ -13,5 +18,3 @@ export default defineConfig({
         postcss: './postcss.config.cjs'
     },
 });
-
-
