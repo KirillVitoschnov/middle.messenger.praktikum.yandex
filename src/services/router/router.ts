@@ -1,7 +1,7 @@
 import Block, { PropsType } from '../block';
 import { Route } from './route';
 
-class Router {
+export class Router {
   static __instance: Router;
   private _currentRoute!: Route | null;
   private _rootQuery!: string;

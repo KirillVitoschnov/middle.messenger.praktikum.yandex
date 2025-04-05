@@ -9,23 +9,36 @@
     "prebuild": "tsc --noEmit",
     "start": "vite build && node server.cjs",
     "preview": "vite preview",
-    "prettier": "prettier --write src/**/*.{js,ts}"
+    "prettier": "prettier --write src/**/*.{js,ts,css,pcss}",
+    "test": "mocha",
+    "precommit": "lint-staged && npm run test",
+    "postinstall": "husky"
   },
   "devDependencies": {
+    "@types/chai": "^5.2.1",
+    "@types/jsdom": "^21.1.7",
+    "@types/mocha": "^10.0.10",
     "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.20",
+    "chai": "^5.2.0",
     "eslint": "^9.10.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.0.11",
+    "jsdom": "^26.0.0",
+    "lint-staged": "^15.5.0",
+    "mocha": "^11.1.0",
+    "node-esm-loader": "^0.3.0",
     "postcss": "^8.4.45",
     "postcss-nesting": "^13.0.0",
     "prettier": "3.3.3",
     "stylelint": "^16.9.0",
-    "stylelint-prettier": "^5.0.2",
     "stylelint-order": "^6.0.4",
+    "stylelint-prettier": "^5.0.2",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
     "typescript-eslint": "^8.5.0",
-    "vite": "^5.4.1"
+    "vite": "^6.2.5"
   },
   "dependencies": {
     "express": "^4.19.2",
@@ -34,6 +47,12 @@
     "vite-plugin-checker": "^0.8.0"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts,css,pcss}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }

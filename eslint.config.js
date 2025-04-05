@@ -48,8 +48,18 @@ export default tsLint.config(
       'no-this-before-super': 'off',
       'no-undef-init': 'off',
       'prettier/prettier': 'error',
+
+      '@typescript-eslint/no-unused-expressions': [
+        'error',
+        {
+          allowShortCircuit: true,
+          allowTernary: true,
+          allowTaggedTemplates: true,
+        },
+      ],
+
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
-    },
+    }
   },
 );
