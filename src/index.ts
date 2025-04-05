@@ -3,14 +3,6 @@ import * as Page from './pages';
 import { connect, router, routes } from './services';
 import { authController, chatController } from './controllers';
 import { StoreType, Indexed } from './types';
-import { v4 as uuidv4 } from 'uuid';
-// @ts-expect-error: инициализация вне класса
-this._id = uuidv4();
-import { Buffer } from 'buffer';
-import * as crypto from 'crypto-browserify';
-// @ts-expect-error: инициализация вне класса
-window.crypto = crypto as unknown as Crypto;
-window.Buffer = Buffer;
 
 function manageTheme() {
   const toggleButton = document.getElementById('theme-toggle');
