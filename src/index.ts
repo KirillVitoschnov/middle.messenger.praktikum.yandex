@@ -3,6 +3,7 @@ import * as Page from './pages';
 import { connect, router, routes } from './services';
 import { authController, chatController } from './controllers';
 import { StoreType, Indexed } from './types';
+import './polyfills';
 
 function manageTheme() {
   const toggleButton = document.getElementById('theme-toggle');
