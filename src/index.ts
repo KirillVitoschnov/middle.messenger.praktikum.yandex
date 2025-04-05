@@ -7,20 +7,10 @@ import { v4 as uuidv4 } from 'uuid';
 // @ts-expect-error: инициализация вне класса
 this._id = uuidv4();
 import { Buffer } from 'buffer';
-import crypto from 'crypto-browserify';
-
-// Инициализация глобальных полифиллов
-declare global {
-  interface Window {
-    Buffer: typeof Buffer;
-    crypto: typeof crypto;
-    appId: string;
-  }
-}
-
+import * as crypto from 'crypto-browserify';
+// @ts-expect-error: инициализация вне класса
+window.crypto = crypto as unknown as Crypto;
 window.Buffer = Buffer;
-window.crypto = crypto;
-window.appId = uuidv4();
 
 function manageTheme() {
   const toggleButton = document.getElementById('theme-toggle');
