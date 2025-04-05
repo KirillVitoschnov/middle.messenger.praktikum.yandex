@@ -3,7 +3,9 @@ import * as Page from './pages';
 import { connect, router, routes } from './services';
 import { authController, chatController } from './controllers';
 import { StoreType, Indexed } from './types';
-import './polyfills';
+import { v4 as uuidv4 } from 'uuid';
+// @ts-expect-error: инициализация вне класса
+this._id = uuidv4();
 
 function manageTheme() {
   const toggleButton = document.getElementById('theme-toggle');
