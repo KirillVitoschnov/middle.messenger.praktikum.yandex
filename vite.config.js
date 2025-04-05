@@ -13,7 +13,7 @@ export default defineConfig({
         postcss: "./postcss.config.cjs",
     },
     define: {
-        global: {}, 
-        'globalThis.crypto': 'require("crypto").webcrypto',
+        global: {},
+        'globalThis.crypto': 'require("crypto")',
     },
 });
