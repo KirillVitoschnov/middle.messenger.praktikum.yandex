@@ -4,4 +4,3 @@ export { validate, validateForm } from './validate';
 export { Route, router, routes } from './router';
 export { BaseAPI, HttpClient } from './http';
 export { connect } from './hoc';
-export { default as isObjectsEqual } from './isObjectsEqual';
